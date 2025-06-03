@@ -1,0 +1,38 @@
+package org.example.popspace.service.qr;
+
+import org.example.popspace.global.error.CustomException;
+import org.example.popspace.global.error.ErrorCode;
+import org.example.popspace.util.hmac.HmacUtil;
+import org.example.popspace.util.qr.QrCodeGenerator;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ReservationQrService {
+
+    // QR 생성
+    public byte[] createQr(Long reservationId) {
+        try {
+            String message = "reservation_id=" + reservationId;
+            String sig = HmacUtil.generateSignature(message);
+            String url = "https://kosa-popspace.com/api/qr/verify?" + message + "&sig=" + sig;
+            return QrCodeGenerator.generateQrImage(url);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.QR_GENERATION_FAILED);
+        }
+    }
+
+    // QR 유효성 검사
+    public void verifyQr(Long reservationId, String sig) {
+        String message = "reservation_id=" + reservationId;
+
+        try {
+            if (!HmacUtil.verifySignature(message, sig)) {
+                throw new CustomException(ErrorCode.INVALID_SIGNATURE);
+            }
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SIGNATURE_VERIFICATION_FAILED);
+        }
+    }
+
+
+}
