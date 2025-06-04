@@ -1,10 +1,17 @@
 spring:
   application:
     name: popspace
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+#    url: ${DB_URL}
+#    username: ${DB_USERNAME}
+#    password: ${DB_PASSWORD}
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: scott
+    password: tiger
     data:
       redis:
         host: localhost
