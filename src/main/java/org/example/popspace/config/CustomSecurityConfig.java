@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.example.popspace.filter.LoginFilter;
 import org.example.popspace.filter.RefreshTokenFilter;
-import org.example.popspace.filter.TokenCheckFilter;
+import org.example.popspace.filter.AccessTokenCheckFilter;
 import org.example.popspace.handler.LoginSuccessHandler;
 import org.example.popspace.service.auth.UserDetailService;
 import org.example.popspace.util.auth.JWTUtil;
@@ -40,7 +40,7 @@ public class CustomSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            LoginSuccessHandler loginSuccessHandler,
-                                           TokenCheckFilter tokenCheckFilter,
+                                           AccessTokenCheckFilter accessTokenCheckFilter,
                                            RefreshTokenFilter refreshTokenFilter,
                                            PasswordEncoder passwordEncoder) throws Exception {
 
@@ -69,8 +69,8 @@ public class CustomSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 필터 순서: 로그인 → 토큰검사 → 리프레시토큰 처리
                 .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenCheckFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(refreshTokenFilter, TokenCheckFilter.class)
+                .addFilterBefore(accessTokenCheckFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(refreshTokenFilter, AccessTokenCheckFilter.class)
         ;
         return http.build();
     }
@@ -90,8 +90,8 @@ public class CustomSecurityConfig {
     }
 
     @Bean
-    public TokenCheckFilter tokenCheckFilter() {
-        return new TokenCheckFilter(getPublicAuthEndpoints(),jwtUtil);
+    public AccessTokenCheckFilter tokenCheckFilter() {
+        return new AccessTokenCheckFilter(getPublicAuthEndpoints(),jwtUtil);
     }
 
     @Bean
