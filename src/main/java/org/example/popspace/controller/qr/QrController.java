@@ -1,9 +1,12 @@
 package org.example.popspace.controller.qr;
 
+import org.example.popspace.dto.qr.VerifyRequestDTO;
 import org.example.popspace.service.qr.ReservationQrService;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,9 +34,10 @@ public class QrController {
 
 
     // QR 유효성 검사
-    @GetMapping("/api/qr/verify")
-    public ResponseEntity<String> verifyQr(@RequestParam Long reservation_id, @RequestParam String sig) {
-        reservationQrService.verifyQr(reservation_id, sig);
+    @PostMapping("/api/qr/verify")
+    public ResponseEntity<String> verifyQr(@RequestBody VerifyRequestDTO request) {
+        reservationQrService.verifyQr(request.getReservation_id(), request.getSig());
         return ResponseEntity.ok("QR 유효함");
     }
+
 }
