@@ -21,6 +21,8 @@ org:
   zerock:
     jwt:
       secret: ${JWT_SECRET}
+    hmac:
+      secret: ${HMAC_SECRET:default-secret-key}
 
 
 cloud:

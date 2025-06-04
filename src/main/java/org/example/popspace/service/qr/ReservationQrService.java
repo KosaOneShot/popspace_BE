@@ -1,19 +1,23 @@
 package org.example.popspace.service.qr;
 
+import lombok.RequiredArgsConstructor;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.util.hmac.HmacUtil;
 import org.example.popspace.util.qr.QrCodeGenerator;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class ReservationQrService {
+
+    private final HmacUtil hmacUtil;
 
     // QR 생성
     public byte[] createQr(Long reservationId) {
         try {
             String message = "reservation_id=" + reservationId;
-            String sig = HmacUtil.generateSignature(message);
+            String sig = hmacUtil.generateSignature(message);
             String url = "https://kosa-popspace.com/api/qr/verify?" + message + "&sig=" + sig;
             return QrCodeGenerator.generateQrImage(url);
         } catch (Exception e) {
@@ -26,7 +30,7 @@ public class ReservationQrService {
         String message = "reservation_id=" + reservationId;
 
         try {
-            if (!HmacUtil.verifySignature(message, sig)) {
+            if (!hmacUtil.verifySignature(message, sig)) {
                 throw new CustomException(ErrorCode.INVALID_SIGNATURE);
             }
         } catch (Exception e) {
