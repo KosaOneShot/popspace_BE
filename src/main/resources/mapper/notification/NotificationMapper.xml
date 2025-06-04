@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.popspace.notification.mapper.NotificationMapper">
+
+    <insert id="insertNotification" parameterType="org.example.popspace.notification.domain.Notification">
+        <selectKey keyProperty="notifyId" resultType="int" order="BEFORE">
+            SELECT SEQ_NOTIFY_ID.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO NOTIFICATION (
+            NOTIFY_ID,
+            POPUP_ID,
+            TITLE,
+            CONTENT,
+            IMAGE_URL,
+            NOTIFICATION_STATE,
+            CREATED_AT
+        ) VALUES (
+                    #{notifyId},
+                     #{popupId},
+                     #{title},
+                     #{content},
+                     #{imageUrl},
+                     #{notificationState},
+                     #{createdAt}
+                 )
+    </insert>
+
+
+    <select id="selectNotificationsByNickname" parameterType="string" resultType="org.example.popspace.notification.dto.NotificationResponseDto">
+        SELECT DISTINCT N.*
+        FROM NOTIFICATION N
+                 JOIN RESERVATION R ON N.popup_id = R.popup_id
+                 JOIN MEMBER M ON R.member_id = M.member_id
+        WHERE M.nickname = #{nickname}
+          AND R.reservation_state = 'CONFIRMED'
+          AND N.notification_state = 'VISIBLE'
+    </select>
+
+    <select id="selectReservedMemberIds" parameterType="int" resultType="int">
+        SELECT DISTINCT MEMBER_ID
+        FROM RESERVATION
+        WHERE POPUP_ID = #{popupId}
+          AND RESERVATION_STATE = 'CONFIRMED'
+    </select>
+
+</mapper>
