@@ -37,6 +37,9 @@ public enum ErrorCode {
     SIGNATURE_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "QR 서명 검증 중 오류 발생"),
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "member not found"),
+    EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패했습니다."),
+    NOT_EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일 주소입니다. 메일 정보를 변경해 주세요"),
+    INVALID_RESET_CODE(HttpStatus.BAD_REQUEST, "reset code is invalid or expired"),
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
     ;
 
