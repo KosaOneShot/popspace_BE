@@ -19,7 +19,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "Expired Token"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     DUPLICATE_USER(HttpStatus.CONFLICT,"Duplicate User" ),
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND,"User not found" ),
+    NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND,"Member not found" ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Token" ),
     NOT_FOUND_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "Access Token not found" ),
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh Token not found" ),
