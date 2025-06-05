@@ -63,14 +63,15 @@ public class AuthController {
     @PostMapping("/reset-password/verify-email")
     public ResponseEntity<String> sendResetCodeToEmail(@RequestBody Map<String, String> requestMap){
         String email =requestMap.get("email");
-        userDetailsService.existsEmail(email);
+        userDetailsService.existsEmailAndSendEmail(email);
+
         return ResponseEntity.ok("success");
     }
 
     @PostMapping("/reset-password/verify-code")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         log.info("resetPasswordRequest: {}", resetPasswordRequest);
-        userDetailsService.validResetPasswordRequest(resetPasswordRequest);
+        userDetailsService.validResetPasswordRequestAndSendEmail(resetPasswordRequest);
         return ResponseEntity.ok("Success");
     }
 
