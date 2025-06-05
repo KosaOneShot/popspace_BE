@@ -1,14 +1,12 @@
-package org.example.popspace.notification.controller;
+package org.example.popspace.controller.notification;
 
 import lombok.RequiredArgsConstructor;
-import org.example.popspace.notification.Service.NotificationService;
-import org.example.popspace.notification.dto.NotificationRequestDto;
-import org.example.popspace.notification.dto.NotificationResponseDto;
-import org.example.popspace.notification.util.ImageUploader;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.popspace.service.notification.NotificationService;
+import org.example.popspace.dto.notification.NotificationRequestDto;
+import org.example.popspace.dto.notification.NotificationResponseDto;
+import org.example.popspace.util.notification.ImageUploader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,9 +1,9 @@
-package org.example.popspace.notification.mapper;
+package org.example.popspace.mapper;
 
 
 import org.apache.ibatis.annotations.Mapper;
-import org.example.popspace.notification.domain.Notification;
-import org.example.popspace.notification.dto.NotificationResponseDto;
+import org.example.popspace.dto.notification.Notification;
+import org.example.popspace.dto.notification.NotificationResponseDto;
 
 import java.util.List;
 

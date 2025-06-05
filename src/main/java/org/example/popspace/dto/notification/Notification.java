@@ -1,4 +1,4 @@
-package org.example.popspace.notification.domain;
+package org.example.popspace.dto.notification;
 
 
 import lombok.Data;

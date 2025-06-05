@@ -1,4 +1,4 @@
-package org.example.popspace.notification.dto;
+package org.example.popspace.dto.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

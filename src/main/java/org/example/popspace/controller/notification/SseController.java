@@ -1,8 +1,8 @@
-package org.example.popspace.notification.controller;
+package org.example.popspace.controller.notification;
 
 
 import lombok.RequiredArgsConstructor;
-import org.example.popspace.notification.util.SseEmitterManager;
+import org.example.popspace.util.notification.SseEmitterManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 

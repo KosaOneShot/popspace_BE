@@ -1,17 +1,15 @@
-package org.example.popspace.notification.Service;
+package org.example.popspace.service.notification;
 
 
-import lombok.RequiredArgsConstructor;
-import org.example.popspace.notification.domain.Notification;
-import org.example.popspace.notification.dto.NotificationRequestDto;
-import org.example.popspace.notification.dto.NotificationResponseDto;
-import org.example.popspace.notification.mapper.NotificationMapper;
-import org.example.popspace.notification.util.SseEmitterManager;
+import org.example.popspace.dto.notification.Notification;
+import org.example.popspace.dto.notification.NotificationRequestDto;
+import org.example.popspace.dto.notification.NotificationResponseDto;
+import org.example.popspace.mapper.NotificationMapper;
+import org.example.popspace.util.notification.SseEmitterManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.example.popspace.notification.mapper.NotificationMapper">
+<mapper namespace="org.example.popspace.mapper.NotificationMapper">
 
-    <insert id="insertNotification" parameterType="org.example.popspace.notification.domain.Notification">
+    <insert id="insertNotification" parameterType="org.example.popspace.dto.notification.Notification">
         <selectKey keyProperty="notifyId" resultType="int" order="BEFORE">
             SELECT SEQ_NOTIFY_ID.NEXTVAL FROM DUAL
         </selectKey>
@@ -29,7 +29,7 @@
     </insert>
 
 
-    <select id="selectNotificationsByNickname" parameterType="string" resultType="org.example.popspace.notification.dto.NotificationResponseDto">
+    <select id="selectNotificationsByNickname" parameterType="string" resultType="org.example.popspace.dto.notification.NotificationResponseDto">
         SELECT DISTINCT N.*
         FROM NOTIFICATION N
                  JOIN RESERVATION R ON N.popup_id = R.popup_id

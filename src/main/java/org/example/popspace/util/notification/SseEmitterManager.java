@@ -1,4 +1,4 @@
-package org.example.popspace.notification.util;
+package org.example.popspace.util.notification;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
