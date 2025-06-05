@@ -10,30 +10,30 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class SseEmitterManager {
 
-    private final Map<Integer, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
-    public SseEmitter addEmitter(int memberId) {
+    public SseEmitter addEmitter(String nickname) {
         SseEmitter emitter = new SseEmitter(60 * 1000L); // 60초 타임아웃
-        emitters.put(memberId, emitter);
+        emitters.put(nickname, emitter);
 
-        emitter.onCompletion(() -> emitters.remove(memberId));
-        emitter.onTimeout(() -> emitters.remove(memberId));
+        emitter.onCompletion(() -> emitters.remove(nickname));
+        emitter.onTimeout(() -> emitters.remove(nickname));
 
         return emitter;
     }
 
-    public void send(int memberId, Object data) {
-        SseEmitter emitter = emitters.get(memberId);
+    public void send(String nickname, Object data) {
+        SseEmitter emitter = emitters.get(nickname);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("new-notification").data(data));
             } catch (IOException e) {
-                emitters.remove(memberId);
+                emitters.remove(nickname);
             }
         }
     }
 
-    public boolean hasEmitter(int memberId) {
-        return emitters.containsKey(memberId);
+    public boolean hasEmitter(String nickname) {
+        return emitters.containsKey(nickname);
     }
 }

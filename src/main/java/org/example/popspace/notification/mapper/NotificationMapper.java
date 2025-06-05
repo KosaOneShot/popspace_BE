@@ -11,5 +11,5 @@ import java.util.List;
 public interface NotificationMapper {
     void insertNotification(Notification notification);
     List<NotificationResponseDto> selectNotificationsByNickname(String nickname);
-    List<Integer> selectReservedMemberIds(int popupId);
+    List<String> selectReservedNicknames(int popupId);
 }

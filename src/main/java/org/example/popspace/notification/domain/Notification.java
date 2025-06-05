@@ -6,8 +6,8 @@ import java.util.Date;
 
 @Data
 public class Notification {
-    private int notifyId;
-    private int popupId;
+    private Integer notifyId;
+    private Integer popupId;
     private String title;
     private String content;
     private String imageUrl;

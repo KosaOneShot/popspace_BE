@@ -13,8 +13,8 @@ public class SseController {
 
     private final SseEmitterManager sseEmitterManager;
 
-    @GetMapping("/subscribe/{memberId}")
-    public SseEmitter subscribe(@PathVariable int memberId) {
-        return sseEmitterManager.addEmitter(memberId);
+    @GetMapping("/subscribe/{nickname}")
+    public SseEmitter subscribe(@PathVariable String nickname) {
+        return sseEmitterManager.addEmitter(nickname);
     }
 }

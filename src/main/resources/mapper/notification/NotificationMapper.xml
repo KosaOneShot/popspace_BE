@@ -39,9 +39,10 @@
           AND N.notification_state = 'VISIBLE'
     </select>
 
-    <select id="selectReservedMemberIds" parameterType="int" resultType="int">
-        SELECT DISTINCT MEMBER_ID
-        FROM RESERVATION
+    <select id="selectReservedNicknames" parameterType="int" resultType="String">
+        SELECT NICKNAME
+        FROM RESERVATION R
+        JOIN MEMBER M ON R.member_id = M.member_id
         WHERE POPUP_ID = #{popupId}
           AND RESERVATION_STATE = 'CONFIRMED'
     </select>
