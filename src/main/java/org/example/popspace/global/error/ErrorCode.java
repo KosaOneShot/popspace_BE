@@ -37,7 +37,7 @@ public enum ErrorCode {
     SIGNATURE_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "QR 서명 검증 중 오류 발생"),
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "member not found"),
-
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
     ;
 
     private final HttpStatus status;
