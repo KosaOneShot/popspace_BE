@@ -48,7 +48,7 @@ public class UserDetailService implements UserDetailsService {
     public MemberLoginInfo findByMemberId(Long memberId) {
 
         return memberMapper.findByMemberId(memberId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
     }
 
     @Transactional
@@ -82,10 +82,10 @@ public class UserDetailService implements UserDetailsService {
     }
 
     @Transactional
-    public void existsEmail(String email) {
+    public void existsEmailAndSendEmail(String email) {
 
         memberMapper.findByEmail(email)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
 
         String code = RandomStringUtil.generateRandomCode();
 
@@ -95,7 +95,7 @@ public class UserDetailService implements UserDetailsService {
     }
 
     @Transactional
-    public void validResetPasswordRequest(ResetPasswordRequest resetPasswordRequest) {
+    public void validResetPasswordRequestAndSendEmail(ResetPasswordRequest resetPasswordRequest) {
 
         String savedCode = authRedisRepository.getEmailCodeValue(resetPasswordRequest.getEmail());
         if (!savedCode.equals(resetPasswordRequest.getCode())) {
