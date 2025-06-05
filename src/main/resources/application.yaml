@@ -31,6 +31,6 @@ cloud:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
     region:
-      static: us-east-2
+      static: ${AWS_REGION}
     s3:
       bucket: ${BUCKET_NAME}
