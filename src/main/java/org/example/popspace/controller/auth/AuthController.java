@@ -8,11 +8,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.dto.auth.MemberRegisterRequest;
+import org.example.popspace.dto.auth.ResetPasswordRequest;
 import org.example.popspace.dto.auth.UserStateResponse;
 import org.example.popspace.service.auth.UserDetailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -57,5 +60,23 @@ public class AuthController {
                 .nickname(user.getNickname())
                 .build());
     }
+    @PostMapping("/reset-password/verify-email")
+    public ResponseEntity<String> sendResetCodeToEmail(@RequestBody Map<String, String> requestMap){
+        String email =requestMap.get("email");
+        userDetailsService.existsEmail(email);
+        return ResponseEntity.ok("success");
+    }
 
+    @PostMapping("/reset-password/verify-code")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        log.info("resetPasswordRequest: {}", resetPasswordRequest);
+        userDetailsService.validResetPasswordRequest(resetPasswordRequest);
+        return ResponseEntity.ok("Success");
+    }
+
+    @GetMapping("/test2")
+    public ResponseEntity<String> test() {
+
+        return ResponseEntity.ok("Success");
+    }
 }
