@@ -10,10 +10,16 @@ spring:
         host: localhost
         port: 6379
 
+custom-redis:
+    host: ${AUTH_REDIS_HOST}
+    port: ${AUTH_REDIS_PORT}
+
+
+
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
-  type-handlers-package: org.example.shoppingmall_be.util
+#  mapper-locations: classpath:mapper/**/*.xml
+#  type-handlers-package: org.example.shoppingmall_be.util
   configuration:
     map-underscore-to-camel-case: true
 
