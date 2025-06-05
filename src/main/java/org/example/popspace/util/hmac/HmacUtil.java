@@ -1,5 +1,6 @@
 package org.example.popspace.util.hmac;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+@Slf4j
 @Component
 public class HmacUtil {
 
@@ -49,7 +51,7 @@ public class HmacUtil {
             byte[] rawHmac = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
             return Base64.getUrlEncoder().withoutPadding().encodeToString(rawHmac);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to generate signature", e);
+            throw new CustomException(ErrorCode.GENERATE_SIGNATURE_FAILED);
         }
     }
 
@@ -57,4 +59,5 @@ public class HmacUtil {
         String expected = generateSignature(message);
         return expected.equals(signature);
     }
+
 }

@@ -1,6 +1,7 @@
 package org.example.popspace.service.qr;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.util.hmac.HmacUtil;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ReservationQrService {
 
     private final HmacUtil hmacUtil;
@@ -30,10 +32,16 @@ public class ReservationQrService {
         String message = "reservation_id=" + reservationId;
 
         try {
-            if (!hmacUtil.verifySignature(message, sig)) {
+            boolean result = hmacUtil.verifySignature(message, sig);
+            if (!result) {
+                log.error("Invalid signature error");
                 throw new CustomException(ErrorCode.INVALID_SIGNATURE);
             }
+        } catch (CustomException e) {
+            // 이미 처리된 예외는 다시 던짐
+            throw e;
         } catch (Exception e) {
+            log.error("Signature verification error", e);
             throw new CustomException(ErrorCode.SIGNATURE_VERIFICATION_FAILED);
         }
     }
