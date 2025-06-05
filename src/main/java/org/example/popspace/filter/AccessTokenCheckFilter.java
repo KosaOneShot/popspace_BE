@@ -55,9 +55,6 @@ public class AccessTokenCheckFilter extends OncePerRequestFilter {
         }
 
         try {
-            if (authRedisRepository.checkBlackList(token)) {
-                throw new CustomException(ErrorCode.TOKEN_BLACKLISTED);
-            }
 
             Map<String, Object> payload = jwtUtil.validateToken(token);
 
