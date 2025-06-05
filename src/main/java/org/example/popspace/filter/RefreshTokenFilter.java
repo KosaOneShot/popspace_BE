@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.MemberLoginInfo;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
+import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.service.auth.UserDetailService;
 import org.example.popspace.util.auth.ErrorResponseUtil;
 import org.example.popspace.util.auth.ExtractCookie;
@@ -27,6 +28,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     private final String refreshPath;
     private final JWTUtil jwtUtil;
     private final UserDetailService userDetailService;
+    private final AuthRedisRepository authRedisRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -51,6 +53,9 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         }
 
         try {
+            if (authRedisRepository.checkBlackList(token)) {
+                throw new CustomException(ErrorCode.TOKEN_BLACKLISTED);
+            }
             // 토큰 검증 및 payload 추출
             Map<String, Object> payload = jwtUtil.validateToken(token);
 
