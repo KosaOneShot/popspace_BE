@@ -40,6 +40,10 @@ public enum ErrorCode {
 
     // POPUP
     POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID의 팝업이 존재하지 않습니다."),
+
+    // mybatis 업데이트 오류
+    UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UPDATE 쿼리에서 오류가 발생했습니다."),
+    INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INSERT 쿼리에서 오류가 발생했습니다.")
     ;
 
     private final HttpStatus status;
