@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
@@ -23,13 +24,26 @@ public class PopupDetailService {
     }
     /* 리뷰들 */
     public List<ReviewDto> findReviewByPopupId(Long popupId){
-        Optional<List<ReviewDto>> reviewDtoList = popupMapper.findReviewByPopupId(popupId);
-        return reviewDtoList.orElse(null); // 리뷰가 없을 수 있음
+        return popupMapper.findReviewByPopupId(popupId);
     }
 
     /* 찜 여부 */
-    public void findPopupLikeByPopupIdMemberId(){}
+    public boolean findPopupLikeByPopupIdMemberId(Long popupId, Long memberId){
+        String popupLike = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+        return "Y".equals(popupLike);
+    }
 
     /* 예약 여부 */
-    public void findReservationByPopupIdMemberId(){}
+    public ReservationDto findReservationByPopupIdMemberId(Long popupId, Long memberId){
+        Optional<ReservationDto> reservation = popupMapper.findReservationByPopupIdMemberId(popupId, memberId);
+        return reservation.orElse(null); // 예약이 없을 수 있음
+    }
+
+    /* 찜 업데이트 */
+    public void updatePopupLike(Long memberId, Long popupId, boolean isLiked) {
+        String toBeState = isLiked ? "Y" :  "N";
+        int updatedRows = popupMapper.upsertPopupLike(memberId, popupId, toBeState);
+        if (updatedRows == 0) throw new CustomException(ErrorCode.UPDATE_ERROR);
+    }
 }
+
