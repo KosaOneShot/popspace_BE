@@ -1,14 +1,19 @@
 package org.example.popspace.dto.notification;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
-@AllArgsConstructor
+@Builder
 public class NotificationResponseDto {
-    private int notifyId;
-    private int popupId;
+    private Long notifyId;
+    private Long popupId;
     private String title;
     private String content;
     private String imageUrl;
+    private Date createdAt;
+    private String notificationState;
 }

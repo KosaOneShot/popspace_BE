@@ -38,6 +38,11 @@ public enum ErrorCode {
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "member not found"),
 
+    //notification
+    POPUP_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 유저에 대한 팝업을 찾을 수 없습니다."),
+    NOTIFICATION_INSERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "공지 저장에 실패했습니다."),
+    SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
+
     ;
 
     private final HttpStatus status;
