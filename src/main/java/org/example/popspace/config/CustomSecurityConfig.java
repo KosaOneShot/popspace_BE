@@ -80,7 +80,9 @@ public class CustomSecurityConfig {
                 "/auth/login",
                 "/auth/register",
                 "/auth/logout",
-                "/auth/refresh"
+                "/auth/refresh",
+                "/auth/nickname/check-duplication",
+                "/auth/email/check-duplication",
         };
     }
 
