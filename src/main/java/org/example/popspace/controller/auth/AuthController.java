@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping(("/auth"))
@@ -58,4 +60,24 @@ public class AuthController {
                 .build());
     }
 
+    @PostMapping("/email/check-duplication")
+    public ResponseEntity<String> checkEmailDuplicate(@RequestBody Map<String,String> emailMap) {
+
+        String email = emailMap.get("email");
+        log.info("email: {}", email);
+        userDetailsService.existsEmail(email);
+
+        return ResponseEntity.ok("success");
+    }
+
+    @PostMapping("/nickname/check-duplication")
+    public ResponseEntity<String> checkNicknameDuplicate(@RequestBody Map<String,String> nicknameMap) {
+
+        String nickname = nicknameMap.get("nickname");
+        log.info("nickname: {}", nickname);
+
+        userDetailsService.existNickname(nickname);
+
+        return ResponseEntity.ok("success");
+    }
 }
