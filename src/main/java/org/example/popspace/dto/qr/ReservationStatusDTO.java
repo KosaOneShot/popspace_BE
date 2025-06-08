@@ -1,4 +1,4 @@
-package org.example.popspace.dto.reservation;
+package org.example.popspace.dto.qr;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
