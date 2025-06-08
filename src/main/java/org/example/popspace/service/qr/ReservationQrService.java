@@ -2,14 +2,12 @@ package org.example.popspace.service.qr;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.popspace.dto.auth.CustomUserDetail;
-import org.example.popspace.dto.reservation.QrReservationDTO;
+import org.example.popspace.dto.qr.QrReservationDTO;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.ReservationMapper;
 import org.example.popspace.util.hmac.HmacUtil;
 import org.example.popspace.util.qr.QrCodeGenerator;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -18,61 +16,66 @@ import org.springframework.stereotype.Service;
 public class ReservationQrService {
 
     private final HmacUtil hmacUtil;
+    private final QrCodeGenerator qrCodeGenerator;
     private final ReservationMapper reservationMapper;
 
+    public QrReservationDTO processQrVerification(long userId, long reserveId, String sig){
+
+        // 1. 팝업 사장 여부 검증
+        validateOwnerAuthority(userId, reserveId);
+
+        // 2. QR 서명 검증
+        verifyQr(reserveId, sig);
+
+        // 3. 예약 정보 조회
+        QrReservationDTO dto = checkReservationStatus(reserveId);
+
+        return dto;
+    }
+
     // QR 생성
-    public byte[] createQr(Long reservationId) {
+    public byte[] createQr(long reservationId) {
+        log.info("Create Qr");
         try {
-            String message = "reservation_id=" + reservationId;
+            String message = "reservationId=" + reservationId;
             String sig = hmacUtil.generateSignature(message);
             String url = "https://kosa-popspace.com/api/qr/verify?" + message + "&sig=" + sig;
-            return QrCodeGenerator.generateQrImage(url);
+            return qrCodeGenerator.generateQrImage(url);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.QR_GENERATION_FAILED);
         }
     }
 
     // QR 유효성 검사
-    public void verifyQr(Long reservationId, String sig) {
-        String message = "reservation_id=" + reservationId;
+    private void verifyQr(long reservationId, String sig) {
+        log.info("Verify Qr");
+        String message = "reservationId=" + reservationId;
 
-        try {
-            boolean result = hmacUtil.verifySignature(message, sig);
-            if (!result) {
-                log.error("Invalid signature error");
-                throw new CustomException(ErrorCode.INVALID_SIGNATURE);
-            }
-        } catch (CustomException e) {
-            // 이미 처리된 예외는 다시 던짐
-            throw e;
-        } catch (Exception e) {
-            log.error("Signature verification error", e);
-            throw new CustomException(ErrorCode.SIGNATURE_VERIFICATION_FAILED);
-        }
+        hmacUtil.verifySignature(message, sig);
+
     }
 
     // Reservation 상태 반환
-    public QrReservationDTO checkReservationStatus(Long reservationId) {
+    private QrReservationDTO checkReservationStatus(long reservationId) {
+        log.info("Check reservation status");
+
         return reservationMapper.findByReserveId(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
     }
 
     // api 요청자가 팝업 사장인지 판단
-    public void validateOwnerAuthority(Long reservationId) {
-        CustomUserDetail user = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long memberId = user.getId();
+    private void validateOwnerAuthority(long userId, long reservationId) {
+        log.info("Validate owner authority");
+        log.info("login reservation id: " + reservationId);
 
-        Long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
+        long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
-        log.info("login member id: " + memberId);
         log.info("Popup owner id: " + popupOwnerId);
 
-        if (!memberId.equals(popupOwnerId)) {
+        if (userId != popupOwnerId) {
             throw new CustomException(ErrorCode.NO_PERMISSION);
         }
     }
-
-
 
 }

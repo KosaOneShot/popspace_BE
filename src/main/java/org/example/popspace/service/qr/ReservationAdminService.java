@@ -2,12 +2,10 @@ package org.example.popspace.service.qr;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.popspace.dto.auth.CustomUserDetail;
-import org.example.popspace.dto.reservation.ReservationStatusDTO;
+import org.example.popspace.dto.qr.ReservationStatusDTO;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.ReservationMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +15,26 @@ public class ReservationAdminService {
 
     private final ReservationMapper reservationMapper;
 
+    // 팝업 사장 권한 확인 후 입장 처리
+    public void validateAndCheckIn(long userId, long reservationId) {
+        // 1. 팝업 사장 여부 검증
+        validateOwnerAuthority(userId, reservationId);
+
+        // 2. 입장 처리
+        checkIn(reservationId);
+    }
+
+    // 팝업 사장 권한 확인 후 퇴장 처리
+    public void validateAndCheckOut(long userId, long reservationId) {
+        // 1. 팝업 사장 여부 검증
+        validateOwnerAuthority(userId, reservationId);
+
+        // 2. 입장 처리
+        checkIn(reservationId);
+    }
+
     // 입장 처리
-    public void checkIn(Long reservationId) {
+    private void checkIn(long reservationId) {
         ReservationStatusDTO reservation = reservationMapper.findReservationStatus(reservationId);
         if (reservation == null) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
@@ -32,7 +48,7 @@ public class ReservationAdminService {
     }
 
     // 퇴장 처리
-    public void checkOut(Long reservationId) {
+    private void checkOut(long reservationId) {
         ReservationStatusDTO reservation = reservationMapper.findReservationStatus(reservationId);
         if (reservation == null) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
@@ -46,17 +62,14 @@ public class ReservationAdminService {
     }
 
     // api 요청자가 팝업 사장인지 판단
-    public void validateOwnerAuthority(Long reservationId) {
-        CustomUserDetail user = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long memberId = user.getId();
+    private void validateOwnerAuthority(long userId, long reservationId) {
 
-        Long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
+        long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
-        log.info("login member id: " + memberId);
         log.info("Popup owner id: " + popupOwnerId);
 
-        if (!memberId.equals(popupOwnerId)) {
+        if (userId != popupOwnerId) {
             throw new CustomException(ErrorCode.NO_PERMISSION);
         }
     }
