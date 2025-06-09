@@ -6,6 +6,7 @@ import org.example.popspace.dto.qr.ReservationStatusDTO;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.ReservationMapper;
+import org.example.popspace.service.common.OwnerAuthorityValidator;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Service;
 public class ReservationAdminService {
 
     private final ReservationMapper reservationMapper;
+    private final OwnerAuthorityValidator authorityValidator;
 
     // 팝업 사장 권한 확인 후 입장 처리
     public void validateAndCheckIn(long userId, long reservationId) {
         // 1. 팝업 사장 여부 검증
-        validateOwnerAuthority(userId, reservationId);
+        authorityValidator.validatePopupOwnerByReservation(userId, reservationId);
 
         // 2. 입장 처리
         checkIn(reservationId);
@@ -27,7 +29,7 @@ public class ReservationAdminService {
     // 팝업 사장 권한 확인 후 퇴장 처리
     public void validateAndCheckOut(long userId, long reservationId) {
         // 1. 팝업 사장 여부 검증
-        validateOwnerAuthority(userId, reservationId);
+        authorityValidator.validatePopupOwnerByReservation(userId, reservationId);
 
         // 2. 입장 처리
         checkIn(reservationId);
@@ -61,16 +63,4 @@ public class ReservationAdminService {
         reservationMapper.updateReservationState(reservationId, "CHECKED_OUT");
     }
 
-    // api 요청자가 팝업 사장인지 판단
-    private void validateOwnerAuthority(long userId, long reservationId) {
-
-        long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
-
-        log.info("Popup owner id: " + popupOwnerId);
-
-        if (userId != popupOwnerId) {
-            throw new CustomException(ErrorCode.NO_PERMISSION);
-        }
-    }
 }

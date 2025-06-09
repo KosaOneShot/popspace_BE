@@ -6,6 +6,7 @@ import org.example.popspace.dto.qr.QrReservationDTO;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.ReservationMapper;
+import org.example.popspace.service.common.OwnerAuthorityValidator;
 import org.example.popspace.util.hmac.HmacUtil;
 import org.example.popspace.util.qr.QrCodeGenerator;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,12 @@ public class ReservationQrService {
     private final HmacUtil hmacUtil;
     private final QrCodeGenerator qrCodeGenerator;
     private final ReservationMapper reservationMapper;
+    private final OwnerAuthorityValidator authorityValidator;
 
     public QrReservationDTO processQrVerification(long userId, long reserveId, String sig){
 
         // 1. 팝업 사장 여부 검증
-        validateOwnerAuthority(userId, reserveId);
+        authorityValidator.validatePopupOwnerByReservation(userId, reserveId);
 
         // 2. QR 서명 검증
         verifyQr(reserveId, sig);
@@ -61,16 +63,5 @@ public class ReservationQrService {
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
     }
 
-    // api 요청자가 팝업 사장인지 판단
-    private void validateOwnerAuthority(long userId, long reservationId) {
-        log.info("Validate owner authority");
-
-        long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
-                .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
-
-        if (userId != popupOwnerId) {
-            throw new CustomException(ErrorCode.NO_PERMISSION);
-        }
-    }
 
 }
