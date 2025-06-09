@@ -37,9 +37,8 @@ public enum ErrorCode {
     // QR
     QR_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "QR 코드 생성에 실패했습니다."),
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "서명 위조 또는 변조된 QR 코드입니다."),
-    SIGNATURE_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "QR 서명 검증 중 오류 발생"),
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
-    GENERATE_SIGNATURE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "서명 생성에 실패했습니다."),
+    INVALID_SIGNATURE_INPUT(HttpStatus.BAD_REQUEST, "서명 생성에 필요한 입력값이 유효하지 않습니다."),
 
     // Reservation
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 예약 정보가 없습니다."),
@@ -48,6 +47,8 @@ public enum ErrorCode {
     // 403 권한 부족 에러
     NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
+    // Popup
+    POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "팝업이 존재하지 않습니다."),
     ;
 
     private final HttpStatus status;

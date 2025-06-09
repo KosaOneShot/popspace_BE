@@ -1,12 +1,13 @@
 package org.example.popspace.util.hmac;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +22,6 @@ public class HmacUtil {
     private SecretKeySpec keySpec;
     private ThreadLocal<Mac> threadLocalMac;
 
-    // 개발용 임시 키
     public HmacUtil(@Value("${org.zerock.hmac.secret}") String secretKey) {
         this.secretKey = secretKey;
     }
@@ -44,20 +44,26 @@ public class HmacUtil {
         }
     }
 
-    public String generateSignature(String message) {
-        try {
-            Mac mac = threadLocalMac.get();
-            mac.reset();
-            byte[] rawHmac = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
-            return Base64.getUrlEncoder().withoutPadding().encodeToString(rawHmac);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.GENERATE_SIGNATURE_FAILED);
-        }
+    @PreDestroy
+    public void destroy() {
+        threadLocalMac.remove();
     }
 
-    public boolean verifySignature(String message, String signature) {
+    public String generateSignature(String message) {
+        if (message == null) {
+            throw new CustomException(ErrorCode.INVALID_SIGNATURE_INPUT);
+        }
+
+        Mac mac = threadLocalMac.get(); // init()에서 이미 예외 잡힘
+        mac.reset();
+        byte[] rawHmac = mac.doFinal(message.getBytes(StandardCharsets.UTF_8));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(rawHmac);
+    }
+
+    public void verifySignature(String message, String signature) {
         String expected = generateSignature(message);
-        return expected.equals(signature);
+        if(!expected.equals(signature))
+            throw new CustomException(ErrorCode.INVALID_SIGNATURE);
     }
 
 }

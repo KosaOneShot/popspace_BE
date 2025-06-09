@@ -36,14 +36,12 @@ public class ReservationQrService {
     // QR 생성
     public byte[] createQr(long reservationId) {
         log.info("Create Qr");
-        try {
-            String message = "reservationId=" + reservationId;
-            String sig = hmacUtil.generateSignature(message);
-            String url = "https://kosa-popspace.com/api/qr/verify?" + message + "&sig=" + sig;
-            return qrCodeGenerator.generateQrImage(url);
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.QR_GENERATION_FAILED);
-        }
+
+        String message = "reservationId=" + reservationId;
+        String sig = hmacUtil.generateSignature(message);
+
+        String url = "https://kosa-popspace.com/api/qr/verify?" + message + "&sig=" + sig;
+        return qrCodeGenerator.generateQrImage(url);
     }
 
     // QR 유효성 검사
