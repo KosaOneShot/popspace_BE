@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.Select;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
 import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupLikeDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
 
@@ -47,7 +46,7 @@ public interface PopupMapper {
         JOIN REVIEW ON RES.RESERVE_ID = REVIEW.RESERVE_ID
         WHERE P.POPUP_ID = #{popupId}
     """)
-    Optional<List<ReviewDto>> findReviewByPopupId(Long popupId);
+    List<ReviewDto> findReviewByPopupId(Long popupId);
 
 
     /* 예약 여부 */
