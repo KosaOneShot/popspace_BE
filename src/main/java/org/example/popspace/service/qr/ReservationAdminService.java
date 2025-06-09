@@ -40,11 +40,11 @@ public class ReservationAdminService {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
-        if (!"1".equals(reservation.getReservationState())) {
+        if (!"RESERVED".equals(reservation.getReservationState())) {
             throw new CustomException(ErrorCode.INVALID_RESERVATION_STATE);
         }
 
-        reservationMapper.updateReservationState(reservationId, "3");
+        reservationMapper.updateReservationState(reservationId, "CHECKED_IN");
     }
 
     // 퇴장 처리
@@ -54,11 +54,11 @@ public class ReservationAdminService {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
-        if (!"3".equals(reservation.getReservationState())) {
+        if (!"CHECKED_IN".equals(reservation.getReservationState())) {
             throw new CustomException(ErrorCode.INVALID_RESERVATION_STATE);
         }
 
-        reservationMapper.updateReservationState(reservationId, "4");
+        reservationMapper.updateReservationState(reservationId, "CHECKED_OUT");
     }
 
     // api 요청자가 팝업 사장인지 판단
