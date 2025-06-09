@@ -13,7 +13,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<ErrorDTO> handleCustomException(CustomException ex) {
         ErrorCode errorCode = ex.getErrorCode();
-        log.warn("CustomException occurred: {}", errorCode);
+        log.warn("CustomException occurred: {} - {}", errorCode, ex.getMessage());
         return handleExceptionInternal(errorCode);
     }
 
