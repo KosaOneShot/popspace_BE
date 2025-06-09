@@ -4,8 +4,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.example.popspace.dto.reservation.QrReservationDTO;
-import org.example.popspace.dto.reservation.ReservationStatusDTO;
+import org.example.popspace.dto.qr.QrReservationDTO;
+import org.example.popspace.dto.qr.ReservationStatusDTO;
 
 import java.util.Optional;
 
