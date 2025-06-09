@@ -18,12 +18,10 @@ public class AuthRedisRepository {
         this.authRedisTemplate = authRedisTemplate;
     }
 
-    @Transactional
     public void setTokenBlacklist(String token) {
         authRedisTemplate.opsForValue().set(token, "blacklisted", Duration.ofDays(14));
     }
 
-    @Transactional
     public void setEmailCodeValues(String email, String code) {
         authRedisTemplate.opsForValue().set(email, code, Duration.ofMinutes(5));
     }
