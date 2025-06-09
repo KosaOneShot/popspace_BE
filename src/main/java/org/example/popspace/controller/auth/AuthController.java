@@ -24,14 +24,6 @@ import java.util.Map;
 public class AuthController {
     private final UserDetailService userDetailsService;
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test(HttpServletRequest request) {
-        for (Cookie cookie : request.getCookies()) {
-            log.info(cookie.getName() + ":" + cookie.getValue());
-        }
-        return ResponseEntity.ok("Success");
-    }
-
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody MemberRegisterRequest memberRegisterRequest) {
         log.info("userRegisterRequestDTO: {}", memberRegisterRequest);
@@ -72,12 +64,6 @@ public class AuthController {
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         log.info("resetPasswordRequest: {}", resetPasswordRequest);
         userDetailsService.validResetPasswordRequestAndSendEmail(resetPasswordRequest);
-        return ResponseEntity.ok("Success");
-    }
-
-    @GetMapping("/test2")
-    public ResponseEntity<String> test() {
-
         return ResponseEntity.ok("Success");
     }
 }

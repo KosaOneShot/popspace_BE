@@ -81,7 +81,6 @@ public class UserDetailService implements UserDetailsService {
         SendTokenUtil.clearTokens(response);
     }
 
-    @Transactional
     public void existsEmailAndSendEmail(String email) {
 
         memberMapper.findByEmail(email)
