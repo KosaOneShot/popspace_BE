@@ -45,15 +45,6 @@ public interface ReviewMapper {
             updated_at = SYSDATE
         WHERE review_id = #{reviewId}
     """)
-    void updateReview(@Param("reviewId") Long reviewId, @Param("dto") ReviewRequestDto dto);
-
-    @Select("""
-        SELECT COUNT(*)
-        FROM REVIEW R
-        JOIN RESERVATION RS ON R.reserve_id = RS.reserve_id
-        WHERE R.review_id = #{reviewId}
-        AND RS.member_id = #{memberId}
-    """)
     int updateReview(@Param("reviewId") Long reviewId, @Param("dto") ReviewUpdateRequestDto dto);
 
     @Update("""
@@ -63,6 +54,7 @@ public interface ReviewMapper {
         WHERE review_id = #{reviewId}
     """)
     int deleteReview(@Param("reviewId") Long reviewId);
+
     @Select("""
         SELECT
             R.review_id AS reviewId,
