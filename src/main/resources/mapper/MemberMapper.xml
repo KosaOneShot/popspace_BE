@@ -1,3 +1,4 @@
+
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!--<!DOCTYPE mapper-->
 <!--        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"-->
@@ -10,7 +11,6 @@
 <!--        values(SEQ_MEMBER_ID.nextval,#{email},#{password},#{nickname},#{memberName},sysdate,-->
 <!--                            #{sex},#{birthDate},#{phoneNumber},#{roadAddress},#{detailAddress},#{agreement})-->
 <!--    </insert>-->
-
 <!--    <select id="findByEmail" resultType="org.example.popspace.dto.auth.MemberLoginInfo">-->
 <!--        select member_id,email,nickname,role,password-->
 <!--        from member-->
