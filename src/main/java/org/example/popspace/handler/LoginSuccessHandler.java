@@ -40,9 +40,9 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         log.info("claim" + claim);
 
-        //Access Token 유효기간 1일
+        //Access Token 유효기간 10분
         String accessToken = jwtUtil.generateToken(claim, 10);
-        //Refresh Token 유효기간 30일
+        //Refresh Token 유효기간 14일
         String refreshToken = jwtUtil.generateToken(Map.of("memberId", ((CustomUserDetail) authentication.getPrincipal()).getUserDetailId()), 60*24*14 );
 
         SendTokenUtil.sendTokens(accessToken, refreshToken, response, userDetail.getRole(), userDetail.getNickname());

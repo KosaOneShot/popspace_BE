@@ -64,6 +64,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             //이상태까지 오면 무조건 AccessToken은 새로 생성
             Map<String, Object> claim = jwtUtil.createClaim
                     (userDTO.getEmail(), userDTO.getMemberId(), userDTO.getNickname(), userDTO.getRole());
+
             String accessTokenValue = jwtUtil.generateToken(claim, 10);
 
             String refreshTokenValue = jwtUtil.generateToken(Map.of("memberId", userDTO.getMemberId()), 60* 24 * 14);
