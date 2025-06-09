@@ -31,19 +31,29 @@ public enum ErrorCode {
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "잘못된 입력입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 못한 서버 오류입니다."),
 
+    // Member
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "member not found"),
+
     // QR
     QR_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "QR 코드 생성에 실패했습니다."),
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "서명 위조 또는 변조된 QR 코드입니다."),
-    SIGNATURE_VERIFICATION_FAILED(HttpStatus.BAD_REQUEST, "QR 서명 검증 중 오류 발생"),
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
-    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "member not found"),
+    INVALID_SIGNATURE_INPUT(HttpStatus.BAD_REQUEST, "서명 생성에 필요한 입력값이 유효하지 않습니다."),
+
+    // Reservation
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 예약 정보가 없습니다."),
+    INVALID_RESERVATION_STATE(HttpStatus.BAD_REQUEST, "예약 상태가 유효하지 않습니다."),
 
     // POPUP
     POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID의 팝업이 존재하지 않습니다."),
 
     // mybatis 업데이트 오류
     UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UPDATE 쿼리에서 오류가 발생했습니다."),
-    INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INSERT 쿼리에서 오류가 발생했습니다.")
+    INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INSERT 쿼리에서 오류가 발생했습니다."),
+    // 403 권한 부족 에러
+    NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+
+    // Popup
     ;
 
     private final HttpStatus status;

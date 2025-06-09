@@ -1,5 +1,6 @@
 package org.example.popspace.dto.qr;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class VerifyRequestDTO {
-    private Long reservation_id;
+    @NotNull(message = "reservationId 값이 없습니다.")
+    private Long reservationId;
+
+    @NotNull(message = "sig 값이 없습니다.")
     private String sig;
 
 }

@@ -128,4 +128,12 @@ public interface PopupMapper {
     List<PopupListDto> findPopupListBySearchKeywordAndDate(
             Long memberId, String searchKeyword, Date searchDate
     );
+
+    @Select("""
+    SELECT member_id
+    FROM popup
+    WHERE popup_id = #{popupId}
+    """)
+    Optional<Long> findPopupOwnerIdByPopupId(Long popupId);
+
 }
