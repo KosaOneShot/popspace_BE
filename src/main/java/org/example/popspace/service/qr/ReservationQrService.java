@@ -64,12 +64,9 @@ public class ReservationQrService {
     // api 요청자가 팝업 사장인지 판단
     private void validateOwnerAuthority(long userId, long reservationId) {
         log.info("Validate owner authority");
-        log.info("login reservation id: " + reservationId);
 
         long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
-
-        log.info("Popup owner id: " + popupOwnerId);
 
         if (userId != popupOwnerId) {
             throw new CustomException(ErrorCode.NO_PERMISSION);
