@@ -19,7 +19,7 @@ public enum ErrorCode {
     EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "Expired Token"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     DUPLICATE_USER(HttpStatus.CONFLICT,"Duplicate User" ),
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND,"User not found" ),
+    NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND,"Member not found" ),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Token" ),
     NOT_FOUND_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "Access Token not found" ),
     NOT_FOUND_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh Token not found" ),
@@ -38,6 +38,9 @@ public enum ErrorCode {
     QR_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "QR 코드 생성에 실패했습니다."),
     INVALID_SIGNATURE(HttpStatus.UNAUTHORIZED, "서명 위조 또는 변조된 QR 코드입니다."),
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
+    EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패했습니다."),
+    NOT_EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "존재하지 않는 이메일 주소입니다. 메일 정보를 변경해 주세요"),
+    INVALID_RESET_CODE(HttpStatus.BAD_REQUEST, "reset code is invalid or expired"),
     INVALID_SIGNATURE_INPUT(HttpStatus.BAD_REQUEST, "서명 생성에 필요한 입력값이 유효하지 않습니다."),
 
     // Reservation
@@ -49,6 +52,7 @@ public enum ErrorCode {
 
     // Popup
     POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "팝업이 존재하지 않습니다."),
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
     ;
 
     private final HttpStatus status;

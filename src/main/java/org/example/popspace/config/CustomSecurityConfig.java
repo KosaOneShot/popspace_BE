@@ -8,6 +8,7 @@ import org.example.popspace.filter.LoginFilter;
 import org.example.popspace.filter.RefreshTokenFilter;
 import org.example.popspace.filter.AccessTokenCheckFilter;
 import org.example.popspace.handler.LoginSuccessHandler;
+import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.service.auth.UserDetailService;
 import org.example.popspace.util.auth.JWTUtil;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,7 @@ public class CustomSecurityConfig {
 
     private final JWTUtil jwtUtil;
     private final UserDetailService userDetailService;
+    private final AuthRedisRepository authRedisRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
@@ -80,7 +82,9 @@ public class CustomSecurityConfig {
                 "/auth/login",
                 "/auth/register",
                 "/auth/logout",
-                "/auth/refresh"
+                "/auth/refresh",
+                "/auth/reset-password/verify-email",
+                "/auth/reset-password/verify-code",
         };
     }
 
@@ -91,12 +95,12 @@ public class CustomSecurityConfig {
 
     @Bean
     public AccessTokenCheckFilter tokenCheckFilter() {
-        return new AccessTokenCheckFilter(getPublicAuthEndpoints(),jwtUtil);
+        return new AccessTokenCheckFilter(getPublicAuthEndpoints(),jwtUtil, authRedisRepository);
     }
 
     @Bean
     public RefreshTokenFilter refreshTokenFilter() {
-        return new RefreshTokenFilter("/auth/refresh", jwtUtil, userDetailService);
+        return new RefreshTokenFilter("/auth/refresh", jwtUtil, userDetailService, authRedisRepository);
     }
 
     @Bean
