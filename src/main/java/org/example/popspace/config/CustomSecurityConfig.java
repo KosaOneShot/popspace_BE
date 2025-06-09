@@ -82,7 +82,9 @@ public class CustomSecurityConfig {
                 "/auth/login",
                 "/auth/register",
                 "/auth/logout",
-                "/auth/refresh"
+                "/auth/refresh",
+                "/auth/reset-password/verify-email",
+                "/auth/reset-password/verify-code",
         };
     }
 
