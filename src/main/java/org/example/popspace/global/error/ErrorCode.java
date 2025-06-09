@@ -38,6 +38,16 @@ public enum ErrorCode {
     HMAC_INIT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "HMAC 초기화에 실패했습니다."),
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "member not found"),
 
+    // Review
+    REVIEW_INSERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 저장에 실패했습니다."),
+    RESERVATION_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 예약 정보를 찾을 수 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 리뷰를 찾을 수 없습니다."),
+    REVIEW_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 수정에 실패했습니다."),
+    REVIEW_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 삭제에 실패했습니다."),
+
+    //favorite
+    FAVORITE_INSERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "관심 팝업 등록에 실패했습니다."),
+
     ;
 
     private final HttpStatus status;
