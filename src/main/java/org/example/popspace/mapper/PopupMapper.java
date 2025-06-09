@@ -1,5 +1,6 @@
 package org.example.popspace.mapper;
 
+import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -7,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
 import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupListDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
 
@@ -94,4 +96,36 @@ public interface PopupMapper {
     """)
     int upsertPopupLike(long popupId, long memberId, String toBeState);
 
+
+    /* 팝업 목록 + 검색 + 정렬(찜) */
+    // 에러 있는 것처럼 보이지만 제대로 동작함
+    @Select({
+            """
+            <script>
+            SELECT
+              POPUP.POPUP_ID,
+              POPUP.POPUP_NAME,
+              POPUP.LOCATION,
+              POPUP.START_DATE,
+              POPUP.END_DATE,
+              POPUP.IMAGE_URL,
+              PL.LIKE_STATE
+            FROM POPUP
+            JOIN LIKE_CNT_TABLE LCT ON POPUP.POPUP_ID = LCT.POPUP_ID
+            LEFT JOIN POPUP_LIKE PL ON POPUP.POPUP_ID = PL.POPUP_ID AND PL.MEMBER_ID = #{memberId}
+            <where>
+              <if test="searchKeyword != null and searchKeyword.trim() != ''">
+                AND POPUP.POPUP_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
+              </if>
+              <if test="searchDate != null">
+                AND #{searchDate} BETWEEN POPUP.START_DATE AND POPUP.END_DATE
+              </if>
+            </where>
+            ORDER BY LCT.CNT DESC
+            </script>
+            """
+    })
+    List<PopupListDto> findPopupListBySearchKeywordAndDate(
+            Long memberId, String searchKeyword, Date searchDate
+    );
 }
