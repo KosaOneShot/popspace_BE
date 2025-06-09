@@ -1,6 +1,5 @@
 package org.example.popspace.mapper;
 
-import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -8,7 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
 import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupListDto;
+import org.example.popspace.dto.popup.PopupLikeDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
 
@@ -48,7 +47,7 @@ public interface PopupMapper {
         JOIN REVIEW ON RES.RESERVE_ID = REVIEW.RESERVE_ID
         WHERE P.POPUP_ID = #{popupId}
     """)
-    List<ReviewDto> findReviewByPopupId(Long popupId);
+    Optional<List<ReviewDto>> findReviewByPopupId(Long popupId);
 
 
     /* 예약 여부 */
@@ -61,9 +60,7 @@ public interface PopupMapper {
                 R.RESERVATION_TYPE
             from MEMBER M
             JOIN RESERVATION R ON M.MEMBER_ID = R.MEMBER_ID
-            WHERE R.POPUP_ID = #{popupId} AND M.MEMBER_ID = #{memberId}
-            ORDER BY RESERVE_ID DESC
-            FETCH FIRST 1 ROWS ONLY
+            WHERE R.POPUP_ID = #{popupId} AND M.MEMBER_ID = #{memberID}
     """)
     Optional<ReservationDto> findReservationByPopupIdMemberId(Long popupId, Long memberId); // 없으면 예약 안 한거
 
