@@ -34,8 +34,7 @@ public interface FavoriteMapper {
         SET like_state = CASE
             WHEN like_state = 'ACTIVE' THEN 'DELETED'
             ELSE 'ACTIVE'
-        END,
-        updated_at = SYSDATE
+        END
         WHERE member_id = #{memberId}
         AND popup_id = #{popupId}
     """)
