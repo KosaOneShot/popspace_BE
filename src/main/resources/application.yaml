@@ -16,11 +16,31 @@ spring:
       redis:
         host: localhost
         port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          timeout: 5000
+        transport:
+          protocol: smtp
+        debug: false
+custom-redis:
+    host: ${AUTH_REDIS_HOST}
+    port: ${AUTH_REDIS_PORT}
+
+
 
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
-  type-handlers-package: org.example.shoppingmall_be.util
+#  mapper-locations: classpath:mapper/**/*.xml
+#  type-handlers-package: org.example.shoppingmall_be.util
   configuration:
     map-underscore-to-camel-case: true
 

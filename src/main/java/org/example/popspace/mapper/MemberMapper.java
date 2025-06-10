@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.example.popspace.dto.auth.MemberLoginInfo;
 import org.example.popspace.dto.auth.MemberRegisterRequest;
 
@@ -25,7 +26,6 @@ public interface MemberMapper {
         WHERE member_id = #{memberId}
     """)
     Optional<MemberLoginInfo> findByMemberId(Long memberId);
-
 
     @Select("""
         SELECT CASE
@@ -50,5 +50,10 @@ public interface MemberMapper {
         )
     """)
     void save(MemberRegisterRequest memberRegisterRequest);
+
+    @Update("""
+update MEMBER set PASSWORD= #{encodePassword} where EMAIL= #{email}
+""")
+    void updatePassword(String encodePassword,String email);
 
 }
