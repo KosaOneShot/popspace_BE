@@ -42,4 +42,12 @@ public class StatisticsUtils {
         return AgeRatio.of(ageGroups, entranceCount);
     }
 
+
+    // Statistics calculators
+    public static long countAdvance(List<ReservationTypeStateCount> list) {
+        return list.stream()
+                .filter(m -> TYPE_ADVANCE.equals(m.getReservationType()))
+                .count();
+    }
+
 }
