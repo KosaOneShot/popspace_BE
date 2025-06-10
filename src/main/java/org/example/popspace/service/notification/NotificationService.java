@@ -24,16 +24,18 @@ public class NotificationService {
     @Transactional
     public void createNotificationAndNotify(Long memberId, NotificationRequestDto dto, String imageUrl) {
         Long popupId = notificationMapper.selectPopupIdByMemberId(memberId).orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
+        Long notifyId = notificationMapper.getNextNotifyId();
         NotificationResponseDto notification = NotificationResponseDto.builder()
+                .notifyId(notifyId)
                 .popupId(popupId)
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .imageUrl(imageUrl)
-                .notificationState("1")
+                .notificationState("ACTIVE")
                 .build();
 
         int result = notificationMapper.insertNotification(notification);
-        if(result == 0 || notification.getNotifyId() == null){
+        if(result == 0){
             throw new CustomException(ErrorCode.NOTIFICATION_INSERT_FAILED);
         }
         sendNotificationToReservedMembers(popupId, notification);

@@ -23,7 +23,6 @@ mybatis:
   type-handlers-package: org.example.shoppingmall_be.util
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 org:
   zerock:
