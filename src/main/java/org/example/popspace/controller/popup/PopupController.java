@@ -80,7 +80,7 @@ public class PopupController {
 
     /* 팝업 목록 */
     @GetMapping("/list")
-    public PopupListDto getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
+    public ResponseEntity<PopupListDto> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
                                      @RequestParam(required = false) String searchKeyword,
                                      @RequestParam (required = false) String searchDate,
                                      @RequestParam (required = false) String sortKey) throws ParseException {
@@ -91,6 +91,6 @@ public class PopupController {
                 .build();
 
         log.info("조회된 팝업 개수: {}", popupListDto.getPopupList().size());
-        return popupListDto;
+        return ResponseEntity.ok(popupListDto);
     }
 }
