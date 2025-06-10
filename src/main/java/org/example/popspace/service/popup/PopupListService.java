@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 public class PopupListService {
     private final PopupMapper popupMapper;
 
-    public List<PopupListDto> getPopupList(Long memberId, String searchKeyword, String searchDateStr) throws ParseException {
+    public List<PopupListDto> getPopupList(Long memberId, String searchKeyword, String searchDateStr, String sortKey) throws ParseException {
         // TODO : 최신순, 찜수 어떤 쿼리를 날릴지 결정
-        Date searchDate = new SimpleDateFormat("yyyy-MM-dd").parse(searchDateStr);
-        return popupMapper.findPopupListBySearchKeywordAndDate(memberId, searchKeyword, searchDate);
+        Date searchDate = !"".equals(searchDateStr) ? new SimpleDateFormat("yyyy-MM-dd").parse(searchDateStr) : null;
+        return popupMapper.findPopupListBySearchKeywordAndDate(memberId, searchKeyword, searchDate, sortKey);
     }
 }

@@ -118,32 +118,43 @@ public interface PopupMapper {
     @Select({
             """
             <script>
-            SELECT
-              POPUP.POPUP_ID,
-              POPUP.POPUP_NAME,
-              POPUP.LOCATION,
-              POPUP.START_DATE,
-              POPUP.END_DATE,
-              POPUP.IMAGE_URL,
-              PL.LIKE_STATE
-            FROM POPUP
-            JOIN LIKE_CNT_TABLE LCT ON POPUP.POPUP_ID = LCT.POPUP_ID
-            LEFT JOIN POPUP_LIKE PL ON POPUP.POPUP_ID = PL.POPUP_ID AND PL.MEMBER_ID = #{memberId}
-            <where>
-              <if test="searchKeyword != null and searchKeyword.trim() != ''">
-                AND POPUP.POPUP_NAME LIKE CONCAT('%', #{searchKeyword}, '%')
-              </if>
-              <if test="searchDate != null">
-                AND #{searchDate} BETWEEN POPUP.START_DATE AND POPUP.END_DATE
-              </if>
-            </where>
-            ORDER BY LCT.CNT DESC
+              SELECT
+                p.POPUP_ID,
+                p.POPUP_NAME,
+                p.LOCATION,
+                p.START_DATE,
+                p.END_DATE,
+                p.IMAGE_URL,
+                pl.LIKE_STATE,
+                NVL(lc.LIKE_CNT, 0) AS LIKE_CNT
+              FROM POPUP P
+              LEFT JOIN (
+                SELECT popup_id, COUNT(*) AS LIKE_CNT
+                FROM POPUP_LIKE
+                GROUP BY popup_id
+              ) LC ON P.popup_id = LC.popup_id
+              LEFT JOIN POPUP_LIKE PL ON P.popup_id = PL.popup_id AND PL.member_id = #{memberId}
+              <where>
+                <if test="searchKeyword != null and searchKeyword.trim() != ''">
+                  AND P.POPUP_NAME LIKE '%' || #{searchKeyword} || '%'
+                </if>
+                <if test="searchDate != null">
+                  AND #{searchDate} BETWEEN P.START_DATE AND P.END_DATE
+                </if>
+              </where>
+              <choose>
+                <when test="sortKey == 'mostLiked'">
+                  ORDER BY LC.LIKE_CNT DESC
+                </when>
+                <otherwise>
+                  ORDER BY P.START_DATE DESC
+                </otherwise>
+              </choose>
             </script>
             """
     })
     List<PopupListDto> findPopupListBySearchKeywordAndDate(
-            Long memberId, String searchKeyword, Date searchDate
-    );
+            Long memberId, String searchKeyword, Date searchDate, String sortKey);
 
     @Select("""
     SELECT member_id

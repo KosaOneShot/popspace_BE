@@ -3,6 +3,7 @@ package org.example.popspace.service.popup;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PopupDetailService {
     private final PopupMapper popupMapper;
@@ -29,9 +31,11 @@ public class PopupDetailService {
     }
 
     /* 찜 여부 */
-    public boolean findPopupLikeByPopupIdMemberId(Long popupId, Long memberId){
-        String popupLike = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
-        return "Y".equals(popupLike);
+    public String findPopupLikeByPopupIdMemberId(Long popupId, Long memberId){
+        System.out.println(popupId + " " + memberId);
+        String a = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+        System.out.println(a);
+        return a;
     }
 
     /* 예약 여부 */
@@ -41,10 +45,23 @@ public class PopupDetailService {
     }
 
     /* 찜 업데이트 */
-    public void updatePopupLike(Long memberId, Long popupId, boolean isLiked) {
-        String toBeState = isLiked ? "Y" :  "N";
-        int updatedRows = popupMapper.upsertPopupLike(memberId, popupId, toBeState);
-        if (updatedRows == 0) throw new CustomException(ErrorCode.UPDATE_ERROR);
+    @Transactional
+    public void updatePopupLike(Long popupId, Long memberId, boolean isLiked) {
+        String toBeState = isLiked ? "ACTIVE" :  "DELETED";
+//        String toBeState = "DELETE";
+        String before = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+        if(before == null){
+            int row = popupMapper.insertLikeState(popupId, memberId, toBeState);
+            if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
+        } else {
+            if(!before.equals(toBeState)){
+                int row = popupMapper.updateLikeState(popupId, memberId, toBeState);
+                System.out.println("row " + row);
+                if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
+            }
+        }
+        String after = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+        log.info(" !!!!!!!!!!!!!!!!! 찜 상태 업데이트 완료: " + memberId + ", " + popupId + ", " + toBeState + " == " + after);
     }
 }
 

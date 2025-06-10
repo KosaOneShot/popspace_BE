@@ -18,5 +18,5 @@ public class PopupListDto {
     private String startDate;
     private String endDate;
     private String imageUrl;
-    private Boolean likeState; // 로그인 유저가 해당 팝업을 좋아요 눌렀는지 여부
+    private String likeState; // 로그인 유저가 해당 팝업을 좋아요 눌렀는지 여부
 }
