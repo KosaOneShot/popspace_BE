@@ -1,6 +1,5 @@
 package org.example.popspace.dto.popup;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +11,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PopupListDto {
-    private List<PopupCardDto> popupList;
+public class LikeResponseDto {
+    private boolean popupLike;
 }

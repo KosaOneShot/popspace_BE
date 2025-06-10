@@ -1,8 +1,6 @@
 package org.example.popspace.controller.popup;
 
 import java.text.ParseException;
-import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
@@ -23,15 +21,17 @@ public class PopupListController {
 
     // 전체 목록 조회
     @GetMapping("/list")
-    public Map<String, Object> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
+    public PopupListDto getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
             @RequestParam (required = false) String searchKeyword,
             @RequestParam (required = false) String searchDate,
             @RequestParam (required = false) String sortKey) throws ParseException {
 
         log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", searchKeyword, searchDate, sortKey);
-        List<PopupListDto> list = popupListService.getPopupList(
-                userDetail.getId(), searchKeyword, searchDate, sortKey);
-        log.info("조회된 팝업 개수: {}", list.size());
-        return Map.of("popupList", list);
+        PopupListDto popupListDto = PopupListDto.builder()
+                .popupList(popupListService.getPopupList(userDetail.getId(), searchKeyword, searchDate, sortKey))
+                .build();
+
+        log.info("조회된 팝업 개수: {}", popupListDto.getPopupList().size());
+        return popupListDto;
     }
 }

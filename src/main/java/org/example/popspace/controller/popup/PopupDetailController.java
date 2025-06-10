@@ -1,12 +1,12 @@
 package org.example.popspace.controller.popup;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
+import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.LikeUpdateRequestDto;
+import org.example.popspace.dto.popup.PopupDetailResponseDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReviewDto;
 import org.example.popspace.service.popup.PopupDetailService;
@@ -28,46 +28,51 @@ public class PopupDetailController {
 
     /* 팝업 상세 페이지 조회 (상세, 리뷰) */
     @GetMapping("/info-review/{popupId}")
-    public ResponseEntity<Map<String, Object>> infoAndReview(@PathVariable Long popupId) {
+    public ResponseEntity<PopupDetailResponseDto> infoAndReview(@PathVariable Long popupId) {
         PopupInfoDto popupInfo = popupDetailService.findPopupInfoByPopupId(popupId);
         List<ReviewDto> reviewDtoList = popupDetailService.findReviewByPopupId(popupId);
 
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("popupInfo", popupInfo);
-        responseMap.put("reviewList", reviewDtoList);
+        PopupDetailResponseDto responseDto = PopupDetailResponseDto.builder()
+                .popupInfo(popupInfo)
+                .reviewList(reviewDtoList)
+                .build();
 
-        return ResponseEntity.ok(responseMap);
+        return ResponseEntity.ok(responseDto);
     }
 
     /* 팝업 상세 페이지 조회 (찜) */
     @GetMapping("/reserve-like/{popupId}")
-    public ResponseEntity<Map<String, Object>> reserveAndLike(@PathVariable Long popupId,
-                                                              @AuthenticationPrincipal CustomUserDetail userDetail) {
+    public ResponseEntity<LikeResponseDto> reserveAndLike(@PathVariable Long popupId,
+                                                          @AuthenticationPrincipal CustomUserDetail userDetail) {
         String isPopupLike = popupDetailService.findPopupLikeByPopupIdMemberId(popupId, userDetail.getId());
         boolean isLiked = "ACTIVE".equals(isPopupLike); // 찜 상태 확인
 
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("isPopupLike", isLiked);
+        LikeResponseDto likeResponseDto = LikeResponseDto.builder()
+                .popupLike(isLiked)
+                .build();
 
-        return ResponseEntity.ok(responseMap);
+        return ResponseEntity.ok(likeResponseDto);
     }
 
-    /* 찜
+    /* 찜 상태 업데이트
      입력 : popupId, memberId, toBeState
      merge 쿼리 -> 존재하면 update, 없으면 생성
      */
     @PostMapping("/like-update")
-    public ResponseEntity<Map<String, Object>> updatePopupLike(@RequestBody LikeUpdateRequestDto dto,
+    public ResponseEntity<LikeResponseDto> updatePopupLike(@RequestBody LikeUpdateRequestDto dto,
                                                                @AuthenticationPrincipal CustomUserDetail userDetail) {
         log.info("popup/detail/like-update: popupId={}, memberId={}, toBeState={}", dto.getPopupId(), userDetail.getId(), dto.isToBeState());
 
         popupDetailService.updatePopupLike(dto.getPopupId(), userDetail.getId(), dto.isToBeState());
-        String likeState = popupDetailService.findPopupLikeByPopupIdMemberId(dto.getPopupId(), userDetail.getId()); // 찜 상태 확인
-        log.info("업데이트된 찜 상태: {}", likeState);
+        String isPopupLike = popupDetailService.findPopupLikeByPopupIdMemberId(dto.getPopupId(), userDetail.getId()); // 찜 상태 확인
+        log.info("업데이트된 찜 상태: {}", isPopupLike);
 
-        Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("isLiked", likeState);
-        return ResponseEntity.ok(responseMap);
+        boolean isLiked = "ACTIVE".equals(isPopupLike); // 찜 상태 확인
+        LikeResponseDto likeResponseDto = LikeResponseDto.builder()
+                .popupLike(isLiked)
+                .build();
+
+        return ResponseEntity.ok(likeResponseDto);
     }
 
 }

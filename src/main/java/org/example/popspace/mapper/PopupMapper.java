@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
+import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupListDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
 
@@ -133,7 +133,7 @@ public interface PopupMapper {
             </script>
             """
     })
-    List<PopupListDto> findPopupListBySearchKeywordAndDate(
+    List<PopupCardDto> findPopupListBySearchKeywordAndDate(
             Long memberId, String searchKeyword, LocalDate searchDate, String sortKey);
 
     @Select("""

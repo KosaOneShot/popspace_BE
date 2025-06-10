@@ -12,6 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PopupListDto {
-    private List<PopupCardDto> popupList;
+public class PopupDetailResponseDto {
+    private PopupInfoDto popupInfo;
+    private List<ReviewDto> reviewList;
 }
