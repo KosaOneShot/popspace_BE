@@ -40,18 +40,15 @@ public class PopupDetailController {
         return ResponseEntity.ok(responseMap);
     }
 
-    /* 팝업 상세 페이지 조회 (예약, 찜) */
+    /* 팝업 상세 페이지 조회 (찜) */
     @GetMapping("/reserve-like/{popupId}")
     public ResponseEntity<Map<String, Object>> reserveAndLike(@PathVariable Long popupId,
                                                               @AuthenticationPrincipal CustomUserDetail userDetail) {
         String isPopupLike = popupDetailService.findPopupLikeByPopupIdMemberId(popupId, userDetail.getId());
-        ReservationDto reservation = popupDetailService.findReservationByPopupIdMemberId(popupId, userDetail.getId());
-
         boolean isLiked = "ACTIVE".equals(isPopupLike); // 찜 상태 확인
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("isPopupLike", isLiked);
-        responseMap.put("reservation", reservation);
 
         return ResponseEntity.ok(responseMap);
     }

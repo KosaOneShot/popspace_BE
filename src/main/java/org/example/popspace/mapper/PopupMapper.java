@@ -79,7 +79,7 @@ public interface PopupMapper {
     """)
     String findPopupLikeByPopupIdMemberId(Long popupId, Long memberId);
 
-
+    /* 찜 state 업데이트 */
     @Update("""
         UPDATE POPSPACE.POPUP_LIKE
         SET LIKE_STATE = #{toBeState}
