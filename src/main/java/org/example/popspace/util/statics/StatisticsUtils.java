@@ -33,4 +33,13 @@ public class StatisticsUtils {
         return "over60";
     }
 
+    public static AgeRatio toAgeRatio(List<ReservationMemberData> list, long entranceCount) {
+        int currentYear = LocalDate.now().getYear();
+        Map<String, Long> ageGroups = list.stream()
+                .filter(data -> data.getBirthDate() != null)
+                .map(data -> classify(data.getAge(currentYear)))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        return AgeRatio.of(ageGroups, entranceCount);
+    }
+
 }
