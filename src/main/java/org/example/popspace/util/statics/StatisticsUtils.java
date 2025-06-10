@@ -73,5 +73,13 @@ public class StatisticsUtils {
         return NoShowWithCancelRatio.of(noShow, cancel, total);
     }
 
+    public static NoShowRatio createWalkInNoShow(List<ReservationTypeStateCount> list, long total, String type) {
+        long noShow = list.stream()
+                .filter(m -> type.equals(m.getReservationType()) &&
+                        STATE_NOSHOW.equals(m.getReservationState()))
+                .count();
+
+        return NoShowRatio.of(noShow, total);
+    }
 
 }
