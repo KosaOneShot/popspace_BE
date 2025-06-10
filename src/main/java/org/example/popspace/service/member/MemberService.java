@@ -20,12 +20,21 @@ public class MemberService {
 
     @Transactional
     public void changePassword(Long memberId, PasswordChangeRequest passwordChangeRequest) {
-        String encodedOldPassword = passwordEncoder.encode(passwordChangeRequest.getOldPassword());
-        String encodedNewPassword = passwordEncoder.encode(passwordChangeRequest.getNewPassword());
+        String oldRaw = passwordChangeRequest.getOldPassword();
+        String newRaw = passwordChangeRequest.getNewPassword();
+        String currentEncodedPassword = memberMapper.findPasswordByMemberId(memberId)
+                .orElseThrow(()-> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        int result =memberMapper.changePassword(memberId,encodedOldPassword,encodedNewPassword);
-        if(result ==0){
+        if (!passwordEncoder.matches(oldRaw, currentEncodedPassword)) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        // 새 비밀번호 암호화 후 저장
+        String newEncoded = passwordEncoder.encode(newRaw);
+        int result = memberMapper.changePassword(memberId, newEncoded);
+
+        if (result == 0) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR); // 혹은 다른 에러 코드
         }
     }
 }
