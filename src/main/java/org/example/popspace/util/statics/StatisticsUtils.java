@@ -50,4 +50,11 @@ public class StatisticsUtils {
                 .count();
     }
 
+    public static GenderRatio createGenderRatio(List<ReservationMemberData> list, long total) {
+        long male = list.stream()
+                .filter(m -> SEX_MALE.equals(m.getSex()))
+                .count();
+        return GenderRatio.of(male, total);
+    }
+
 }
