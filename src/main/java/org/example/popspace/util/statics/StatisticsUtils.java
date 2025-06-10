@@ -57,4 +57,21 @@ public class StatisticsUtils {
         return GenderRatio.of(male, total);
     }
 
+    public static NoShowWithCancelRatio createAdvanceNoShowWithCancel(
+            List<ReservationTypeStateCount> list, long total, String type) {
+
+        long noShow = list.stream()
+                .filter(m -> type.equals(m.getReservationType()) &&
+                        STATE_NOSHOW.equals(m.getReservationState()))
+                .count();
+
+        long cancel = list.stream()
+                .filter(m -> type.equals(m.getReservationType()) &&
+                        STATE_CANCELED.equals(m.getReservationState()))
+                .count();
+
+        return NoShowWithCancelRatio.of(noShow, cancel, total);
+    }
+
+
 }
