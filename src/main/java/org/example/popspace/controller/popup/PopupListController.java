@@ -28,7 +28,7 @@ public class PopupListController {
             @RequestParam (required = false) String searchDate,
             @RequestParam (required = false) String sortKey) throws ParseException {
 
-        System.out.println("!!!!! " + searchKeyword + " " + searchDate + " " + sortKey);
+        log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", searchKeyword, searchDate, sortKey);
         List<PopupListDto> list = popupListService.getPopupList(
                 userDetail.getId(), searchKeyword, searchDate, sortKey);
         log.info("조회된 팝업 개수: {}", list.size());

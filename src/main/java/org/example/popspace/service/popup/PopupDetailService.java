@@ -21,21 +21,20 @@ public class PopupDetailService {
 
     /* 팝업 상세 */
     public PopupInfoDto findPopupInfoByPopupId(Long popupId){
+        log.info("findPopupInfoByPopupId() popupId: {}", popupId);
         Optional<PopupInfoDto> popupInfoDto = popupMapper.findPopupInfoByPopupId(popupId);
-        System.out.println();
         return popupInfoDto.orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
     }
     /* 리뷰들 */
     public List<ReviewDto> findReviewByPopupId(Long popupId){
+        log.info("findReviewByPopupId() popupId: {}", popupId);
         return popupMapper.findReviewByPopupId(popupId);
     }
 
     /* 찜 여부 */
     public String findPopupLikeByPopupIdMemberId(Long popupId, Long memberId){
-        System.out.println(popupId + " " + memberId);
-        String a = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
-        System.out.println(a);
-        return a;
+        log.info("findPopupLikeByPopupIdMemberId() popupId: {}, memberId: {}", popupId, memberId);
+        return popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
     }
 
     /* 예약 여부 */
@@ -56,12 +55,11 @@ public class PopupDetailService {
         } else {
             if(!before.equals(toBeState)){
                 int row = popupMapper.updateLikeState(popupId, memberId, toBeState);
-                System.out.println("row " + row);
                 if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
             }
         }
         String after = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
-        log.info(" !!!!!!!!!!!!!!!!! 찜 상태 업데이트 완료: " + memberId + ", " + popupId + ", " + toBeState + " == " + after);
+        log.info(" !!!!!!!!!! 찜 상태 업데이트 완료: {}, {}, {} == {}", memberId, popupId, toBeState, after);
     }
 }
 

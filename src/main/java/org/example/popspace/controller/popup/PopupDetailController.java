@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.dto.popup.LikeUpdateRequestDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
 import org.example.popspace.service.popup.PopupDetailService;
 import org.springframework.http.ResponseEntity;
@@ -60,10 +59,11 @@ public class PopupDetailController {
     @PostMapping("/like-update")
     public ResponseEntity<Map<String, Object>> updatePopupLike(@RequestBody LikeUpdateRequestDto dto,
                                                                @AuthenticationPrincipal CustomUserDetail userDetail) {
-        System.out.println("popup/like-update 요청 받음 " + dto.toString());
+        log.info("popup/detail/like-update: popupId={}, memberId={}, toBeState={}", dto.getPopupId(), userDetail.getId(), dto.isToBeState());
+
         popupDetailService.updatePopupLike(dto.getPopupId(), userDetail.getId(), dto.isToBeState());
         String likeState = popupDetailService.findPopupLikeByPopupIdMemberId(dto.getPopupId(), userDetail.getId()); // 찜 상태 확인
-        System.out.println("새 상태 : " + likeState);
+        log.info("업데이트된 찜 상태: {}", likeState);
 
         Map<String, Object> responseMap = new HashMap<>();
         responseMap.put("isLiked", likeState);
