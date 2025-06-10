@@ -113,4 +113,34 @@ public class StatisticsUtils {
                 .toList();
     }
 
+    public static List<WeeklyVisitor> analyzeWeekly(List<ReservationMemberData> list,
+                                                    LocalDate startDate, LocalDate endDate) {
+
+        Map<LocalDate, Long> dateCount = list.stream()
+                .filter(data -> data.getReserveDate() != null)
+                .collect(Collectors.groupingBy(ReservationMemberData::getReserveDate, Collectors.counting()));
+
+        List<WeeklyVisitor> result = new ArrayList<>();
+        LocalDate current = startDate.with(DayOfWeek.MONDAY);
+        int week = 1;
+
+        while (!current.isAfter(endDate)) {
+            LocalDate weekStart = current;
+            LocalDate weekEnd = weekStart.plusDays(WEEK_END_OFFSET).isAfter(endDate)
+                    ? endDate
+                    : weekStart.plusDays(WEEK_END_OFFSET);
+
+            List<DailyVisitor> daily = IntStream.range(0, DAYS_IN_WEEK)
+                    .mapToObj(weekStart::plusDays)
+                    .takeWhile(d -> !d.isAfter(weekEnd))
+                    .map(d -> DailyVisitor.of(d, dateCount.getOrDefault(d, 0L)))
+                    .toList();
+
+            result.add(WeeklyVisitor.of(week++, daily));
+            current = current.plusWeeks(1);
+        }
+
+        return result;
+    }
+
 }
