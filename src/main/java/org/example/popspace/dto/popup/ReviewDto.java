@@ -1,6 +1,6 @@
 package org.example.popspace.dto.popup;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,5 +18,5 @@ public class ReviewDto {
     private Long reviewId;
     private int rating;
     private String content;
-    private Date createdAt;
+    private LocalDateTime createdAt;
 }

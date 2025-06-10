@@ -1,6 +1,6 @@
 package org.example.popspace.mapper;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -93,26 +93,6 @@ public interface PopupMapper {
     """)
     int insertLikeState(long popupId, long memberId, String toBeState);
 
-//
-//    /* 찜 state 업데이트 */
-//    @Update("""
-//        MERGE INTO POPUP_LIKE PL
-//        USING (
-//          SELECT
-//            #{popupId}  AS popup_id,
-//            #{memberId} AS member_id
-//          FROM dual
-//        ) SRC
-//        ON (PL.popup_id = SRC.popup_id AND PL.member_id = SRC.member_id)
-//        WHEN MATCHED THEN
-//          UPDATE SET PL.like_state = #{toBeState}
-//        WHEN NOT MATCHED THEN
-//          INSERT (LIKE_ID, popup_id, member_id, like_state, created_at)
-//          VALUES (SEQ_POPUP_LIKE_ID.nextval, SRC.popup_id, SRC.member_id, #{toBeState}, SYSDATE)
-//    """)
-//    void upsertPopupLike(long popupId, long memberId, String toBeState);
-
-
     /* 팝업 목록 + 검색 + 정렬(찜) */
     // 에러 있는 것처럼 보이지만 제대로 동작함
     @Select({
@@ -154,7 +134,7 @@ public interface PopupMapper {
             """
     })
     List<PopupListDto> findPopupListBySearchKeywordAndDate(
-            Long memberId, String searchKeyword, Date searchDate, String sortKey);
+            Long memberId, String searchKeyword, LocalDate searchDate, String sortKey);
 
     @Select("""
     SELECT member_id
