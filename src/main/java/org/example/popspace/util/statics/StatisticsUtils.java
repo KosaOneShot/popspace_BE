@@ -22,6 +22,11 @@ public class StatisticsUtils {
     public static final String SEX_MALE = "M";
 
 
+    // Time analyzers
+    private static final int DAYS_IN_WEEK = 7;
+    private static final int WEEK_END_OFFSET = 6;
+
+
     // Age classifier
     public static String classify(int age) {
         if (age < 10) return "under10";
@@ -94,6 +99,18 @@ public class StatisticsUtils {
                 .mapToDouble(ReservationMemberData::getRating)
                 .sum();
         return count == 0 ? 0.0 : sum / count;
+    }
+
+
+    public static List<HourlyVisitor> analyzeHourly(List<ReservationMemberData> list,
+                                                    LocalDateTime open, LocalDateTime close) {
+        Map<Integer, Long> hourCount = list.stream()
+                .filter(d -> d.getCreatedAt() != null)
+                .collect(Collectors.groupingBy(d -> d.getCreatedAt().getHour(), Collectors.counting()));
+
+        return IntStream.rangeClosed(open.getHour(), close.getHour())
+                .mapToObj(hour -> HourlyVisitor.of(hour, hourCount.getOrDefault(hour, 0L)))
+                .toList();
     }
 
 }
