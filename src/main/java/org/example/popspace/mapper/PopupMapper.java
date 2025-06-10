@@ -43,7 +43,7 @@ public interface PopupMapper {
     @Select("""
             select p.POPUP_ID,p.POPUP_NAME,p.START_DATE,p.END_DATE,p.OPEN_TIME,p.CLOSE_TIME, count(pl.LIKE_STATE) as like_count
             from POPUP p
-            join POPUP_LIKE pl on p.POPUP_ID=pl.POPUP_ID and pl.LIKE_STATE='ACTIVE'
+            left join POPUP_LIKE pl on p.POPUP_ID=pl.POPUP_ID and pl.LIKE_STATE='ACTIVE'
             where p.POPUP_ID=#{popupId}
             group by p.POPUP_ID, p.START_DATE, p.END_DATE, p.POPUP_NAME,p.OPEN_TIME,p.CLOSE_TIME
             """)
