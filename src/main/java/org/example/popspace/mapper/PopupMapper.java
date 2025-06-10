@@ -2,6 +2,7 @@ package org.example.popspace.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.example.popspace.dto.popup.PopupDetailResponse;
 import org.example.popspace.dto.statistics.PopupInfoWithLikeCount;
 import org.example.popspace.dto.statistics.ReservationTypeStateCount;
 import org.example.popspace.dto.statistics.ReservationMemberData;
@@ -59,4 +60,12 @@ public interface PopupMapper {
             GROUP BY RESERVATION_TYPE, RESERVATION_STATE
             """)
     List<ReservationTypeStateCount> findReservationData(Long popupId);
+
+    @Select("""
+            select p.POPUP_ID,p.POPUP_NAME
+            from POPSPACE.POPUP p
+            join member m on m.MEMBER_ID= p.MEMBER_ID and p.MEMBER_ID=#{memberId}
+            order by p.POPUP_ID desc
+            """)
+    List<PopupDetailResponse> findAllPopupDetailByMemberId(Long memberId);
 }
