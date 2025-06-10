@@ -52,10 +52,16 @@ public interface MemberMapper {
             """)
     void updatePassword(String encodePassword, String email);
 
+    @Select("""
+            select PASSWORD
+            from MEMBER
+            where MEMBER_ID=#{memberId}
+            """)
+    Optional<String> findPasswordByMemberId(Long memberId);
 
     @Update("""
                 UPDATE MEMBER SET PASSWORD = #{newPassword}
-                WHERE MEMBER_ID = #{memberId} and MEMBER.PASSWORD=#{oldPassword}
+                WHERE MEMBER_ID = #{memberId}
             """)
-    int changePassword(Long memberId, String oldPassword, String newPassword);
+    int changePassword(Long memberId, String newPassword);
 }
