@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.popspace.dto.popup.LikeUpdateRequestDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;

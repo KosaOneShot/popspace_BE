@@ -56,10 +56,8 @@ public enum ErrorCode {
     // 403 권한 부족 에러
     NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
-    // Popup
-    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다.")
     ;
-
     private final HttpStatus status;
     private final String message;
 }
