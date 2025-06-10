@@ -2,6 +2,7 @@ package org.example.popspace.mapper;
 
 import java.util.Date;
 import java.util.List;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -78,23 +79,38 @@ public interface PopupMapper {
     """)
     String findPopupLikeByPopupIdMemberId(Long popupId, Long memberId);
 
-    /* 찜 state 업데이트 */
+
     @Update("""
-        MERGE INTO POPUP_LIKE PL
-        USING (
-          SELECT
-            #{popupId}  AS popup_id,
-            #{memberId} AS member_id
-          FROM dual
-        ) SRC
-        ON (PL.popup_id = SRC.popup_id AND PL.member_id = SRC.member_id)
-        WHEN MATCHED THEN
-          UPDATE SET PL.like_state = #{toBeState}
-        WHEN NOT MATCHED THEN
-          INSERT (LIKE_ID, popup_id, member_id, like_state, created_at)
-          VALUES (SEQ_POPUP_LIKE_ID.nextval, SRC.popup_id, SRC.member_id, #{toBeState}, SYSDATE)
+        UPDATE POPSPACE.POPUP_LIKE
+        SET LIKE_STATE = #{toBeState}
+        WHERE POPUP_ID = #{popupId} AND MEMBER_ID = #{memberId}
     """)
-    int upsertPopupLike(long popupId, long memberId, String toBeState);
+    int updateLikeState(Long popupId, Long memberId, String toBeState);
+
+    @Insert("""
+        INSERT INTO POPUP_LIKE (LIKE_ID, POPUP_ID, MEMBER_ID, LIKE_STATE, CREATED_AT)
+        VALUES (SEQ_POPUP_LIKE_ID.nextval, #{popupId}, #{memberId}, #{toBeState}, SYSDATE)
+    """)
+    int insertLikeState(long popupId, long memberId, String toBeState);
+
+//
+//    /* 찜 state 업데이트 */
+//    @Update("""
+//        MERGE INTO POPUP_LIKE PL
+//        USING (
+//          SELECT
+//            #{popupId}  AS popup_id,
+//            #{memberId} AS member_id
+//          FROM dual
+//        ) SRC
+//        ON (PL.popup_id = SRC.popup_id AND PL.member_id = SRC.member_id)
+//        WHEN MATCHED THEN
+//          UPDATE SET PL.like_state = #{toBeState}
+//        WHEN NOT MATCHED THEN
+//          INSERT (LIKE_ID, popup_id, member_id, like_state, created_at)
+//          VALUES (SEQ_POPUP_LIKE_ID.nextval, SRC.popup_id, SRC.member_id, #{toBeState}, SYSDATE)
+//    """)
+//    void upsertPopupLike(long popupId, long memberId, String toBeState);
 
 
     /* 팝업 목록 + 검색 + 정렬(찜) */
