@@ -82,4 +82,18 @@ public class StatisticsUtils {
         return NoShowRatio.of(noShow, total);
     }
 
+    public static long countReview(List<ReservationMemberData> list) {
+        return list.stream()
+                .filter(m -> m.getRating() != null)
+                .count();
+    }
+
+    public static double averageRating(List<ReservationMemberData> list, long count) {
+        double sum = list.stream()
+                .filter(m -> m.getRating() != null)
+                .mapToDouble(ReservationMemberData::getRating)
+                .sum();
+        return count == 0 ? 0.0 : sum / count;
+    }
+
 }
