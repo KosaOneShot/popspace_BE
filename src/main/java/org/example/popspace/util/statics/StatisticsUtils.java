@@ -22,5 +22,15 @@ public class StatisticsUtils {
     public static final String SEX_MALE = "M";
 
 
+    // Age classifier
+    public static String classify(int age) {
+        if (age < 10) return "under10";
+        if (age < 20) return "age10s";
+        if (age < 30) return "age20s";
+        if (age < 40) return "age30s";
+        if (age < 50) return "age40s";
+        if (age < 60) return "age50s";
+        return "over60";
+    }
 
 }
