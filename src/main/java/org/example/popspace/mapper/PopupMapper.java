@@ -144,10 +144,10 @@ public interface PopupMapper {
               </where>
               <choose>
                 <when test="sortKey == 'mostLiked'">
-                  ORDER BY LC.LIKE_CNT DESC
+                  ORDER BY LC.LIKE_CNT DESC NULLS LAST
                 </when>
                 <otherwise>
-                  ORDER BY P.START_DATE DESC
+                  ORDER BY P.END_DATE DESC
                 </otherwise>
               </choose>
             </script>
