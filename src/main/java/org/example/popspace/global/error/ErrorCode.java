@@ -53,7 +53,7 @@ public enum ErrorCode {
     // Popup
     POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "팝업이 존재하지 않습니다."),
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
-    ;
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 다릅니다" );
 
     private final HttpStatus status;
     private final String message;
