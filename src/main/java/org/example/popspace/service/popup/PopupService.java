@@ -1,9 +1,13 @@
 package org.example.popspace.service.popup;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
@@ -16,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PopupDetailService {
+public class PopupService {
     private final PopupMapper popupMapper;
 
     /* 팝업 상세 */
@@ -60,6 +64,12 @@ public class PopupDetailService {
         }
         String after = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
         log.info(" !!!!!!!!!! 찜 상태 업데이트 완료: {}, {}, {} == {}", memberId, popupId, toBeState, after);
+    }
+
+    /* 팝업 목록 */
+    public List<PopupCardDto> getPopupList(Long memberId, String searchKeyword, String searchDateStr, String sortKey) throws ParseException {
+        LocalDate searchDate = !"".equals(searchDateStr) ? LocalDate.parse(searchDateStr, DateTimeFormatter.ISO_DATE) : null;
+        return popupMapper.findPopupListBySearchKeywordAndDate(memberId, searchKeyword, searchDate, sortKey);
     }
 }
 
