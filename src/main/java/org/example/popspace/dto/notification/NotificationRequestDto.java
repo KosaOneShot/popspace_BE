@@ -1,8 +1,11 @@
 package org.example.popspace.dto.notification;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class NotificationRequestDto {
     private String title;
     private String content;

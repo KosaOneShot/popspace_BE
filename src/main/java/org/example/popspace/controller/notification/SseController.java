@@ -16,7 +16,6 @@ public class SseController {
 
     private final SseEmitterManager sseEmitterManager;
 
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping("/subscribe")
     public SseEmitter subscribe(@AuthenticationPrincipal CustomUserDetail user) {
         return sseEmitterManager.addEmitter(user.getId());

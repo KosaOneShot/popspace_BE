@@ -1,13 +1,14 @@
 package org.example.popspace.dto.notification;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class NotificationResponseDto {
     private Long notifyId;
     private Long popupId;

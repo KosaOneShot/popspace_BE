@@ -1,5 +1,6 @@
 package org.example.popspace.service.notification;
-import lombok.AllArgsConstructor;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.notification.NotificationRequestDto;
 import org.example.popspace.dto.notification.NotificationResponseDto;
@@ -7,18 +8,17 @@ import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.NotificationMapper;
 import org.example.popspace.util.notification.SseEmitterManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NotificationService {
 
-    private NotificationMapper notificationMapper;
-    private SseEmitterManager sseEmitterManager;
+    private final NotificationMapper notificationMapper;
+    private final SseEmitterManager sseEmitterManager;
 
 
     @Transactional

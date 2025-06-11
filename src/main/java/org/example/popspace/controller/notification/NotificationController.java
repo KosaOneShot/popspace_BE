@@ -23,15 +23,13 @@ public class NotificationController {
     private final NotificationService notificationService;
     private final S3Service s3Service;
 
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<String> create(@AuthenticationPrincipal CustomUserDetail user, @RequestPart("file") MultipartFile file, @ModelAttribute NotificationRequestDto dto) throws IOException {
+    public ResponseEntity<String> create(@AuthenticationPrincipal CustomUserDetail user, @RequestPart("file") MultipartFile file, @ModelAttribute NotificationRequestDto dto) {
         String url =s3Service.uploadImage(file, "notification");  // 여기서 이미지 저장
         notificationService.createNotificationAndNotify(user.getId(), dto, url);
         return ResponseEntity.ok("공지 등록 및 알림 전송 완료");
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER')")
     @GetMapping
     public List<NotificationResponseDto> getAllNotificationsForMember(@AuthenticationPrincipal CustomUserDetail user){
         return notificationService.getAllNotifications(user.getId());

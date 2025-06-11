@@ -23,16 +23,15 @@ public interface NotificationMapper {
     void insertNotification(NotificationResponseDto notification);
 
     @Select("""
-        SELECT NOTIFY_ID,
+        SELECT N.NOTIFY_ID,
                N.POPUP_ID,
-               TITLE,
-               CONTENT,
-               IMAGE_URL,
+               N.TITLE,
+               N.CONTENT,
+               N.IMAGE_URL,
                N.CREATED_AT,
-               NOTIFICATION_STATE
+               N.NOTIFICATION_STATE
         FROM NOTIFICATION N
                  JOIN RESERVATION R ON N.popup_id = R.popup_id
-                 JOIN MEMBER M ON R.member_id = M.member_id
         WHERE R.MEMBER_ID = #{memberId}
                   AND R.reservation_state = 'RESERVED'
                   AND N.notification_state = 'ACTIVE'
