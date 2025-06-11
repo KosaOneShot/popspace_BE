@@ -47,6 +47,15 @@ public enum ErrorCode {
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 예약 정보가 없습니다."),
     INVALID_RESERVATION_STATE(HttpStatus.BAD_REQUEST, "예약 상태가 유효하지 않습니다."),
 
+
+    DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
+    DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 가입된 닉네임입니다."),
+    // POPUP
+    POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID의 팝업이 존재하지 않습니다."),
+
+    // mybatis 업데이트 오류
+    UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UPDATE 쿼리에서 오류가 발생했습니다."),
+    INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INSERT 쿼리에서 오류가 발생했습니다."),
     // 403 권한 부족 에러
     NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
@@ -57,9 +66,13 @@ public enum ErrorCode {
     REVIEW_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 삭제에 실패했습니다."),
 
     // Popup
-    POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "팝업이 존재하지 않습니다."),
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
-    INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 다릅니다" );
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 다릅니다" ),
+
+    //notification
+    SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
+
+    ;
 
     ;
 
