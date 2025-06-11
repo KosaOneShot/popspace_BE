@@ -31,10 +31,9 @@ public interface NotificationMapper {
                N.CREATED_AT,
                N.NOTIFICATION_STATE
         FROM NOTIFICATION N
-                 JOIN RESERVATION R ON N.popup_id = R.popup_id
-        WHERE R.MEMBER_ID = #{memberId}
+                 JOIN RESERVATION R ON N.popup_id = R.popup_id AND R.MEMBER_ID = #{memberId}
                   AND R.reservation_state = 'RESERVED'
-                  AND N.notification_state = 'ACTIVE'
+        WHERE N.notification_state = 'ACTIVE'
     """)
     List<NotificationResponseDto> selectNotificationsByMemberId(long memberId);
 
