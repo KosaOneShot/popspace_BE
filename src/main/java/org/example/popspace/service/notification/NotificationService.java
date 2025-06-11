@@ -1,4 +1,5 @@
 package org.example.popspace.service.notification;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.notification.NotificationRequestDto;
 import org.example.popspace.dto.notification.NotificationResponseDto;
@@ -13,20 +14,17 @@ import java.util.List;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class NotificationService {
 
-    @Autowired
     private NotificationMapper notificationMapper;
-    @Autowired
     private SseEmitterManager sseEmitterManager;
 
 
     @Transactional
     public void createNotificationAndNotify(Long memberId, NotificationRequestDto dto, String imageUrl) {
         Long popupId = notificationMapper.selectPopupIdByMemberId(memberId).orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
-        Long notifyId = notificationMapper.getNextNotifyId();
         NotificationResponseDto notification = NotificationResponseDto.builder()
-                .notifyId(notifyId)
                 .popupId(popupId)
                 .title(dto.getTitle())
                 .content(dto.getContent())
@@ -34,24 +32,17 @@ public class NotificationService {
                 .notificationState("ACTIVE")
                 .build();
 
-        int result = notificationMapper.insertNotification(notification);
-        if(result == 0){
-            throw new CustomException(ErrorCode.NOTIFICATION_INSERT_FAILED);
-        }
+        notificationMapper.insertNotification(notification);
         sendNotificationToReservedMembers(popupId, notification);
     }
 
     private void sendNotificationToReservedMembers(Long popupId, NotificationResponseDto notification) {
         List<Long> ids = notificationMapper.selectReservedMemberIds(popupId);
         for (Long reservedId : ids) {
-            try {
                 if (sseEmitterManager.hasEmitter(reservedId)) {
                     sseEmitterManager.send(reservedId, notification);
                     log.info(">> SSE 전송 완료: {}",reservedId);
                 }
-            } catch (Exception e) {
-                throw new CustomException(ErrorCode.SSE_SEND_FAILED);
-            }
         }
     }
 

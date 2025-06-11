@@ -4,6 +4,7 @@ package org.example.popspace.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectKey;
 import org.example.popspace.dto.notification.NotificationResponseDto;
 
 import java.util.List;
@@ -11,32 +12,24 @@ import java.util.Optional;
 
 @Mapper
 public interface NotificationMapper {
-    @Select("SELECT SEQ_NOTIFY_ID.NEXTVAL FROM DUAL")
-    long getNextNotifyId();
-
     @Insert("""
         INSERT INTO NOTIFICATION (
-            NOTIFY_ID,
-            POPUP_ID,
-            TITLE,
-            CONTENT,
-            IMAGE_URL,
-            NOTIFICATION_STATE,
-            CREATED_AT
+            NOTIFY_ID, POPUP_ID, TITLE, CONTENT, IMAGE_URL, NOTIFICATION_STATE, CREATED_AT
         ) VALUES (
-            #{notifyId},
-            #{popupId},
-            #{title},
-            #{content},
-            #{imageUrl},
-            #{notificationState},
-            SYSDATE
+            #{notifyId}, #{popupId}, #{title}, #{content}, #{imageUrl}, #{notificationState}, SYSDATE
         )
     """)
-    int insertNotification(NotificationResponseDto notification);
+    @SelectKey(statement = "SELECT SEQ_NOTIFY_ID.NEXTVAL FROM DUAL", keyProperty = "notifyId", before = true, resultType = Long.class)
+    void insertNotification(NotificationResponseDto notification);
 
     @Select("""
-        SELECT DISTINCT N.*
+        SELECT NOTIFY_ID,
+               N.POPUP_ID,
+               TITLE,
+               CONTENT,
+               IMAGE_URL,
+               N.CREATED_AT,
+               NOTIFICATION_STATE
         FROM NOTIFICATION N
                  JOIN RESERVATION R ON N.popup_id = R.popup_id
                  JOIN MEMBER M ON R.member_id = M.member_id
@@ -47,7 +40,7 @@ public interface NotificationMapper {
     List<NotificationResponseDto> selectNotificationsByMemberId(long memberId);
 
     @Select("""
-        SELECT MEMBER_ID
+        SELECT DISTINCT MEMBER_ID
         FROM RESERVATION R
         WHERE POPUP_ID = #{popupId}
             AND RESERVATION_STATE = 'RESERVED'

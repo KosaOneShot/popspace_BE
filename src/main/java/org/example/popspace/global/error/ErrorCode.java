@@ -55,7 +55,6 @@ public enum ErrorCode {
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
 
     //notification
-    NOTIFICATION_INSERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "공지 저장에 실패했습니다."),
     SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
 
     ;

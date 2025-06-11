@@ -1,9 +1,9 @@
 package org.example.popspace.util.notification;
 
+import org.example.popspace.global.error.CustomException;
+import org.example.popspace.global.error.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,8 +27,9 @@ public class SseEmitterManager {
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event().name("new-notification").data(data));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 emitters.remove(memberId);
+                throw new CustomException(ErrorCode.SSE_SEND_FAILED);
             }
         }
     }

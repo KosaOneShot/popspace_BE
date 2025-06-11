@@ -6,7 +6,6 @@ import org.example.popspace.service.notification.NotificationService;
 import org.example.popspace.dto.notification.NotificationRequestDto;
 import org.example.popspace.dto.notification.NotificationResponseDto;
 import org.example.popspace.service.s3.S3Service;
-import org.example.popspace.util.notification.ImageUploader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
