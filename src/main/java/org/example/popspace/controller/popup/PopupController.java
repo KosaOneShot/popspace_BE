@@ -1,6 +1,5 @@
 package org.example.popspace.controller.popup;
 
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +9,7 @@ import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.LikeUpdateRequestDto;
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupReviewDto;
 import org.example.popspace.dto.popup.PopupSearchDto;
 import org.example.popspace.service.popup.PopupService;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -30,12 +29,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class PopupController {
     private final PopupService popupService;
 
-    /* 팝업 상세 페이지 조회 (상세, 리뷰) */
+    /* 팝업 상세 */
     @GetMapping("/detail/{popupId}")
-    public ResponseEntity<List<PopupInfoDto>> infoAndReview(@PathVariable Long popupId) {
-        List<PopupInfoDto> dto = popupService.findPopupInfoAndReviewsByPopupId(popupId);
+    public ResponseEntity<PopupInfoDto> getInfo(@PathVariable Long popupId) {
+        PopupInfoDto dto = popupService.findPopupInfoAndReviewsByPopupId(popupId);
         return ResponseEntity.ok(dto);
     }
+
+    /* 팝업 리뷰 */
+    @GetMapping("/review/{popupId}")
+    public ResponseEntity<List<PopupReviewDto>> getReviews(@PathVariable Long popupId) {
+        List<PopupReviewDto> dto = popupService.findReviewsByPopupId(popupId);
+        return ResponseEntity.ok(dto);
+    }
+
 
     /* 찜 여부 */
     @GetMapping("/like/{popupId}")
@@ -60,7 +67,7 @@ public class PopupController {
     /* 팝업 목록 */
     @GetMapping("/list")
     public ResponseEntity<List<PopupCardDto>> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
-                                                           @ModelAttribute PopupSearchDto dto) throws ParseException {
+                                                           @ModelAttribute PopupSearchDto dto) {
         log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", dto.getSearchKeyword(), dto.getSearchDate(), dto.getSortKey());
         List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), dto.getSearchKeyword(), dto.getSearchDate(), dto.getSortKey());
         log.info("조회된 팝업 개수: {}", list.size());

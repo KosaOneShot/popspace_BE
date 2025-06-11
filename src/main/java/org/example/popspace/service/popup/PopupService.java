@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupReviewDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
@@ -22,13 +23,17 @@ public class PopupService {
     private final PopupMapper popupMapper;
 
     /* 팝업 상세 */
-    public List<PopupInfoDto> findPopupInfoAndReviewsByPopupId(Long popupId){
+    public PopupInfoDto findPopupInfoAndReviewsByPopupId(Long popupId){
         log.info("findPopupInfoByPopupId() popupId: {}", popupId);
-        List<PopupInfoDto> popupInfoDto = popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
-        if (popupInfoDto.isEmpty()) {
-            throw new CustomException(ErrorCode.POPUP_NOT_FOUND);
-        }
+        PopupInfoDto popupInfoDto = popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
+        if (popupInfoDto == null) throw new CustomException(ErrorCode.POPUP_NOT_FOUND);
         return popupInfoDto;
+    }
+
+    /* 팝업 리뷰 */
+    public List<PopupReviewDto> findReviewsByPopupId(Long popupId) {
+        log.info("findReviewsByPopupId() popupId: {}", popupId);
+        return popupMapper.findReviewsByPopupId(popupId);
     }
 
     /* 찜 여부 */

@@ -10,12 +10,13 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupReviewDto;
 import org.example.popspace.dto.popup.ReservationDto;
 
 @Mapper
 public interface PopupMapper {
 
-    /* 팝업 상세 & 리뷰들 */
+    /* 팝업 상세 */
     @Select("""
         SELECT
             P.POPUP_ID,
@@ -28,8 +29,16 @@ public interface PopupMapper {
             P.DESCRIPTION,
             P.CATEGORY,
             P.MAX_RESERVATIONS,
-            P.IMAGE_URL,
-            RES.MEMBER_ID,
+            P.IMAGE_URL
+        FROM POPUP P
+        WHERE P.POPUP_ID = #{popupId}
+    """)
+    PopupInfoDto findPopupInfoAndReviewsByPopupId(Long popupId);
+
+    /* 팝업 리뷰 */
+    @Select("""
+        SELECT
+            P.MEMBER_ID,
             R.REVIEW_ID,
             R.RATING,
             R.CONTENT,
@@ -39,7 +48,8 @@ public interface PopupMapper {
         LEFT JOIN REVIEW R ON RES.RESERVE_ID = R.RESERVE_ID
         WHERE P.POPUP_ID = #{popupId}
     """)
-    List<PopupInfoDto> findPopupInfoAndReviewsByPopupId(Long popupId);
+    List<PopupReviewDto> findReviewsByPopupId(Long popupId);
+
 
     @Select("""
             SELECT

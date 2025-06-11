@@ -25,9 +25,4 @@ public class PopupInfoDto {
     private String category;
     private int maxReservations;
     private String imageUrl;
-    private Long memberId;
-    private Long reviewId;
-    private int rating;
-    private String content;
-    private LocalDateTime createdAt;
 }
