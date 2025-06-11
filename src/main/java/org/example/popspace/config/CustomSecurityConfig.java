@@ -3,10 +3,9 @@ package org.example.popspace.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.example.popspace.filter.AccessTokenCheckFilter;
 import org.example.popspace.filter.LoginFilter;
 import org.example.popspace.filter.RefreshTokenFilter;
-import org.example.popspace.filter.AccessTokenCheckFilter;
 import org.example.popspace.handler.LoginSuccessHandler;
 import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.service.auth.UserDetailService;
@@ -85,6 +84,9 @@ public class CustomSecurityConfig {
                 "/auth/refresh",
                 "/auth/reset-password/verify-email",
                 "/auth/reset-password/verify-code",
+                "/auth/refresh",
+                "/auth/nickname/check-duplication",
+                "/auth/email/check-duplication",
         };
     }
 

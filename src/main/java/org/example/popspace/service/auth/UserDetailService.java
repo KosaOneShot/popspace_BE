@@ -107,4 +107,18 @@ public class UserDetailService implements UserDetailsService {
         emailService.temporaryPasswordEmail(resetPasswordRequest.getEmail(), newPassword);
     }
 
+
+    public void existsEmail(String email) {
+
+        if (memberMapper.existsEmail(email).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
+
+    public void existNickname(String nickname) {
+
+        if (memberMapper.existsNickname(nickname).isPresent()) {
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        }
+    }
 }
