@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.dto.auth.MemberLoginInfo;
+import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.util.auth.ErrorResponseUtil;
 import org.example.popspace.util.auth.ExtractCookie;
 import org.example.popspace.util.auth.JWTUtil;
@@ -28,6 +29,7 @@ public class AccessTokenCheckFilter extends OncePerRequestFilter {
 
     private final String[] permittedUrls;
     private final JWTUtil jwtUtil;
+    private final AuthRedisRepository authRedisRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -53,6 +55,7 @@ public class AccessTokenCheckFilter extends OncePerRequestFilter {
         }
 
         try {
+
             Map<String, Object> payload = jwtUtil.validateToken(token);
 
             CustomUserDetail customUserDetail = extractUserDetailFromPayload(payload);
