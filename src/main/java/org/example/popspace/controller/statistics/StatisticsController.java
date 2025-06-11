@@ -20,8 +20,8 @@ public class StatisticsController {
     private final StatisticsService statisticsService;
 
     //이후 활성화
-//    @PreAuthorize("hasAnyRole('ROLE_POPUP_ADMIN')")
-    @GetMapping("/popup/statistics/{popupId}")
+    @PreAuthorize("hasAnyRole('POPUP_ADMIN')")
+    @GetMapping("/popup-admin/statistics/{popupId}")
     public ResponseEntity<PopupStatisticsResponse> getStatisticsData(@PathVariable Long popupId) {
 
         log.info("getStatisticsData");
