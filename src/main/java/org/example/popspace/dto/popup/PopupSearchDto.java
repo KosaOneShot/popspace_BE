@@ -17,7 +17,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @ToString
 public class PopupSearchDto {
     private String searchKeyword;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate searchDate;
     private String sortKey;
 }
