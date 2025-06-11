@@ -36,6 +36,15 @@ public class StatisticsController {
         return ResponseEntity.ok(popupList);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/admin/popup/list")
+    public ResponseEntity<List<PopupDetailForAdminResponse>> getAllPopupListForAdmin() {
+
+        List<PopupDetailForAdminResponse> popupList =popupService.getAllPopupListForAdmin();
+
+        return ResponseEntity.ok(popupList);
+    }
+
     //이후 활성화
     @PreAuthorize("hasAnyRole('POPUP_ADMIN')")
     @GetMapping("/popup-admin/popup/statistics/{popupId}")

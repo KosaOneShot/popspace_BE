@@ -5,15 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.popspace.dto.popup.LikeResponseDto;
-import org.example.popspace.dto.popup.PopupCardDto;
-import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupReviewDto;
-import org.example.popspace.dto.popup.ReservationDto;
-import org.example.popspace.dto.popup.ReviewDto;
+import org.example.popspace.dto.popup.*;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
-import org.example.popspace.dto.popup.PopupDetailResponse;
 import org.example.popspace.mapper.PopupMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,5 +73,9 @@ public class PopupService {
     public List<PopupCardDto> getPopupList(Long memberId, String searchKeyword, LocalDate searchDate, String sortKey) {
         return popupMapper.findPopupListBySearchKeywordAndDate(memberId, searchKeyword, searchDate, sortKey);
     }
+    public List<PopupDetailForAdminResponse> getAllPopupListForAdmin() {
+        return popupMapper.findAllPopupListForAdmin();
+    }
+
 }
 
