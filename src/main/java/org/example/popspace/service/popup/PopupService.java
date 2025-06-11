@@ -10,6 +10,7 @@ import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.PopupReviewDto;
 import org.example.popspace.dto.popup.ReservationDto;
+import org.example.popspace.dto.popup.ReviewDto;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.PopupMapper;
