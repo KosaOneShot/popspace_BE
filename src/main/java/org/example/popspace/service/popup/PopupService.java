@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.popup.PopupCardDto;
+import org.example.popspace.dto.popup.PopupDetailResponseDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReservationDto;
 import org.example.popspace.dto.popup.ReviewDto;
@@ -24,15 +25,10 @@ public class PopupService {
     private final PopupMapper popupMapper;
 
     /* 팝업 상세 */
-    public PopupInfoDto findPopupInfoByPopupId(Long popupId){
+    public PopupInfoDto findPopupInfoAndReviewsByPopupId(Long popupId){
         log.info("findPopupInfoByPopupId() popupId: {}", popupId);
-        Optional<PopupInfoDto> popupInfoDto = popupMapper.findPopupInfoByPopupId(popupId);
+        Optional<PopupInfoDto> popupInfoDto = popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
         return popupInfoDto.orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
-    }
-    /* 리뷰들 */
-    public List<ReviewDto> findReviewByPopupId(Long popupId){
-        log.info("findReviewByPopupId() popupId: {}", popupId);
-        return popupMapper.findReviewByPopupId(popupId);
     }
 
     /* 찜 여부 */

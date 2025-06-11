@@ -16,7 +16,7 @@ import org.example.popspace.dto.popup.ReviewDto;
 @Mapper
 public interface PopupMapper {
 
-    /* 팝업 상세 */
+    /* 팝업 상세 & 리뷰들 */
     @Select("""
         SELECT
             P.POPUP_ID,
@@ -29,30 +29,19 @@ public interface PopupMapper {
             P.DESCRIPTION,
             P.CATEGORY,
             P.MAX_RESERVATIONS,
-            P.IMAGE_URL
-        FROM POPUP P
-        where P.POPUP_ID = #{popupId}
-    """)
-    Optional<PopupInfoDto> findPopupInfoByPopupId(Long popupId);
-
-    /* 리뷰들 조회 */
-    @Select("""
-        SELECT
-            P.POPUP_ID,
+            P.IMAGE_URL,
             RES.MEMBER_ID,
-            REVIEW.REVIEW_ID,
-            REVIEW.RATING,
-            REVIEW.CONTENT,
-            REVIEW.CREATED_AT
+            R.REVIEW_ID,
+            R.RATING,
+            R.CONTENT,
+            R.CREATED_AT
         FROM POPUP P
         JOIN RESERVATION RES ON P.POPUP_ID = RES.POPUP_ID
-        JOIN REVIEW ON RES.RESERVE_ID = REVIEW.RESERVE_ID
+        JOIN REVIEW R ON RES.RESERVE_ID = R.RESERVE_ID
         WHERE P.POPUP_ID = #{popupId}
     """)
-    List<ReviewDto> findReviewByPopupId(Long popupId);
+    Optional<PopupInfoDto> findPopupInfoAndReviewsByPopupId(Long popupId);
 
-
-    /* 예약 여부 */
     @Select("""
             SELECT
                 M.MEMBER_ID,
@@ -81,7 +70,7 @@ public interface PopupMapper {
 
     /* 찜 state 업데이트 */
     @Update("""
-        UPDATE POPSPACE.POPUP_LIKE
+        UPDATE POPUP_LIKE
         SET LIKE_STATE = #{toBeState}
         WHERE POPUP_ID = #{popupId} AND MEMBER_ID = #{memberId}
     """)

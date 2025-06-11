@@ -31,16 +31,9 @@ public class PopupController {
 
     /* 팝업 상세 페이지 조회 (상세, 리뷰) */
     @GetMapping("/detail/{popupId}")
-    public ResponseEntity<PopupDetailResponseDto> infoAndReview(@PathVariable Long popupId) {
-        PopupInfoDto popupInfo = popupService.findPopupInfoByPopupId(popupId);
-        List<ReviewDto> reviewDtoList = popupService.findReviewByPopupId(popupId);
-
-        PopupDetailResponseDto responseDto = PopupDetailResponseDto.builder()
-                .popupInfo(popupInfo)
-                .reviewList(reviewDtoList)
-                .build();
-
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<PopupInfoDto> infoAndReview(@PathVariable Long popupId) {
+        PopupInfoDto popupInfo = popupService.findPopupInfoAndReviewsByPopupId(popupId);
+        return ResponseEntity.ok(popupInfo);
     }
 
     /* 팝업 상세 페이지 조회 (찜) */
