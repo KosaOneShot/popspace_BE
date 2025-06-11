@@ -71,13 +71,4 @@ public class PopupController {
         log.info("조회된 팝업 개수: {}", list.size());
         return ResponseEntity.ok(list);
     }
-
-    @PreAuthorize("hasAnyRole('POPUP_ADMIN')")
-    @GetMapping("/popup-admin/list")
-    public ResponseEntity<List<PopupDetailResponse>> getPopupList(@AuthenticationPrincipal CustomUserDetail user) {
-
-        List<PopupDetailResponse> popupList =popupService.getPopupList(user.getId());
-        log.info(popupList.toString());
-        return ResponseEntity.ok(popupList);
-    }
 }

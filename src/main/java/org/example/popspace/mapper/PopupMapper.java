@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.example.popspace.dto.popup.PopupDetailResponse;
+import org.example.popspace.dto.popup.*;
 import org.example.popspace.dto.statistics.PopupInfoWithLikeCount;
 import org.example.popspace.dto.statistics.ReservationTypeStateCount;
 import org.example.popspace.dto.statistics.ReservationMemberData;
@@ -13,10 +13,6 @@ import org.example.popspace.dto.statistics.ReservationMemberData;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
-import org.example.popspace.dto.popup.PopupCardDto;
-import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupReviewDto;
-import org.example.popspace.dto.popup.ReservationDto;
 
 @Mapper
 public interface PopupMapper {
@@ -178,4 +174,12 @@ public interface PopupMapper {
             order by p.POPUP_ID desc
             """)
     List<PopupDetailResponse> findAllPopupDetailByMemberId(Long memberId);
+
+    @Select("""
+            select p.POPUP_ID,p.POPUP_NAME,m.MEMBER_NAME
+            from POPSPACE.POPUP p
+            join member m on m.MEMBER_ID= p.MEMBER_ID
+            order by p.POPUP_ID desc
+            """)
+    List<PopupDetailForAdminResponse> findAllPopupListForAdmin();
 }
