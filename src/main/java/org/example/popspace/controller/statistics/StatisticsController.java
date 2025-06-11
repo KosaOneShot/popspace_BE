@@ -27,7 +27,7 @@ public class StatisticsController {
     private final StatisticsService statisticsService;
     private final PopupService popupService;
 
-    @PreAuthorize("hasAnyRole('POPUP_ADMIN')")
+    @PreAuthorize("hasAnyRole('POPUP_ADMIN','ADMIN')")
     @GetMapping("/popup-admin/popup/list")
     public ResponseEntity<List<PopupDetailResponse>> getPopupList(@AuthenticationPrincipal CustomUserDetail user) {
 
@@ -46,7 +46,7 @@ public class StatisticsController {
     }
 
     //이후 활성화
-    @PreAuthorize("hasAnyRole('POPUP_ADMIN')")
+    @PreAuthorize("hasAnyRole('POPUP_ADMIN','ADMIN')")
     @GetMapping("/popup-admin/popup/statistics/{popupId}")
     public ResponseEntity<PopupStatisticsResponse> getStatisticsData(@PathVariable Long popupId) {
 
