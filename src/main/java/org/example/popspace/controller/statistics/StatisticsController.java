@@ -56,4 +56,13 @@ public class StatisticsController {
         return ResponseEntity.ok(popupStatisticsResponse);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @GetMapping("/admin/popup/statistics/{popupId}")
+    public ResponseEntity<PopupStatisticsResponse> getStatisticsDataForAdmin(@PathVariable Long popupId) {
+
+        log.info("getStatisticsData");
+        PopupStatisticsResponse popupStatisticsResponse = statisticsService.findPopupStatistics(popupId);
+
+        return ResponseEntity.ok(popupStatisticsResponse);
+    }
 }
