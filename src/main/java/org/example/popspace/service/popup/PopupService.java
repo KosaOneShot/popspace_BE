@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.PopupCardDto;
-import org.example.popspace.dto.popup.PopupDetailResponseDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReservationDto;
-import org.example.popspace.dto.popup.ReviewDto;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.PopupMapper;
@@ -25,16 +24,22 @@ public class PopupService {
     private final PopupMapper popupMapper;
 
     /* 팝업 상세 */
-    public PopupInfoDto findPopupInfoAndReviewsByPopupId(Long popupId){
+    public List<PopupInfoDto> findPopupInfoAndReviewsByPopupId(Long popupId){
         log.info("findPopupInfoByPopupId() popupId: {}", popupId);
-        Optional<PopupInfoDto> popupInfoDto = popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
-        return popupInfoDto.orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
+        List<PopupInfoDto> popupInfoDto = popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
+        if (popupInfoDto.isEmpty()) {
+            throw new CustomException(ErrorCode.POPUP_NOT_FOUND);
+        }
+        return popupInfoDto;
     }
 
     /* 찜 여부 */
-    public String findPopupLikeByPopupIdMemberId(Long popupId, Long memberId){
+    public LikeResponseDto findPopupLikeByPopupIdMemberId(Long popupId, Long memberId){
         log.info("findPopupLikeByPopupIdMemberId() popupId: {}, memberId: {}", popupId, memberId);
-        return popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+        String likeStr = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+        return LikeResponseDto.builder()
+                .isLiked(LikeConvertStringToBoolean(likeStr))
+                .build();
     }
 
     /* 예약 여부 */
@@ -45,21 +50,28 @@ public class PopupService {
 
     /* 찜 업데이트 */
     @Transactional
-    public void updatePopupLike(Long popupId, Long memberId, boolean isLiked) {
-        String toBeState = isLiked ? "ACTIVE" :  "DELETED";
-//        String toBeState = "DELETE";
+    public void updatePopupLike(Long popupId, Long memberId, boolean toBeState) {
         String before = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
+
+        String toBeStateStr = LikeConvertBooleanToString(toBeState);
         if(before == null){
-            int row = popupMapper.insertLikeState(popupId, memberId, toBeState);
+            int row = popupMapper.insertLikeState(popupId, memberId, toBeStateStr);
             if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
-        } else {
-            if(!before.equals(toBeState)){
-                int row = popupMapper.updateLikeState(popupId, memberId, toBeState);
-                if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
-            }
+            return;
         }
-        String after = popupMapper.findPopupLikeByPopupIdMemberId(popupId, memberId);
-        log.info(" !!!!!!!!!! 찜 상태 업데이트 완료: {}, {}, {} == {}", memberId, popupId, toBeState, after);
+        if(!before.equals(toBeStateStr)){
+            int row = popupMapper.updateLikeState(popupId, memberId, toBeStateStr);
+            if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
+        }
+    }
+
+    // 찜 상태 boolean -> string
+    String LikeConvertBooleanToString(boolean likeState) {
+        return likeState ? "ACTIVE" : "DELETED";
+    }
+    // 찜 상태 string -> boolean
+    boolean LikeConvertStringToBoolean(String likeState) {
+        return "ACTIVE".equals(likeState);
     }
 
     /* 팝업 목록 */

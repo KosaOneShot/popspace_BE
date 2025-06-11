@@ -2,15 +2,14 @@ package org.example.popspace.controller.popup;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.LikeUpdateRequestDto;
-import org.example.popspace.dto.popup.PopupDetailResponseDto;
+import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupListDto;
-import org.example.popspace.dto.popup.ReviewDto;
 import org.example.popspace.service.popup.PopupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,23 +30,17 @@ public class PopupController {
 
     /* 팝업 상세 페이지 조회 (상세, 리뷰) */
     @GetMapping("/detail/{popupId}")
-    public ResponseEntity<PopupInfoDto> infoAndReview(@PathVariable Long popupId) {
-        PopupInfoDto popupInfo = popupService.findPopupInfoAndReviewsByPopupId(popupId);
-        return ResponseEntity.ok(popupInfo);
+    public ResponseEntity<List<PopupInfoDto>> infoAndReview(@PathVariable Long popupId) {
+        List<PopupInfoDto> dto = popupService.findPopupInfoAndReviewsByPopupId(popupId);
+        return ResponseEntity.ok(dto);
     }
 
-    /* 팝업 상세 페이지 조회 (찜) */
+    /* 찜 여부 */
     @GetMapping("/like/{popupId}")
     public ResponseEntity<LikeResponseDto> reserveAndLike(@PathVariable Long popupId,
                                                           @AuthenticationPrincipal CustomUserDetail userDetail) {
-        String isPopupLike = popupService.findPopupLikeByPopupIdMemberId(popupId, userDetail.getId());
-        boolean isLiked = "ACTIVE".equals(isPopupLike); // 찜 상태 확인
-
-        LikeResponseDto likeResponseDto = LikeResponseDto.builder()
-                .popupLike(isLiked)
-                .build();
-
-        return ResponseEntity.ok(likeResponseDto);
+        LikeResponseDto dto = popupService.findPopupLikeByPopupIdMemberId(popupId, userDetail.getId());
+        return ResponseEntity.ok(dto);
     }
 
     /* 찜 상태 업데이트
@@ -55,35 +48,22 @@ public class PopupController {
      merge 쿼리 -> 존재하면 update, 없으면 생성
      */
     @PostMapping("/like-update")
-    public ResponseEntity<LikeResponseDto> updatePopupLike(@RequestBody LikeUpdateRequestDto dto,
-                                                               @AuthenticationPrincipal CustomUserDetail userDetail) {
+    public ResponseEntity<Map<String, String>> updatePopupLike(@RequestBody LikeUpdateRequestDto dto,
+                                               @AuthenticationPrincipal CustomUserDetail userDetail) {
         log.info("popup/detail/like-update: popupId={}, memberId={}, toBeState={}", dto.getPopupId(), userDetail.getId(), dto.isToBeState());
-
         popupService.updatePopupLike(dto.getPopupId(), userDetail.getId(), dto.isToBeState());
-        String isPopupLike = popupService.findPopupLikeByPopupIdMemberId(dto.getPopupId(), userDetail.getId()); // 찜 상태 확인
-        log.info("업데이트된 찜 상태: {}", isPopupLike);
-
-        boolean isLiked = "ACTIVE".equals(isPopupLike); // 찜 상태 확인
-        LikeResponseDto likeResponseDto = LikeResponseDto.builder()
-                .popupLike(isLiked)
-                .build();
-
-        return ResponseEntity.ok(likeResponseDto);
+        return ResponseEntity.ok(Map.of("message", "success"));
     }
 
     /* 팝업 목록 */
     @GetMapping("/list")
-    public ResponseEntity<PopupListDto> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
-                                     @RequestParam(required = false) String searchKeyword,
-                                     @RequestParam (required = false) String searchDate,
-                                     @RequestParam (required = false) String sortKey) throws ParseException {
-
+    public ResponseEntity<List<PopupCardDto>> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
+                                                           @RequestParam(required = false) String searchKeyword,
+                                                           @RequestParam (required = false) String searchDate,
+                                                           @RequestParam (required = false) String sortKey) throws ParseException {
         log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", searchKeyword, searchDate, sortKey);
-        PopupListDto popupListDto = PopupListDto.builder()
-                .popupList(popupService.getPopupList(userDetail.getId(), searchKeyword, searchDate, sortKey))
-                .build();
-
-        log.info("조회된 팝업 개수: {}", popupListDto.getPopupList().size());
-        return ResponseEntity.ok(popupListDto);
+        List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), searchKeyword, searchDate, sortKey);
+        log.info("조회된 팝업 개수: {}", list.size());
+        return ResponseEntity.ok(list);
     }
 }

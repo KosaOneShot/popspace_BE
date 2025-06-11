@@ -12,5 +12,5 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class LikeResponseDto {
-    private boolean popupLike;
+    private boolean isLiked;
 }

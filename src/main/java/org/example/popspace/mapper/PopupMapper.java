@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Update;
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.ReservationDto;
-import org.example.popspace.dto.popup.ReviewDto;
 
 @Mapper
 public interface PopupMapper {
@@ -36,11 +35,11 @@ public interface PopupMapper {
             R.CONTENT,
             R.CREATED_AT
         FROM POPUP P
-        JOIN RESERVATION RES ON P.POPUP_ID = RES.POPUP_ID
-        JOIN REVIEW R ON RES.RESERVE_ID = R.RESERVE_ID
+        LEFT JOIN RESERVATION RES ON P.POPUP_ID = RES.POPUP_ID
+        LEFT JOIN REVIEW R ON RES.RESERVE_ID = R.RESERVE_ID
         WHERE P.POPUP_ID = #{popupId}
     """)
-    Optional<PopupInfoDto> findPopupInfoAndReviewsByPopupId(Long popupId);
+    List<PopupInfoDto> findPopupInfoAndReviewsByPopupId(Long popupId);
 
     @Select("""
             SELECT
