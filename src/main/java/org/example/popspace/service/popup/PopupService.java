@@ -25,9 +25,7 @@ public class PopupService {
     /* 팝업 상세 */
     public PopupInfoDto findPopupInfoAndReviewsByPopupId(Long popupId){
         log.info("findPopupInfoByPopupId() popupId: {}", popupId);
-        PopupInfoDto popupInfoDto = popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
-        if (popupInfoDto == null) throw new CustomException(ErrorCode.POPUP_NOT_FOUND);
-        return popupInfoDto;
+        return popupMapper.findPopupInfoAndReviewsByPopupId(popupId);
     }
 
     /* 팝업 리뷰 */
@@ -45,12 +43,6 @@ public class PopupService {
                 .build();
     }
 
-    /* 예약 여부 */
-    public ReservationDto findReservationByPopupIdMemberId(Long popupId, Long memberId){
-        Optional<ReservationDto> reservation = popupMapper.findReservationByPopupIdMemberId(popupId, memberId);
-        return reservation.orElse(null); // 예약이 없을 수 있음
-    }
-
     /* 찜 업데이트 */
     @Transactional
     public void updatePopupLike(Long popupId, Long memberId, boolean toBeState) {
@@ -58,13 +50,11 @@ public class PopupService {
 
         String toBeStateStr = LikeConvertBooleanToString(toBeState);
         if(before == null){
-            int row = popupMapper.insertLikeState(popupId, memberId, toBeStateStr);
-            if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
+            popupMapper.insertLikeState(popupId, memberId, toBeStateStr);
             return;
         }
         if(!before.equals(toBeStateStr)){
-            int row = popupMapper.updateLikeState(popupId, memberId, toBeStateStr);
-            if(row == 0) throw new CustomException(ErrorCode.INSERT_ERROR);
+            popupMapper.updateLikeState(popupId, memberId, toBeStateStr);
         }
     }
 

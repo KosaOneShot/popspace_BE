@@ -50,22 +50,6 @@ public interface PopupMapper {
     """)
     List<PopupReviewDto> findReviewsByPopupId(Long popupId);
 
-
-    @Select("""
-            SELECT
-                M.MEMBER_ID,
-                R.POPUP_ID,
-                R.RESERVE_ID,
-                R.RESERVATION_STATE,
-                R.RESERVATION_TYPE
-            from MEMBER M
-            JOIN RESERVATION R ON M.MEMBER_ID = R.MEMBER_ID
-            WHERE R.POPUP_ID = #{popupId} AND M.MEMBER_ID = #{memberId}
-            ORDER BY RESERVE_ID DESC
-            FETCH FIRST 1 ROWS ONLY
-    """)
-    Optional<ReservationDto> findReservationByPopupIdMemberId(Long popupId, Long memberId); // 없으면 예약 안 한거
-
     /* 찜 여부
      * @return : Y, N
      * unique(memberId, popupId) 라는 가정하에
