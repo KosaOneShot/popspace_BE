@@ -2,6 +2,7 @@ package org.example.popspace.global.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -45,5 +46,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .code(errorCode.name())
                 .message(errorCode.getMessage())
                 .build();
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    protected ResponseEntity<ErrorDTO> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+        log.warn("AuthorizationDeniedException caught: {}", ex.getMessage());
+        return handleExceptionInternal(ErrorCode.ACCESS_DENIED);
     }
 }
