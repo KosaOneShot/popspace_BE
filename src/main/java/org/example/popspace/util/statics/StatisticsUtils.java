@@ -143,4 +143,9 @@ public class StatisticsUtils {
         return result;
     }
 
+    public static Long calculateTotalReservationCount( List<ReservationTypeStateCount> reservationStats){
+        return reservationStats.stream()
+                .mapToLong(ReservationTypeStateCount::getCnt)
+                .sum();
+    }
 }

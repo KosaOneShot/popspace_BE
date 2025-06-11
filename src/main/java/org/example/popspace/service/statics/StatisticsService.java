@@ -45,7 +45,7 @@ public class StatisticsService {
         double averageRating = StatisticsUtils.averageRating(entranceMembers, reviewCount);
         log.info("리뷰 평점 {}", averageRating);
 
-        long totalReservationCount = reservationStats.size();
+        long totalReservationCount = StatisticsUtils.calculateTotalReservationCount(reservationStats);
         log.info("총 예약자 수 {}", totalReservationCount);
 
         long entranceCount = entranceMembers.size();
