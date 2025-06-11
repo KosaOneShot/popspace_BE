@@ -10,10 +10,12 @@ import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.LikeUpdateRequestDto;
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupSearchDto;
 import org.example.popspace.service.popup.PopupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,11 +60,9 @@ public class PopupController {
     /* 팝업 목록 */
     @GetMapping("/list")
     public ResponseEntity<List<PopupCardDto>> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
-                                                           @RequestParam(required = false) String searchKeyword,
-                                                           @RequestParam (required = false) String searchDate,
-                                                           @RequestParam (required = false) String sortKey) throws ParseException {
-        log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", searchKeyword, searchDate, sortKey);
-        List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), searchKeyword, searchDate, sortKey);
+                                                           @ModelAttribute PopupSearchDto dto) throws ParseException {
+        log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", dto.getSearchKeyword(), dto.getSearchDate(), dto.getSortKey());
+        List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), dto.getSearchKeyword(), dto.getSearchDate(), dto.getSortKey());
         log.info("조회된 팝업 개수: {}", list.size());
         return ResponseEntity.ok(list);
     }

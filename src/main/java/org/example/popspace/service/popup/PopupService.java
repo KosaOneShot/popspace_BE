@@ -1,8 +1,6 @@
 package org.example.popspace.service.popup;
 
-import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -75,8 +73,7 @@ public class PopupService {
     }
 
     /* 팝업 목록 */
-    public List<PopupCardDto> getPopupList(Long memberId, String searchKeyword, String searchDateStr, String sortKey) throws ParseException {
-        LocalDate searchDate = !"".equals(searchDateStr) ? LocalDate.parse(searchDateStr, DateTimeFormatter.ISO_DATE) : null;
+    public List<PopupCardDto> getPopupList(Long memberId, String searchKeyword, LocalDate searchDate, String sortKey) {
         return popupMapper.findPopupListBySearchKeywordAndDate(memberId, searchKeyword, searchDate, sortKey);
     }
 }
