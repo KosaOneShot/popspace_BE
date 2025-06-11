@@ -56,9 +56,6 @@ public enum ErrorCode {
     REVIEW_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 수정에 실패했습니다."),
     REVIEW_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 삭제에 실패했습니다."),
 
-    //favorite
-    FAVORITE_INSERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "관심 팝업 등록에 실패했습니다."),
-
     // Popup
     POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "팝업이 존재하지 않습니다."),
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),

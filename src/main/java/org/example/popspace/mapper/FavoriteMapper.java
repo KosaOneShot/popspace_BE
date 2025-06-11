@@ -47,6 +47,6 @@ public interface FavoriteMapper {
             seq_popup_like_id.NEXTVAL, SYSDATE, 'ACTIVE', #{memberId}, #{popupId}
         )
     """)
-    int insertFavorite(@Param("memberId") Long memberId, @Param("popupId") Long popupId);
+    void insertFavorite(@Param("memberId") Long memberId, @Param("popupId") Long popupId);
 
 }

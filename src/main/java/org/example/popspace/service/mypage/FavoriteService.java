@@ -22,12 +22,11 @@ public class FavoriteService{
     public void toggleFavorite(Long memberId, Long popupId) {
         int exists = favoriteMapper.existsFavorite(memberId, popupId);
         if (exists > 0) {
+            //찜 데이터가 존재하면 상태만 업데이트
             favoriteMapper.toggleFavoriteState(memberId, popupId);
         } else {
-            int inserted = favoriteMapper.insertFavorite(memberId, popupId);
-            if (inserted != 1) {
-                throw new CustomException(ErrorCode.FAVORITE_INSERT_FAILED);
-            }
+            //찜 데이터가 없으면 새로 삽입
+            favoriteMapper.insertFavorite(memberId, popupId);
         }
     }
 }
