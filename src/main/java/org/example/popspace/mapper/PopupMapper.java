@@ -143,7 +143,7 @@ public interface PopupMapper {
             JOIN RESERVATION r ON el.RESERVE_ID = r.RESERVE_ID
             JOIN MEMBER m ON r.MEMBER_ID = m.MEMBER_ID
             LEFT JOIN REVIEW rv ON rv.RESERVE_ID = r.RESERVE_ID
-            WHERE el.POPUP_ID = #{popupId}
+            WHERE el.POPUP_ID = #{popupId} and el.ENTRANCE_STATE='CHECKED_IN'
             """)
     List<ReservationMemberData> findStatisticsDataDtoByPopupId(Long popupId);
 
