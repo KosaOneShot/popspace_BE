@@ -77,3 +77,4 @@ jobs:
             docker pull ${{secrets.DOCKER_USERNAME}}:${{ github.sha }}
             docker rm -f popspace-app || true
             docker run -d --name popspace-app --env-file backend.env -p 8080:8080 ${{secrets.DOCKER_USERNAME}}:${{ github.sha }}
+
