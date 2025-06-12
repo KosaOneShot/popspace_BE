@@ -20,6 +20,28 @@ jobs:
       - name: Github Repository 파일 불러오기
         uses: actions/checkout@v4
 
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/native
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+
+
+      - name: Cache Gradle build outputs
+        uses: actions/cache@v3
+        with:
+          path: build
+          key: ${{ runner.os }}-gradle-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-build-
+
       - name: Cache JDK 17
         uses: actions/cache@v3
         with:
