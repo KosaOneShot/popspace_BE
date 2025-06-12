@@ -21,20 +21,17 @@ jobs:
         uses: actions/checkout@v4
 
 
-      - name: Cache Gradle dependencies
+      - name: Cache Gradle dependencies and wrapper
         uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            ~/.gradle/native
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-
-
-      - name: Cache Gradle build outputs
+      - name: Cache Gradle build output
         uses: actions/cache@v3
         with:
           path: build
@@ -56,9 +53,8 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: 빌드 진행
-        working-directory: ./
-        run: ./gradlew clean bootJar -x test
+      - name: Build with Gradle (skip tests)
+        run: ./gradlew bootJar -x test
 
       - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
         uses: aws-actions/configure-aws-credentials@v4
@@ -67,7 +63,6 @@ jobs:
           aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
           aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
 
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -75,10 +70,7 @@ jobs:
           registry-type: private
           region: ap-northeast-2    # 반드시 us-east-1 이어야 함
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build with cache
+      - name: Build and push Docker image with cache
         uses: docker/build-push-action@v5
         with:
           context: ./
