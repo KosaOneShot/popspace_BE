@@ -18,7 +18,7 @@ public interface ReviewMapper {
             seq_review_id.NEXTVAL, #{rating}, #{content}, SYSDATE, #{reserveId}
         )
     """)
-    int insertReview(ReviewRequestDto dto);
+    void insertReview(ReviewRequestDto dto);
 
     @Select("""
         SELECT COUNT(*)
@@ -32,9 +32,7 @@ public interface ReviewMapper {
     @Select("""
         SELECT COUNT(*)
         FROM REVIEW R
-        JOIN RESERVATION RS ON R.reserve_id = RS.reserve_id
-        WHERE R.review_id = #{reviewId}
-        AND RS.member_id = #{memberId}
+        JOIN RESERVATION RS ON R.reserve_id = RS.reserve_id AND R.review_id = #{reviewId} AND RS.member_id = #{memberId}
     """)
     int isReviewOwnedByMember(@Param("reviewId") Long reviewId, @Param("memberId") Long memberId);
 
@@ -45,7 +43,7 @@ public interface ReviewMapper {
             updated_at = SYSDATE
         WHERE review_id = #{reviewId}
     """)
-    int updateReview(@Param("reviewId") Long reviewId, @Param("dto") ReviewUpdateRequestDto dto);
+    void updateReview(@Param("reviewId") Long reviewId, @Param("dto") ReviewUpdateRequestDto dto);
 
     @Update("""
         UPDATE REVIEW
@@ -53,7 +51,7 @@ public interface ReviewMapper {
             updated_at = SYSDATE
         WHERE review_id = #{reviewId}
     """)
-    int deleteReview(@Param("reviewId") Long reviewId);
+    void deleteReview(@Param("reviewId") Long reviewId);
 
     @Select("""
         SELECT
@@ -65,9 +63,8 @@ public interface ReviewMapper {
             P.image_url AS imageUrl
         FROM REVIEW R
         JOIN RESERVATION RS ON R.reserve_id = RS.reserve_id
-        JOIN POPUP P ON RS.popup_id = P.popup_id
-        WHERE RS.member_id = #{memberId}
-        AND R.review_state = 'ACTIVE'
+        JOIN POPUP P ON RS.popup_id = P.popup_id AND RS.member_id = #{memberId} 
+        WHERE R.review_state = 'ACTIVE'
         ORDER BY R.created_at DESC
     """)
     List<ReviewResponseDto> findReviewsByMemberId(@Param("memberId") Long memberId);
@@ -79,9 +76,8 @@ public interface ReviewMapper {
             TO_CHAR(R.reserve_date, 'YYYY-MM-DD') AS visitedDate,
             NVL(P.image_url, 'https://placehold.co/80x80.png?text=팝업') AS imageUrl
         FROM RESERVATION R
-        JOIN POPUP P ON R.popup_id = P.popup_id
-        WHERE R.member_id = #{memberId}
-        AND R.reservation_state = 'CHECKED_OUT'
+        JOIN POPUP P ON R.popup_id = P.popup_id AND R.member_id = #{memberId}
+        WHERE R.reservation_state = 'CHECKED_OUT'
         AND NOT EXISTS (
             SELECT 1 FROM REVIEW V WHERE V.reserve_id = R.reserve_id
         )

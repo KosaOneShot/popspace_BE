@@ -93,7 +93,7 @@ public interface MemberMapper {
             updated_at = SYSDATE
         WHERE member_id = #{memberId}
     """)
-    int updateMemberInfo(@Param("memberId") Long memberId, MemberUpdateRequest dto);
+    void updateMemberInfo(@Param("memberId") Long memberId, MemberUpdateRequest dto);
 
     @Select("""
         SELECT

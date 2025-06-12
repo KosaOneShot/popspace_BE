@@ -15,9 +15,8 @@ public interface FavoriteMapper {
             P.location,
             P.image_url AS imageUrl
         FROM POPUP_LIKE L
-        JOIN POPUP P ON L.popup_id = P.popup_id
-        WHERE L.member_id = #{memberId}
-        AND L.like_state = 'ACTIVE'
+        JOIN POPUP P ON L.popup_id = P.popup_id AND L.member_id = #{memberId}
+        WHERE L.like_state = 'ACTIVE'
     """)
     List<FavoritePopupResponseDto> findFavoritesByMemberId(@Param("memberId") Long memberId);
 
