@@ -36,7 +36,7 @@ jobs:
 
       - name: 빌드 진행
         working-directory: ./
-        run: ./gradlew clean -x test
+        run: ./gradlew clean bootJar -x test
 
       - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
         uses: aws-actions/configure-aws-credentials@v4
