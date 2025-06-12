@@ -5,14 +5,12 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
-import org.example.popspace.dto.popup.LikeResponseDto;
-import org.example.popspace.dto.popup.LikeUpdateRequestDto;
-import org.example.popspace.dto.popup.PopupCardDto;
-import org.example.popspace.dto.popup.PopupInfoDto;
-import org.example.popspace.dto.popup.PopupReviewDto;
-import org.example.popspace.dto.popup.PopupSearchDto;
+import org.example.popspace.dto.popup.PopupDetailForAdminResponse;
+import org.example.popspace.dto.popup.*;
+import org.example.popspace.dto.popup.PopupDetailResponse;
 import org.example.popspace.service.popup.PopupService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,12 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/popup")
 @RequiredArgsConstructor
+@Slf4j
 public class PopupController {
+
     private final PopupService popupService;
 
     /* 팝업 상세 */
