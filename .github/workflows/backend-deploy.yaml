@@ -70,6 +70,13 @@ jobs:
           registry-type: private
           region: ap-northeast-2    # 반드시 us-east-1 이어야 함
 
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          buildkitd-flags: --debug
+
       - name: Build and push Docker image with cache
         uses: docker/build-push-action@v5
         with:
