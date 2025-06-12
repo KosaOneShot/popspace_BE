@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
+import org.example.popspace.dto.reservation.ReservationDetailResponseDto;
 import org.example.popspace.dto.reservation.ReservationListRequestDto;
 import org.example.popspace.dto.reservation.ReservationListResponseDto;
 import org.example.popspace.service.reservation.ReservationService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,5 +36,12 @@ public class ReservationController {
         return ResponseEntity.ok(responseDto);
     }
     /* 예약 상세 조회 */
-
+    @GetMapping("/detail/{reserveId}")
+    public ResponseEntity<ReservationDetailResponseDto> findReservationDetailByReserveId(
+            @PathVariable Long reserveId, @AuthenticationPrincipal CustomUserDetail userDetail) {
+        log.info("/api/reservation/detail/{} - userId: {}", reserveId, userDetail.getId());
+        ReservationDetailResponseDto responseDto = reservationService.findReservationDetailByReserveId(reserveId);
+        log.info("조회된 예약 상세 정보: {}", responseDto.toString());
+        return ResponseEntity.ok(responseDto);
+    }
 }

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.example.popspace.dto.reservation.ReservationDetailResponseDto;
 import org.example.popspace.dto.reservation.ReservationListResponseDto;
 
 @Mapper
@@ -41,4 +42,32 @@ public interface ReservationMapper_hyeesw {
     """)
     public List<ReservationListResponseDto> findReservationListByMemberId(String searchKeyword, LocalDate searchDate,
                                                                           String reservationType, Long memberId);
+    @Select("""
+        select
+            RES.RESERVE_ID,
+            RES.RESERVE_DATE,
+            RES.RESERVE_TIME,
+            RES.CREATED_AT,
+            RES.CANCELED_AT,
+            RES.RESERVATION_STATE,
+            RES.RESERVATION_TYPE,
+            RES.POPUP_ID,
+            M.MEMBER_NAME,
+            p.POPUP_NAME,
+            p.LOCATION,
+            p.START_DATE,
+            p.END_DATE,
+            p.OPEN_TIME,
+            p.close_time,
+            p.DESCRIPTION,
+            p.CATEGORY,
+            p.MAX_RESERVATIONS,
+            p.IMAGE_URL
+        from RESERVATION RES
+        join member M on RES.MEMBER_ID = M.MEMBER_ID
+        join POPUP P on RES.POPUP_ID = P.POPUP_ID
+        where res.RESERVE_ID = #{reserveId}
+        order by res.CREATED_AT desc
+    """)
+    public ReservationDetailResponseDto findReservationDetailByReserveId(Long reserveId);
 }

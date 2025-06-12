@@ -3,6 +3,7 @@ package org.example.popspace.service.reservation;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.reservation.ReservationDetailResponseDto;
 import org.example.popspace.dto.reservation.ReservationListResponseDto;
 import org.example.popspace.mapper.ReservationMapper_hyeesw;
 import java.time.LocalDate;
@@ -18,5 +19,10 @@ public class ReservationService {
     public List<ReservationListResponseDto> findReservationListByMemberId(String searchKeyword, LocalDate searchDate,
                                                                           String reservationType, Long memberId) {
         return reservationMapper.findReservationListByMemberId(searchKeyword, searchDate, reservationType, memberId);
+    }
+
+    /* 예약 상세 조회 */
+    public ReservationDetailResponseDto findReservationDetailByReserveId(Long reserveId) {
+        return reservationMapper.findReservationDetailByReserveId(reserveId);
     }
 }
