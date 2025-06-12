@@ -214,7 +214,7 @@ $RECYCLE.BIN/
 # React
 node_modules/
 build/
-.env
+backend.env
 
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,windows

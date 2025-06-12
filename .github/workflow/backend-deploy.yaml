@@ -1,0 +1,79 @@
+name: backend-deploy To EC2
+
+on:
+  push:
+    branches: [ "deploy" ]
+
+  pull_request:
+    types: [ closed ]
+    branches: [ "deploy" ]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+jobs:
+  backend-deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Github Repository 파일 불러오기
+        uses: actions/checkout@v4
+
+      - name: Cache JDK 17
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/sdkman/candidates
+          key: ${{ runner.os }}-jdk-17-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-jdk-17-
+
+      - name: jdk 17버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: 빌드 진행
+        working-directory: ./
+        run: ./gradlew clean -x test
+
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{secrets.AWS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_ACCESS_KEY}}
+
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build with cache
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          tags: ${{secrets.DOCKER_USERNAME}}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 기존 build-push 단계 이후
+
+      - name: Deploy to EC2 - Pull and run Docker container
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}           # EC2 퍼블릭 IP 또는 도메인
+          username: ec2-user                      # EC2 접속 유저명
+          key: ${{ secrets.EC2_SSH_KEY }}        # SSH 프라이빗 키 (GitHub Secrets에 등록)
+          script: |
+            docker pull ${{secrets.DOCKER_USERNAME}}:${{ github.sha }}
+            docker rm -f popspace-app || true
+            docker run -d --name popspace-app --env-file backend.env -p 8080:8080 ${{secrets.DOCKER_USERNAME}}:${{ github.sha }}
