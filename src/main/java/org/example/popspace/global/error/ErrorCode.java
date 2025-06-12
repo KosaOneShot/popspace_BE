@@ -60,10 +60,7 @@ public enum ErrorCode {
     NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
     // Review
-    REVIEW_INSERT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 저장에 실패했습니다."),
     REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 리뷰를 찾을 수 없습니다."),
-    REVIEW_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 수정에 실패했습니다."),
-    REVIEW_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "리뷰 삭제에 실패했습니다."),
 
     // Popup
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),

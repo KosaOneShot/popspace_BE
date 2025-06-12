@@ -40,10 +40,12 @@ public class MemberService {
         }
     }
 
+    //회원 정보 수정
     public void updateMemberInfo(Long memberId, MemberUpdateRequest dto) {
         memberMapper.updateMemberInfo(memberId, dto);
     }
 
+    //회원 정보 조회
     public MemberResponse getMemberResponse(Long memberId) {
         return memberMapper.findFullMemberById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));

@@ -22,10 +22,7 @@ public class ReviewService {
         if (reviewMapper.isReservationOwnedByMember(reserveId, memberId) == 0) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
-        int result = reviewMapper.insertReview(dto);
-        if (result != 1) {
-            throw new CustomException(ErrorCode.REVIEW_INSERT_FAILED);
-        }
+        reviewMapper.insertReview(dto);
     }
 
     public void updateReview(Long reviewId, ReviewUpdateRequestDto dto, Long memberId) {
@@ -33,10 +30,7 @@ public class ReviewService {
         if (reviewMapper.isReviewOwnedByMember(reviewId, memberId) == 0) {
             throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
         }
-        int updated = reviewMapper.updateReview(reviewId, dto);
-        if (updated != 1) {
-            throw new CustomException(ErrorCode.REVIEW_UPDATE_FAILED);
-        }
+        reviewMapper.updateReview(reviewId, dto);
     }
 
     public void deleteReview(Long reviewId, Long memberId) {
@@ -44,10 +38,7 @@ public class ReviewService {
         if (reviewMapper.isReviewOwnedByMember(reviewId, memberId) == 0) {
             throw new CustomException(ErrorCode.REVIEW_NOT_FOUND);
         }
-        int deleted = reviewMapper.deleteReview(reviewId);
-        if (deleted != 1) {
-            throw new CustomException(ErrorCode.REVIEW_DELETE_FAILED);
-        }
+        reviewMapper.deleteReview(reviewId);
     }
 
     public List<ReviewResponseDto> getUserReviews(Long memberId) {
