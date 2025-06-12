@@ -16,7 +16,7 @@ import lombok.ToString;
 public class ReservationDetailResponseDto {
     private Long reserveId;
     private LocalDate reserveDate;
-    private LocalDateTime reserveTime;
+    private String reserveTime;
     private LocalDateTime createdAt;
     private LocalDateTime canceledAt;
     private String reservationState;

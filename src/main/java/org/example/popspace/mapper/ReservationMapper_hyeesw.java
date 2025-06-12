@@ -18,7 +18,8 @@ public interface ReservationMapper_hyeesw {
             select
                 R.RESERVE_ID,
                 P.POPUP_NAME,
-                R.RESERVE_TIME,
+                RESERVE_DATE,
+                TO_CHAR(R.RESERVE_TIME, 'HH24:MI') AS RESERVE_TIME,
                 P.LOCATION,
                 P.IMAGE_URL,
                 R.RESERVATION_TYPE,
@@ -37,7 +38,7 @@ public interface ReservationMapper_hyeesw {
                   and R.RESERVATION_TYPE = #{reservationType}
                 </if>
               </where>
-            order by R.RESERVE_TIME desc
+            ORDER BY TRUNC(R.RESERVE_DATE) DESC, TO_NUMBER(TO_CHAR(R.RESERVE_TIME,'HH24MI')) DESC
         </script>
     """)
     public List<ReservationListResponseDto> findReservationListByMemberId(String searchKeyword, LocalDate searchDate,
@@ -46,7 +47,7 @@ public interface ReservationMapper_hyeesw {
         select
             RES.RESERVE_ID,
             RES.RESERVE_DATE,
-            RES.RESERVE_TIME,
+            TO_CHAR(RES.RESERVE_TIME, 'HH24:MI') AS RESERVE_TIME,
             RES.CREATED_AT,
             RES.CANCELED_AT,
             RES.RESERVATION_STATE,
