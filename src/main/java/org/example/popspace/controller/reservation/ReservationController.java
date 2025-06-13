@@ -30,16 +30,15 @@ public class ReservationController {
     public ResponseEntity<List<ReservationListResponseDto>> findReservationListByMemberId(
             @ModelAttribute ReservationListRequestDto dto, @AuthenticationPrincipal CustomUserDetail userDetail) {
         log.info("/api/reservation/list - {}", dto.toString());
-        List<ReservationListResponseDto> responseDto = reservationService.findReservationListByMemberId(
-                dto.getSearchKeyword(), dto.getSearchDate(), dto.getReservationType(), userDetail.getId());
+        List<ReservationListResponseDto> responseDto = reservationService.findReservationListByMemberId(dto, userDetail.getId());
         log.info("조회된 예약 목록 개수: {}", responseDto.size());
         return ResponseEntity.ok(responseDto);
     }
     /* 예약 상세 조회 */
     @GetMapping("/detail/{reserveId}")
     public ResponseEntity<ReservationDetailResponseDto> findReservationDetailByReserveId(
-            @PathVariable Long reserveId, @AuthenticationPrincipal CustomUserDetail userDetail) {
-        log.info("/api/reservation/detail/{} - userId: {}", reserveId, userDetail.getId());
+            @PathVariable Long reserveId) {
+        log.info("/api/reservation/detail/{}", reserveId);
         ReservationDetailResponseDto responseDto = reservationService.findReservationDetailByReserveId(reserveId);
         log.info("조회된 예약 상세 정보: {}", responseDto.toString());
         return ResponseEntity.ok(responseDto);

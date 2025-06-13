@@ -19,8 +19,8 @@ public class PopupInfoDto {
     private String location;
     private LocalDate startDate;
     private LocalDate endDate;
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+    private String openTime;
+    private String closeTime;
     private String description;
     private String category;
     private int maxReservations;
