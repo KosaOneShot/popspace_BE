@@ -6,6 +6,7 @@ import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.FavoriteMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class FavoriteService{
         return favoriteMapper.findFavoritesByMemberId(memberId);
     }
 
+    @Transactional
     public void toggleFavorite(Long memberId, Long popupId) {
         int exists = favoriteMapper.existsFavorite(memberId, popupId);
         if (exists > 0) {
