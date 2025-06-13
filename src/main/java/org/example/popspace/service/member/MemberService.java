@@ -2,6 +2,8 @@ package org.example.popspace.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.member.MemberResponse;
+import org.example.popspace.dto.member.MemberUpdateRequest;
 import org.example.popspace.dto.member.PasswordChangeRequest;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
@@ -36,5 +38,16 @@ public class MemberService {
         if (result == 0) {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR); // 혹은 다른 에러 코드
         }
+    }
+
+    //회원 정보 수정
+    public void updateMemberInfo(Long memberId, MemberUpdateRequest dto) {
+        memberMapper.updateMemberInfo(memberId, dto);
+    }
+
+    //회원 정보 조회
+    public MemberResponse getMemberResponse(Long memberId) {
+        return memberMapper.findFullMemberById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MEMBER));
     }
 }

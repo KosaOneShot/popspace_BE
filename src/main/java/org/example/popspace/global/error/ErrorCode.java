@@ -59,6 +59,9 @@ public enum ErrorCode {
     // 403 권한 부족 에러
     NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
+    // Review
+    REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 리뷰를 찾을 수 없습니다."),
+
     // Popup
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 다릅니다" ),
@@ -66,6 +69,8 @@ public enum ErrorCode {
 
     //notification
     SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
+
+    ;
 
     ;
 

@@ -3,6 +3,8 @@ package org.example.popspace.mapper;
 import org.apache.ibatis.annotations.*;
 import org.example.popspace.dto.auth.MemberLoginInfo;
 import org.example.popspace.dto.auth.MemberRegisterRequest;
+import org.example.popspace.dto.member.MemberResponse;
+import org.example.popspace.dto.member.MemberUpdateRequest;
 
 import java.util.Optional;
 
@@ -80,4 +82,32 @@ public interface MemberMapper {
                 WHERE MEMBER_ID = #{memberId}
             """)
     int changePassword(Long memberId, String newPassword);
+
+    @Update("""
+        UPDATE MEMBER
+        SET nickname = #{dto.nickname},
+            road_address = #{dto.roadAddress},
+            detail_address = #{dto.detailAddress},
+            birth_date = TO_DATE(#{dto.birthDate}, 'YYYY-MM-DD'),
+            sex = #{dto.sex},
+            updated_at = SYSDATE
+        WHERE member_id = #{memberId}
+    """)
+    void updateMemberInfo(@Param("memberId") Long memberId, MemberUpdateRequest dto);
+
+    @Select("""
+        SELECT
+            member_id,
+            email,
+            nickname,
+            member_name,
+            phone_number,
+            road_address,
+            detail_address,
+            TO_CHAR(birth_date, 'YYYY-MM-DD') AS birthDate,
+            sex
+        FROM member
+        WHERE member_id = #{memberId}
+    """)
+    Optional<MemberResponse> findFullMemberById(Long memberId);
 }
