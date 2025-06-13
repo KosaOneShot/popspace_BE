@@ -14,9 +14,9 @@ public enum ErrorCode {
     INVALID_DECRYPTION(HttpStatus.FORBIDDEN,"복호화가 유효하지 않습니다."),
     UNACCEPT_TOKEN(HttpStatus.UNAUTHORIZED, "Token is null or too short"),
     BADTYPE_BEARER(HttpStatus.UNAUTHORIZED, "Token type Bearer"),
-    MALFORM_TOKEN(HttpStatus.FORBIDDEN, "Malformed Token"),
-    BADSIGN_TOKEN(HttpStatus.FORBIDDEN, "BadSignatured Token"),
-    EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "Expired Token"),
+    MALFORM_TOKEN(HttpStatus.UNAUTHORIZED, "Malformed Token"),
+    BADSIGN_TOKEN(HttpStatus.UNAUTHORIZED, "BadSignatured Token"),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Expired Token"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "Unauthorized"),
     DUPLICATE_USER(HttpStatus.CONFLICT,"Duplicate User" ),
     NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND,"Member not found" ),
@@ -62,6 +62,7 @@ public enum ErrorCode {
     // Popup
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "해당 토큰은 블랙리스트에 등록되어 사용할 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호가 다릅니다" ),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN,"권한이 부족합니다." ),
 
     //notification
     SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
