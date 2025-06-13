@@ -19,7 +19,7 @@ public interface ReservationMapper_hyeesw {
                 R.RESERVE_ID,
                 P.POPUP_NAME,
                 RESERVE_DATE,
-                TO_CHAR(R.RESERVE_TIME, 'HH24:MI') AS RESERVE_TIME,
+                RESERVE_TIME,
                 P.LOCATION,
                 P.IMAGE_URL,
                 R.RESERVATION_TYPE,
@@ -32,13 +32,15 @@ public interface ReservationMapper_hyeesw {
                   and P.POPUP_NAME like '%' || #{searchKeyword} || '%'
                 </if>
                 <if test="searchDate != null">
-                  and trunc(R.RESERVE_TIME) = #{searchDate}
+                  and trunc(R.RESERVE_DATE) = #{searchDate}
                 </if>
                 <if test="reservationType != null and reservationType.trim() != '' and reservationType != 'ALL'">
                   and R.RESERVATION_TYPE = #{reservationType}
                 </if>
               </where>
-            ORDER BY TRUNC(R.RESERVE_DATE) DESC, TO_NUMBER(TO_CHAR(R.RESERVE_TIME,'HH24MI')) DESC
+            ORDER BY TRUNC(R.RESERVE_DATE) DESC, -- 날짜
+                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc, -- 시
+                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 4, 2)) desc -- 분
         </script>
     """)
     public List<ReservationListResponseDto> findReservationListByMemberId(String searchKeyword, LocalDate searchDate,
@@ -47,7 +49,7 @@ public interface ReservationMapper_hyeesw {
         select
             RES.RESERVE_ID,
             RES.RESERVE_DATE,
-            TO_CHAR(RES.RESERVE_TIME, 'HH24:MI') AS RESERVE_TIME,
+            RESERVE_TIME,
             RES.CREATED_AT,
             RES.CANCELED_AT,
             RES.RESERVATION_STATE,
