@@ -18,7 +18,8 @@ public class ReservationService {
     /* 예약 목록 조회 */
     public List<ReservationListResponseDto> findReservationListByMemberId(ReservationListRequestDto dto, Long memberId) {
         return reservationMapper.findReservationListByMemberId(
-            dto.getSearchKeyword(), dto.getSearchDate(), dto.getReservationType(), memberId);
+            dto.getSearchKeyword(), dto.getSearchDate(), dto.getReservationType(), memberId,
+            dto.getLastReserveDate(), dto.getLastReserveHour(), dto.getLastReserveMinute(), dto.getLastReserveId());
     }
 
     /* 예약 상세 조회 */
