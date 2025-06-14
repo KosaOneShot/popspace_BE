@@ -5,6 +5,7 @@ import org.example.popspace.dto.statistics.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -103,7 +104,7 @@ public class StatisticsUtils {
 
 
     public static List<HourlyVisitor> analyzeHourly(List<ReservationMemberData> list,
-                                                    LocalDateTime open, LocalDateTime close) {
+                                                    LocalTime open, LocalTime close) {
         Map<Integer, Long> hourCount = list.stream()
                 .filter(d -> d.getCreatedAt() != null)
                 .collect(Collectors.groupingBy(d -> d.getCreatedAt().getHour(), Collectors.counting()));
