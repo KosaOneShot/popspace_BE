@@ -17,5 +17,10 @@ import lombok.ToString;
 public class ReservationListRequestDto {
     private String searchKeyword;
     private LocalDate searchDate;
-    private String reservationType; // 예약 타입 (ADVANCE, WALK_IN)
+    private String reservationType; // 예약 타입 (ADVANCE, WALK_IN)\
+    // 페이지네이션
+    private LocalDate lastReserveDate;
+    private int lastReserveHour;
+    private int lastReserveMinute;
+    private Long lastReserveId;
 }

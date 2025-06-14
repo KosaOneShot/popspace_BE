@@ -98,26 +98,47 @@ public interface PopupMapper {
               ) LC ON P.popup_id = LC.popup_id
               LEFT JOIN POPUP_LIKE PL ON P.popup_id = PL.popup_id AND PL.member_id = #{memberId}
               <where>
-                <if test="searchKeyword != null and searchKeyword.trim() != ''">
-                  AND P.POPUP_NAME LIKE '%' || #{searchKeyword} || '%'
-                </if>
-                <if test="searchDate != null">
-                  AND #{searchDate} BETWEEN P.START_DATE AND P.END_DATE
-                </if>
-              </where>
-              <choose>
-                <when test="sortKey == 'mostLiked'">
-                  ORDER BY LC.LIKE_CNT DESC NULLS LAST
-                </when>
-                <otherwise>
-                  ORDER BY P.END_DATE DESC
-                </otherwise>
-              </choose>
+                  <!-- 검색 (제목) -->
+                  <if test="searchKeyword != null and searchKeyword.trim() != ''">
+                    AND P.POPUP_NAME LIKE '%' || #{searchKeyword} || '%'
+                  </if>
+                  <!-- 검색 (날짜) -->
+                  <if test="searchDate != null">
+                    AND #{searchDate} BETWEEN P.START_DATE AND P.END_DATE
+                  </if>
+                  <!-- 커서(찜순, 최신순)에 따른 페이지네이션.  &lt; 는 < 임 -->
+                  <if test="sortKey == 'mostLiked'">
+                    <if test="lastLikeCnt != null">
+                        <![CDATA[
+                            AND (LC.LIKE_CNT < #{lastLikeCnt}
+                            OR (LC.LIKE_CNT = #{lastLikeCnt} AND P.POPUP_ID < #{lastPopupId}))
+                        ]]>
+                    </if>
+                  </if>
+                  <if test="sortKey == 'newest'">
+                    <if test="lastEndDate != null">
+                        <![CDATA[
+                            AND (P.END_DATE < #{lastEndDate}
+                            OR (P.END_DATE = #{lastEndDate} AND P.POPUP_ID < #{lastPopupId}))
+                        ]]>
+                    </if>
+                  </if>
+                </where>
+                <!-- ORDER BY (찜순, 최신순) -->
+                <choose>
+                  <when test="sortKey == 'mostLiked'">
+                    ORDER BY LC.LIKE_CNT DESC NULLS LAST, P.POPUP_ID DESC
+                  </when>
+                  <otherwise>
+                    ORDER BY P.END_DATE DESC, P.POPUP_ID DESC
+                  </otherwise>
+                </choose>
+                FETCH FIRST 4 ROWS ONLY
             </script>
             """
     })
     List<PopupCardDto> findPopupListBySearchKeywordAndDate(
-            Long memberId, String searchKeyword, LocalDate searchDate, String sortKey);
+            Long memberId, String searchKeyword, LocalDate searchDate, String sortKey, LocalDate lastEndDate, Long lastLikeCnt, Long lastPopupId);
 
     @Select("""
     SELECT member_id
