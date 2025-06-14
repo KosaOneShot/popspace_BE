@@ -67,7 +67,7 @@ public enum ErrorCode {
     //notification
     SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
 
-    ;
+    NOT_ENOUGH_DATA(HttpStatus.BAD_REQUEST,  "충분한 통계 데이터가 존재하지 않습니다.");
 
     private final HttpStatus status;
     private final String message;
