@@ -27,7 +27,17 @@ public interface ReservationMapper_hyeesw {
               from RESERVATION R
               join POPUP P on R.POPUP_ID = P.POPUP_ID
               <where>
-                R.MEMBER_ID = #{memberId}
+               R.MEMBER_ID = #{memberId}
+               <if test="lastReserveDate != null">
+                   <!-- 페이지네이션 (날짜, 시간, 분, 아이디 순으로 중복 필터) -->
+                   <![CDATA[
+                    and (TRUNC(R.RESERVE_DATE) < #{lastReserveDate}
+                        or (TRUNC(R.RESERVE_DATE) = #{lastReserveDate}
+                            and (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) < #{lastReserveHour}
+                                or (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) = #{lastReserveHour}
+                                    and R.RESERVE_ID < #{lastReserveId}))))
+                   ]]>
+                </if>
                 <if test="searchKeyword != null and searchKeyword.trim() != ''">
                   and P.POPUP_NAME like '%' || #{searchKeyword} || '%'
                 </if>
@@ -38,13 +48,14 @@ public interface ReservationMapper_hyeesw {
                   and R.RESERVATION_TYPE = #{reservationType}
                 </if>
               </where>
-            ORDER BY TRUNC(R.RESERVE_DATE) DESC, -- 날짜
-                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc, -- 시
-                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 4, 2)) desc -- 분
+                ORDER BY TRUNC(R.RESERVE_DATE) DESC, -- 날짜
+                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc -- 시
+                FETCH FIRST 5 ROWS ONLY
         </script>
     """)
     public List<ReservationListResponseDto> findReservationListByMemberId(String searchKeyword, LocalDate searchDate,
-                                                                          String reservationType, Long memberId);
+                                                                          String reservationType, Long memberId,
+    LocalDate lastReserveDate, int lastReserveHour, int lastReserveMinute, Long lastReserveId);
     @Select("""
         select
             RES.RESERVE_ID,
