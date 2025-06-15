@@ -37,8 +37,8 @@ public class SendTokenUtil {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(Duration.ofDays(7))
-//                .secure(true)
-//                .sameSite("Strict") // Optional: SameSite 설정도 권장
+                .secure(true)
+                .sameSite("Strict") // Optional: SameSite 설정도 권장
                 .build();
         response.addHeader("Set-Cookie", accessTokenCookie.toString()); //
     }
@@ -48,8 +48,8 @@ public class SendTokenUtil {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(Duration.ofDays(14))
-//                .secure(true)
-//                .sameSite("Strict") // Optional: SameSite 설정도 권장
+                .secure(true)
+                .sameSite("Strict") // Optional: SameSite 설정도 권장
                 .build();
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
