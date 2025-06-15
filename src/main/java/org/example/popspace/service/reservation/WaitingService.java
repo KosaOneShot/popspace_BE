@@ -20,8 +20,8 @@ public class WaitingService {
 
     public ReservationSequenceResponse getMyWaitingSequenceInfo(Long reservationId, Long popupId) {
 
-//        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime now = LocalDateTime.of(2025, 6, 12, 16, 0);
+        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime now = LocalDateTime.of(2025, 6, 12, 16, 0);
 
         int myTurn = reservationMapper.countReservedBeforeMe(now.toLocalDate(),reservationId, popupId);  // RESERVED만 포함
         log.info("[대기자 수] 앞에 입장 안 한 예약자 수 (RESERVED 상태): {}", myTurn);
@@ -31,8 +31,8 @@ public class WaitingService {
 
     public ReservationSequenceResponse getTotalWaitingInfo(Long popupId) {
 
-//        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime now = LocalDateTime.of(2025, 6, 12, 16, 0);
+        LocalDateTime now = LocalDateTime.now();
+//        LocalDateTime now = LocalDateTime.of(2025, 6, 12, 16, 0);
 
         int myTurn = reservationMapper.countReservedAll(now.toLocalDate(), popupId);
 
