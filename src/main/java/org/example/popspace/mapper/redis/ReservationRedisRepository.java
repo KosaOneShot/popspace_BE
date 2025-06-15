@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.reservation.ReservationPopupCacheDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -28,7 +29,7 @@ public class ReservationRedisRepository {
         // 연결 확인
         RedisConnectionFactory factory = redisTemplate.getConnectionFactory();
         if (factory != null) {
-            try (var connection = factory.getConnection()) {
+            try (RedisConnection connection = factory.getConnection()) {
                 String pong = connection.ping();
                 log.info("[O] Redis ping 응답: {}", pong);
             } catch (Exception e) {
