@@ -3,6 +3,8 @@ package org.example.popspace.controller.auth;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
+import org.example.popspace.dto.member.MemberResponse;
+import org.example.popspace.dto.member.MemberUpdateRequest;
 import org.example.popspace.dto.member.PasswordChangeRequest;
 import org.example.popspace.service.member.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +25,18 @@ public class MemberController {
         Long id = user.getId();
         memberService.changePassword(id,passwordChangeRequest);
         return ResponseEntity.ok().body("success");
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateMemberInfo(
+            @AuthenticationPrincipal CustomUserDetail user,
+            @RequestBody MemberUpdateRequest dto) {
+        memberService.updateMemberInfo(user.getId(), dto);
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> getMyProfile(@AuthenticationPrincipal CustomUserDetail user) {
+        return ResponseEntity.ok(memberService.getMemberResponse(user.getId()));
     }
 }
