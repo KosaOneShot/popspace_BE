@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.reservation.AvailableDateResponseDTO;
 import org.example.popspace.dto.reservation.AvailableTimeResponseDTO;
 import org.example.popspace.service.reservation.ReservationQueryService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +35,8 @@ public class ReservationQueryController {
     @GetMapping("/api/popups/{popupId}/available-times")
     public ResponseEntity<AvailableTimeResponseDTO> getAvailableTimes(
             @PathVariable Long popupId,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+            @RequestParam("date") LocalDate date
     ) {
-
         return ResponseEntity.ok(reservationQueryService.getAvailableTimes(popupId, date));
     }
 

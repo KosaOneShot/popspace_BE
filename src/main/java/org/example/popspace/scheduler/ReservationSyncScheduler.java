@@ -24,13 +24,14 @@ public class ReservationSyncScheduler {
         // 시간대별 사전 예약 수
         List<ReservationKeyInfo> advanceTargets = reservationSyncService.getAdvanceSyncTargets();
         for (ReservationKeyInfo info : advanceTargets) {
-            reservationSyncService.syncCount(info.popupId(), info.reserveDate(), info.reserveTime());
+            reservationSyncService.syncCount(info.getPopupId(), info.getReserveDate(), info.getReserveTime());
         }
 
         // 해당 날짜 예약한 멤버들
         List<ReservationDateKeyInfo> memberTargets = reservationSyncService.getReservedMemberSyncTargets();
         for (ReservationDateKeyInfo info : memberTargets) {
-            reservationSyncService.syncReservedMembers(info.popupId(), info.reserveDate());
+            reservationSyncService.syncReservedMembers(info.getPopupId(), info.getReserveDate());
         }
+
     }
 }
