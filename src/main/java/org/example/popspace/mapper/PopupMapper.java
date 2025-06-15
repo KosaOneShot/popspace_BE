@@ -13,6 +13,10 @@ import org.example.popspace.dto.statistics.ReservationMemberData;
 import java.util.List;
 import java.util.Optional;
 import org.apache.ibatis.annotations.Update;
+import org.example.popspace.dto.popup.PopupCardDto;
+import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupReviewDto;
+import org.example.popspace.dto.popup.ReservationDto;
 
 @Mapper
 public interface PopupMapper {
@@ -203,4 +207,17 @@ public interface PopupMapper {
             order by p.POPUP_ID desc
             """)
     List<PopupDetailForAdminResponse> findAllPopupListForAdmin();
+
+    @Select("""
+    SELECT popup_id FROM POPUP
+    WHERE start_date <= #{today}
+      AND end_date >= #{today}
+      AND open_time <= #{nowTime}
+      AND close_time >= #{nowTime}
+""")
+    List<Long> selectActivePopups(
+            LocalDate today,
+            String nowTime
+    );
+
 }

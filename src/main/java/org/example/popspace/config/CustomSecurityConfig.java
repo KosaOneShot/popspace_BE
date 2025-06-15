@@ -87,6 +87,7 @@ public class CustomSecurityConfig {
                 "/auth/refresh",
                 "/auth/nickname/check-duplication",
                 "/auth/email/check-duplication",
+                "/run/mock"
         };
     }
 
