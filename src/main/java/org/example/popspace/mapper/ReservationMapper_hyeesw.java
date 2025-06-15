@@ -35,9 +35,7 @@ public interface ReservationMapper_hyeesw {
                         or (TRUNC(R.RESERVE_DATE) = #{lastReserveDate}
                             and (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) < #{lastReserveHour}
                                 or (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) = #{lastReserveHour}
-                                    and ( TO_NUMBER(SUBSTR(R.RESERVE_TIME, 4, 2)) < #{lastReserveMinute}
-                                        or (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 4, 2)) = #{lastReserveMinute}
-                                            and R.RESERVE_ID < #{lastReserveId}))))))
+                                    and R.RESERVE_ID < #{lastReserveId}))))
                    ]]>
                 </if>
                 <if test="searchKeyword != null and searchKeyword.trim() != ''">
@@ -52,7 +50,6 @@ public interface ReservationMapper_hyeesw {
               </where>
                 ORDER BY TRUNC(R.RESERVE_DATE) DESC, -- 날짜
                      TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc, -- 시
-                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 4, 2)) desc -- 분
                 FETCH FIRST 5 ROWS ONLY
         </script>
     """)
