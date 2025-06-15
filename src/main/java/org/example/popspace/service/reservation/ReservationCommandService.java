@@ -181,13 +181,7 @@ public class ReservationCommandService {
                 .orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
 
         // DTO 변환
-        ReservationPopupCacheDTO cacheDTO = new ReservationPopupCacheDTO();
-        cacheDTO.setPopupId(fromDb.getPopupId());
-        cacheDTO.setMaxReservations(fromDb.getMaxReservations());
-        cacheDTO.setStartDate(fromDb.getStartDate());
-        cacheDTO.setEndDate(fromDb.getEndDate());
-        cacheDTO.setOpenTime(fromDb.getOpenTime());
-        cacheDTO.setCloseTime(fromDb.getCloseTime());
+        ReservationPopupCacheDTO cacheDTO = ReservationPopupCacheDTO.from(fromDb);
 
         // Redis에 저장
         redisRepo.setPopupInfo(key, cacheDTO);

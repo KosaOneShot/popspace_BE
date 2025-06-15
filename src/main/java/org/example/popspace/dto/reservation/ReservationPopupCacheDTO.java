@@ -24,4 +24,15 @@ public class ReservationPopupCacheDTO {
 
     private String openTime;
     private String closeTime;
+
+    public static ReservationPopupCacheDTO from(ReservationPopupInfoDTO source) {
+        ReservationPopupCacheDTO dto = new ReservationPopupCacheDTO();
+        dto.setPopupId(source.getPopupId());
+        dto.setMaxReservations(source.getMaxReservations());
+        dto.setStartDate(source.getStartDate());
+        dto.setEndDate(source.getEndDate());
+        dto.setOpenTime(source.getOpenTime());
+        dto.setCloseTime(source.getCloseTime());
+        return dto;
+    }
 }
