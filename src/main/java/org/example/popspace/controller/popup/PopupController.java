@@ -66,8 +66,7 @@ public class PopupController {
     @GetMapping("/list")
     public ResponseEntity<List<PopupCardDto>> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
                                                            @ModelAttribute PopupSearchDto dto) {
-        log.info("/popup/list : searchKeyword={}, searchDate={}, sortKey={}", dto.getSearchKeyword(), dto.getSearchDate(), dto.getSortKey());
-        List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), dto.getSearchKeyword(), dto.getSearchDate(), dto.getSortKey());
+        List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), dto);
         log.info("조회된 팝업 개수: {}", list.size());
         return ResponseEntity.ok(list);
     }

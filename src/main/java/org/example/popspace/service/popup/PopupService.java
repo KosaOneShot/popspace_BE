@@ -1,18 +1,20 @@
 package org.example.popspace.service.popup;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.example.popspace.dto.popup.*;
-import org.example.popspace.global.error.CustomException;
-import org.example.popspace.global.error.ErrorCode;
+
+import org.example.popspace.dto.popup.LikeResponseDto;
+import org.example.popspace.dto.popup.PopupCardDto;
+import org.example.popspace.dto.popup.PopupDetailForAdminResponse;
+import org.example.popspace.dto.popup.PopupDetailResponse;
+import org.example.popspace.dto.popup.PopupInfoDto;
+import org.example.popspace.dto.popup.PopupReviewDto;
+import org.example.popspace.dto.popup.PopupSearchDto;
 import org.example.popspace.mapper.PopupMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -69,13 +71,24 @@ public class PopupService {
         return popupMapper.findAllPopupDetailByMemberId(memberId);
     }
 
-    /* 팝업 목록 */
-    public List<PopupCardDto> getPopupList(Long memberId, String searchKeyword, LocalDate searchDate, String sortKey) {
-        return popupMapper.findPopupListBySearchKeywordAndDate(memberId, searchKeyword, searchDate, sortKey);
-    }
-    public List<PopupDetailForAdminResponse> getAllPopupListForAdmin() {
-        return popupMapper.findAllPopupListForAdmin();
-    }
+
+	/* 팝업 목록 */
+	public List<PopupCardDto> getPopupList(Long memberId, PopupSearchDto popupSearchDto) {
+		log.info("/popup/list : memberId : {}, dto : {}", memberId, popupSearchDto.toString());
+		return popupMapper.findPopupListBySearchKeywordAndDate(
+			memberId,
+			popupSearchDto.getSearchKeyword(),
+			popupSearchDto.getSearchDate(),
+			popupSearchDto.getSortKey(),
+			popupSearchDto.getLastEndDate(),
+			popupSearchDto.getLastLikeCnt(),
+			popupSearchDto.getLastPopupId()
+		);
+	}
+
+	public List<PopupDetailForAdminResponse> getAllPopupListForAdmin() {
+		return popupMapper.findAllPopupListForAdmin();
+	}
 
 }
 

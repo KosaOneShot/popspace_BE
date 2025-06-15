@@ -16,7 +16,7 @@ public class QrReservationDTO {
     private String reservationState;
     private String reservationType;
     private LocalDate reserveDate;
-    private LocalDate reserveTime;
+    private String reserveTime;
 
     private String popupName;
 

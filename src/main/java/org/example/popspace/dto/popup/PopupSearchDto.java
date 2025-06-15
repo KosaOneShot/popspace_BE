@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 @Setter
@@ -19,4 +18,8 @@ public class PopupSearchDto {
     private String searchKeyword;
     private LocalDate searchDate;
     private String sortKey;
+    // 페이지네이션
+    private LocalDate lastEndDate;
+    private Long lastPopupId;
+    private Long lastLikeCnt;
 }
