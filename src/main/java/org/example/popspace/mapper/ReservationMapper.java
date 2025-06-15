@@ -7,6 +7,7 @@ import org.example.popspace.dto.reservation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Mapper
@@ -14,13 +15,13 @@ public interface ReservationMapper {
 
     // 예약 아이디로 예약 찾기
     @Select("""
-    SELECT r.reserve_id, r.reservation_type, r.reservation_state, r.reserve_date, r.reserve_time, 
-           p.popup_name, m.member_name
-    FROM reservation r
-    JOIN member m ON r.member_id = m.member_id
-    JOIN popup p ON r.popup_id = p.popup_id
-    WHERE r.reserve_id = #{reserveId}
-    """)
+            SELECT r.reserve_id, r.reservation_type, r.reservation_state, r.reserve_date, r.reserve_time, 
+                   p.popup_name, m.member_name
+            FROM reservation r
+            JOIN member m ON r.member_id = m.member_id
+            JOIN popup p ON r.popup_id = p.popup_id
+            WHERE r.reserve_id = #{reserveId}
+            """)
     Optional<QrReservationDTO> findByReserveId(Long reserveId);
 
     @Select("""
@@ -177,5 +178,38 @@ public interface ReservationMapper {
     List<ReservationDateKeyInfo> findReservedMemberSyncTargets();
 
 
+
+    @Select("""
+            select count(r.RESERVE_ID)+1
+            from RESERVATION r
+            where r.POPUP_ID= #{popupId}
+              and r.RESERVATION_TYPE = 'WALK_IN'
+              and r.RESERVATION_STATE = 'RESERVED'
+              and r.RESERVE_DATE= #{now}
+              and r.RESERVE_ID < #{reservationId}
+            """)
+    int countReservedBeforeMe(LocalDate now,Long reservationId, Long popupId);
+
+    @Select("""
+            select count(r.RESERVE_ID)+1
+            from RESERVATION r
+            where r.POPUP_ID= #{popupId}
+              and r.RESERVATION_TYPE = 'WALK_IN'
+              and r.RESERVATION_STATE = 'RESERVED'
+              AND r.RESERVE_DATE =#{now}
+            """)
+    int countReservedAll(LocalDate now,Long popupId);
+
+    @Select("""
+            SELECT
+                ROUND(AVG((el.CREATED_AT - r.CREATED_AT) * 24 * 60))
+            FROM RESERVATION r
+            JOIN ENTRANCE_LOG el ON el.RESERVE_ID = r.RESERVE_ID AND el.ENTRANCE_STATE = 'CHECKED_IN'
+            WHERE r.POPUP_ID = #{popupId}
+              AND r.RESERVATION_TYPE = 'WALK_IN'
+              AND r.RESERVATION_STATE IN ('CHECKED_IN', 'CHECKED_OUT')
+              AND r.RESERVE_DATE =#{now}
+            """)
+    Optional<Integer> averageWaitingTime(LocalDate now,Long popupId);
 
 }
