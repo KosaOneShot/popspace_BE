@@ -45,8 +45,8 @@ public interface PopupMapper {
             R.CONTENT,
             R.CREATED_AT
         FROM POPUP P
-        LEFT JOIN RESERVATION RES ON P.POPUP_ID = RES.POPUP_ID
-        LEFT JOIN REVIEW R ON RES.RESERVE_ID = R.RESERVE_ID
+        JOIN RESERVATION RES ON P.POPUP_ID = RES.POPUP_ID
+        JOIN REVIEW R ON RES.RESERVE_ID = R.RESERVE_ID
         WHERE P.POPUP_ID = #{popupId}
     """)
     List<PopupReviewDto> findReviewsByPopupId(Long popupId);

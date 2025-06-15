@@ -49,8 +49,9 @@ public interface ReservationMapper_hyeesw {
                 </if>
               </where>
                 ORDER BY TRUNC(R.RESERVE_DATE) DESC, -- 날짜
-                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc -- 시
-                FETCH FIRST 5 ROWS ONLY
+                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc, -- 시
+                     R.RESERVE_ID desc
+                FETCH FIRST 7 ROWS ONLY
         </script>
     """)
     public List<ReservationListResponseDto> findReservationListByMemberId(String searchKeyword, LocalDate searchDate,
