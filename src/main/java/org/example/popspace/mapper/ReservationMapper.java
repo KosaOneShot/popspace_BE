@@ -65,7 +65,7 @@ public interface ReservationMapper {
 
     @Select("""
             SELECT
-                ROUND(AVG((el.CREATED_AT - TO_DATE(TO_CHAR(r.RESERVE_DATE, 'YYYY-MM-DD') || ' ' || r.RESERVE_TIME, 'YYYY-MM-DD HH24:MI')) * 24 * 60))
+                ROUND(AVG((el.CREATED_AT - r.CREATED_AT) * 24 * 60))
             FROM RESERVATION r
             JOIN ENTRANCE_LOG el ON el.RESERVE_ID = r.RESERVE_ID AND el.ENTRANCE_STATE = 'CHECKED_IN'
             WHERE r.POPUP_ID = #{popupId}
