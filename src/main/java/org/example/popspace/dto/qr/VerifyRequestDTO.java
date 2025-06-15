@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class VerifyRequestDTO {
-    @NotNull(message = "reservationId 값이 없습니다.")
-    private Long reservationId;
+    @NotNull(message = "예약 아이디가 없습니다.")
+    private Long reserveId;
 
-    @NotNull(message = "sig 값이 없습니다.")
+    @NotNull(message = "서명 값이 없습니다.")
     private String sig;
 
 }
