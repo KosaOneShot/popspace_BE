@@ -49,13 +49,7 @@ public class ReservationCommandService {
         try {
             // 4. DB 저장 (성공 시만 최종 예약 완료)
             log.info("try insert into db");
-            ReservationCreateDTO reservation = new ReservationCreateDTO();
-            reservation.setPopupId(popupId);
-            reservation.setMemberId(memberId);
-            reservation.setReserveDate(reserveDate);
-            reservation.setReserveTime(String.valueOf(reserveTime));
-            reservation.setReservationState("RESERVED");
-            reservation.setReservationType("ADVANCE");
+            ReservationCreateDTO reservation = ReservationCreateDTO.forAdvance(memberId, popupId, reserveDate, reserveTime);
             reservationMapper.insertReservation(reservation);
 
             // 생성된 예약 ID 반환
@@ -87,12 +81,7 @@ public class ReservationCommandService {
 
         try {
             // 4. DB 저장 (성공 시만 최종 예약 완료)
-            ReservationCreateDTO reservation = new ReservationCreateDTO();
-            reservation.setPopupId(popupId);
-            reservation.setMemberId(memberId);
-            reservation.setReserveDate(reserveDate);
-            reservation.setReservationState("RESERVED");
-            reservation.setReservationType("WALK_IN");
+            ReservationCreateDTO reservation = ReservationCreateDTO.forWalkIn(memberId, popupId, reserveDate);
             reservationMapper.insertReservation(reservation);
 
             // 생성된 ID 반환
