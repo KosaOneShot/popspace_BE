@@ -40,16 +40,11 @@ public interface ReservationMapper {
     @Select("""
             select count(r.RESERVE_ID)+1
             from RESERVATION r
-            JOIN (
-                SELECT RESERVE_ID, RESERVE_DATE
-                FROM RESERVATION
-                WHERE RESERVE_ID = #{reservationId}
-            ) target ON r.RESERVE_DATE = target.RESERVE_DATE
             where r.POPUP_ID= #{popupId}
               and r.RESERVATION_TYPE = 'WALK_IN'
               and r.RESERVATION_STATE = 'RESERVED'
-              and r.RESERVE_ID < #{reservationId}
               and r.RESERVE_DATE= #{now}
+              and r.RESERVE_ID < #{reservationId}
             """)
     int countReservedBeforeMe(LocalDate now,Long reservationId, Long popupId);
 
