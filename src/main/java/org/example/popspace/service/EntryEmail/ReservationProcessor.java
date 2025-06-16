@@ -33,9 +33,10 @@ public class ReservationProcessor {
         String nowTime = now.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
 
         // 현재 영업중인 활성화된 팝업 ID 조회 (오늘 날짜 + 현재 시간 기준)
-        //List<Long> popupIds = popupMapper.selectActivePopups(today, nowTime);
+        List<Long> popupIds = popupMapper.selectActivePopups(today, nowTime);
+        log.info("Active popups: {}", popupIds);
 
-        List<Long> popupIds = List.of(36L); // 테스트용
+//        List<Long> popupIds = List.of(40L); // 테스트용
 
         // 팝업 상세정보 한번에 조회
         Map<Long, PopupInfoDto> popupMap = popupIds.stream()

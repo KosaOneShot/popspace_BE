@@ -25,8 +25,10 @@ public class ReservationWaitingService {
      * 추가 웨이팅 선발 (노쇼 수 만큼 추가 1회 선발)
      */
     public void processAdditionalWaiting(Long popupId, LocalDate date, String reserveTime, PopupInfoDto popup) {
+        log.info("Processing reservation with popupId: " + popupId);
+        log.info("Reservation date: " + date);
+        log.info("Reservation time: " + reserveTime);
         int confirmedCount = entryEmailMapper.countConfirmedReservations(popupId, date, reserveTime);
-        //잔여인원수 = 전체 예약 가능 수 - (CHECKED_IN 또는 CHECKEDOUT된 사전예약자) - (노쇼처리된 예약자)
         log.info("Confirmed reservations: {}", confirmedCount);
         int vacancy = Math.max(popup.getMaxReservations() - confirmedCount, 0);
         if (vacancy == 0) return;
@@ -45,7 +47,7 @@ public class ReservationWaitingService {
 
     private String calculateEndTime(String reserveTimeStr) {
         LocalTime reserveTime = LocalTime.parse(reserveTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
-        return reserveTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm"));
+        return reserveTime.plusMinutes(20).format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 }
 

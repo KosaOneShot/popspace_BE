@@ -154,8 +154,9 @@ public interface EntryEmailMapper {
         JOIN RESERVATION R ON EL.reserve_id = R.reserve_id
         WHERE EL.popup_id = #{popupId}
         AND R.reserve_date = #{reserveDate}
-        AND EL.created_at BETWEEN TO_TIMESTAMP(#{reserveDate} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI')
-                            AND TO_TIMESTAMP(#{reserveDate} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI') + INTERVAL '10' MINUTE
+        AND EL.entrance_state = 'CHECKED_IN'
+        AND EL.created_at BETWEEN TO_TIMESTAMP(TO_CHAR(R.reserve_date, 'YYYY-MM-DD') || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI')
+                         AND TO_TIMESTAMP(TO_CHAR(R.reserve_date, 'YYYY-MM-DD') || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI') + INTERVAL '10' MINUTE
     """)
     int countConfirmedReservations(
             @Param("popupId") Long popupId,

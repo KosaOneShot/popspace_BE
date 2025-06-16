@@ -20,6 +20,8 @@ public class SchedulerTestController {
 
     private final ReservationSchedulerTestRunner testRunner;
 
+    //postman 테스트 url
+    //ex) http://localhost:8080/run/mock?minuteOffset=10&targetDate=2025-06-16&targetTime=11:50
     @PostMapping("/run/mock")
     public String manualRunWithMock(
             @RequestParam int minuteOffset,
