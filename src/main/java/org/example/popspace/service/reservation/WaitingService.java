@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,8 @@ public class WaitingService {
     private ReservationSequenceResponse calculateReservation(LocalDateTime now, int myTurn, Long popupId) {
 
         int averageWaitTime = reservationMapper.averageWaitingTime(now.toLocalDate(), popupId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_ENOUGH_DATA));
+                .orElse(-1);
+
         log.info("[평균 대기 시간] 평균 입장 간격 (분): {}", averageWaitTime);
 
         LocalTime entranceTime = now.toLocalTime().plusMinutes(myTurn * averageWaitTime);
