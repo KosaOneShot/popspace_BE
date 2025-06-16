@@ -101,7 +101,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public RefreshTokenFilter refreshTokenFilter() {
-        return new RefreshTokenFilter("/auth/refresh", jwtUtil, userDetailService, authRedisRepository);
+        return new RefreshTokenFilter("/api/auth/refresh", jwtUtil, userDetailService, authRedisRepository);
     }
 
     @Bean
