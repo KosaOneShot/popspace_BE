@@ -91,7 +91,8 @@ public class CustomSecurityConfig {
                 "/api/popup/detail",
                 "/api/popup/detail/*",
                 "/api/popup/review",
-                "/api/popup/review/*"
+                "/api/popup/review/*",
+                "/run/mock"
         };
     }
 
