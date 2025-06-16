@@ -21,7 +21,7 @@ public class ReservationProcessor {
     private final PopupMapper popupMapper;
     private final EntranceService entranceService;
     private final NoShowService noShowService;
-    private final WaitingService waitingService;
+    private final ReservationWaitingService waitingService;
 
     /**
      * 공통 스케줄러 엔진 (분 단위 오프셋에 따라 동작 분기)
@@ -50,8 +50,8 @@ public class ReservationProcessor {
                 case 0 -> entranceService.processEntrance(popupId, today, nowTime, popup);
                 // 1차 노쇼처리 + 추가 웨이팅 선발
                 case 10 -> {
-                    int noShowCount = noShowService.processNoShow(popupId, today, nowTime);
-                    waitingService.processAdditionalWaiting(popupId, today, nowTime, popup, noShowCount);
+                    noShowService.processNoShow(popupId, today, nowTime);
+                    waitingService.processAdditionalWaiting(popupId, today, nowTime, popup);
                 }
                 // 2차 최종 노쇼처리
                 case 20 -> noShowService.processNoShow(popupId, today, nowTime);

@@ -20,7 +20,7 @@ public class ReservationScheduler {
      * - 사전예약자 확정 및 입장 알림 발송
      * - 잔여 vacancy 만큼 현장 웨이팅 선발 후 입장 알림 발송
      */
-    @Scheduled(cron = "0 30 9-22 * * *")
+    @Scheduled(cron = "0 0 9-22 * * *")
     @Transactional
     public void entranceSelection() {
         try {

@@ -32,7 +32,7 @@ public class EntranceService {
         // 웨이팅에서 vacancy 수만큼 대기자 선발
         entryEmailMapper.updateWaitingReservationsToPending(popupId, today, vacancy);
 
-        // 2단계: pending 상태인 사람만 조회
+        // pending 상태인 사람만 조회
         List<Reservation> pendingList = entryEmailMapper.selectPendingReservations(popupId, today);
 
         // 사전예약자에게 입장 알림 발송
@@ -49,7 +49,7 @@ public class EntranceService {
     }
 
     /**
-     * 입장마감시간 계산기 (예약시간 + 5분 기준)
+     * 입장마감시간 계산기 (예약시간 + 10분 기준)
      * → 메일에 표시할 마감시간 문자열 생성 (HH:mm 포맷)
      */
     private String calculateEndTime(String reserveTimeStr) {

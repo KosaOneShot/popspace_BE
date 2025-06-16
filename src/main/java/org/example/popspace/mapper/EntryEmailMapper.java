@@ -149,17 +149,19 @@ public interface EntryEmailMapper {
 //    );
 
     @Select("""
-    SELECT COUNT(*)
-    FROM RESERVATION
-    WHERE popup_id = #{popupId}
-      AND reserve_date = #{reserveDate}
-      AND reservation_type = 'ADVANCE' 
-      AND reserve_time = #{reserveTime}
-      AND reservation_state IN ('CHECKED_IN', 'CHECKED_OUT')
-""")
+        SELECT COUNT(*)
+        FROM ENTRANCE_LOG EL
+        JOIN RESERVATION R ON EL.reserve_id = R.reserve_id
+        WHERE EL.popup_id = #{popupId}
+        AND R.reserve_date = #{reserveDate}
+        AND EL.created_at BETWEEN TO_TIMESTAMP(#{reserveDate} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI')
+                            AND TO_TIMESTAMP(#{reserveDate} || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI') + INTERVAL '10' MINUTE
+    """)
     int countConfirmedReservations(
             @Param("popupId") Long popupId,
             @Param("reserveDate") LocalDate reserveDate,
             @Param("reserveTime") String reserveTime
     );
+
+
 }

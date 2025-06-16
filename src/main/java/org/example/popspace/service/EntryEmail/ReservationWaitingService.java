@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class WaitingService {
+public class ReservationWaitingService {
 
     private final EntryEmailMapper entryEmailMapper;
     private final EmailService mailService;
@@ -24,10 +24,11 @@ public class WaitingService {
     /**
      * 추가 웨이팅 선발 (노쇼 수 만큼 추가 1회 선발)
      */
-    public void processAdditionalWaiting(Long popupId, LocalDate date, String reserveTime, PopupInfoDto popup, int noShowCount) {
+    public void processAdditionalWaiting(Long popupId, LocalDate date, String reserveTime, PopupInfoDto popup) {
         int confirmedCount = entryEmailMapper.countConfirmedReservations(popupId, date, reserveTime);
         //잔여인원수 = 전체 예약 가능 수 - (CHECKED_IN 또는 CHECKEDOUT된 사전예약자) - (노쇼처리된 예약자)
-        int vacancy = Math.max(popup.getMaxReservations() - confirmedCount - noShowCount, 0);
+        log.info("Confirmed reservations: {}", confirmedCount);
+        int vacancy = Math.max(popup.getMaxReservations() - confirmedCount, 0);
         if (vacancy == 0) return;
 
         //선발된 인원 EMAIL_PENDING 처리
