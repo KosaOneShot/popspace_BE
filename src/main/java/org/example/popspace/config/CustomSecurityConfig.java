@@ -87,6 +87,8 @@ public class CustomSecurityConfig {
                 "/auth/refresh",
                 "/auth/nickname/check-duplication",
                 "/auth/email/check-duplication",
+                "/api/home/most-liked",
+                "/api/popup/list"
         };
     }
 

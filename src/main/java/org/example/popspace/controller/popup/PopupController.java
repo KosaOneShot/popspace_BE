@@ -5,12 +5,9 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
-import org.example.popspace.dto.popup.PopupDetailForAdminResponse;
 import org.example.popspace.dto.popup.*;
-import org.example.popspace.dto.popup.PopupDetailResponse;
 import org.example.popspace.service.popup.PopupService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -66,7 +63,7 @@ public class PopupController {
     @GetMapping("/list")
     public ResponseEntity<List<PopupCardDto>> getPopupList(@AuthenticationPrincipal CustomUserDetail userDetail,
                                                            @ModelAttribute PopupSearchDto dto) {
-        List<PopupCardDto> list = popupService.getPopupList(userDetail.getId(), dto);
+        List<PopupCardDto> list = popupService.getPopupList(userDetail, dto);
         log.info("조회된 팝업 개수: {}", list.size());
         return ResponseEntity.ok(list);
     }

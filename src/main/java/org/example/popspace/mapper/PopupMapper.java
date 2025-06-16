@@ -88,7 +88,9 @@ public interface PopupMapper {
                 p.START_DATE,
                 p.END_DATE,
                 p.IMAGE_URL,
-                pl.LIKE_STATE,
+                <if test="memberId != null">
+                  pl.LIKE_STATE,
+                </if>
                 NVL(lc.LIKE_CNT, 0) AS LIKE_CNT
               FROM POPUP P
               LEFT JOIN (
@@ -96,7 +98,9 @@ public interface PopupMapper {
                 FROM POPUP_LIKE
                 GROUP BY popup_id
               ) LC ON P.popup_id = LC.popup_id
-              LEFT JOIN POPUP_LIKE PL ON P.popup_id = PL.popup_id AND PL.member_id = #{memberId}
+              <if test="memberId != null">
+                LEFT JOIN POPUP_LIKE PL ON P.popup_id = PL.popup_id AND PL.member_id = #{memberId}
+              </if>
               <where>
                   <!-- 검색 (제목) -->
                   <if test="searchKeyword != null and searchKeyword.trim() != ''">
