@@ -20,7 +20,7 @@ public class ReservationAdminController {
     private final ReservationAdminService reservationAdminService;
 
     // 입장 처리
-    @PostMapping("/admin/reservation/checkin")
+    @PostMapping("/api/admin/reservation/checkin")
     public ResponseEntity<String> checkIn(@RequestBody @Valid CheckInOutRequestDTO request,
                                           @AuthenticationPrincipal CustomUserDetail userDetail) {
 
@@ -30,7 +30,7 @@ public class ReservationAdminController {
     }
 
     // 퇴장 처리
-    @PostMapping("/admin/reservation/checkout")
+    @PostMapping("/api/admin/reservation/checkout")
     public ResponseEntity<String> checkOut(@RequestBody @Valid CheckInOutRequestDTO request,
                                            @AuthenticationPrincipal CustomUserDetail userDetail) {
 
