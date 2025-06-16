@@ -39,8 +39,12 @@ public class ReservationScheduler {
     @Scheduled(cron = "0 10 9-22 * * *")
     @Transactional
     public void processAfterFiveMinutes() {
+        try {
         log.info("10분 스케줄러 실행");
         processor.execute(10, LocalDateTime.now());
+        } catch (Exception e) {
+            log.error("스케줄러 예외 발생", e);
+        }
     }
 
     /**
@@ -50,12 +54,11 @@ public class ReservationScheduler {
     @Scheduled(cron = "0 20 9-22 * * *")
     @Transactional
     public void processAfterTenMinutes() {
+        try {
         log.info("20분 스케줄러 실행");
         processor.execute(20, LocalDateTime.now());
+    } catch (Exception e) {
+        log.error("스케줄러 예외 발생", e);
     }
-
-    @PostConstruct
-    public void test() {
-        log.info("ReservationScheduler 빈 생성됨");
     }
 }
