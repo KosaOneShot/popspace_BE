@@ -12,6 +12,7 @@ import org.example.popspace.service.auth.UserDetailService;
 import org.example.popspace.util.auth.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -62,6 +63,7 @@ public class CustomSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(getPublicAuthEndpoints())
                         .permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 )
