@@ -22,14 +22,17 @@ public class AuthRedisConfig {
 
     @Bean(name = "authRedisTemplate")
     public StringRedisTemplate authRedisTemplate() {
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
+        redisConfig.setHostName(secondHost);
+        redisConfig.setPort(secondPort);
 
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .useSsl()  // 반드시 설정
+                .useSsl()  // 🔥 TLS 적용 필수
                 .build();
 
-        LettuceConnectionFactory factory = new LettuceConnectionFactory(
-                new RedisStandaloneConfiguration(secondHost, secondPort));
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig, clientConfig);
         factory.afterPropertiesSet();
+
         return new StringRedisTemplate(factory);
     }
 }

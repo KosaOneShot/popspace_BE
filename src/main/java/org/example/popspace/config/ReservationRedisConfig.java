@@ -24,13 +24,18 @@ public class ReservationRedisConfig {
     public StringRedisTemplate reservationRedisTemplate() {
         log.info("예약 Redis host: {}", redisHost);
         log.info("예약 Redis port: {}", redisPort);
+
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
+        redisConfig.setHostName(redisHost);
+        redisConfig.setPort(redisPort);
+
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-                .useSsl()  // 반드시 설정
+                .useSsl() // ✅ Valkey용 TLS 연결
                 .build();
 
-        LettuceConnectionFactory factory = new LettuceConnectionFactory(
-                new RedisStandaloneConfiguration(redisHost, redisPort));
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig, clientConfig);
         factory.afterPropertiesSet();
+
         return new StringRedisTemplate(factory);
     }
 }
