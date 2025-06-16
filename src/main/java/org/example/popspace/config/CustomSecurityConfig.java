@@ -78,15 +78,14 @@ public class CustomSecurityConfig {
 
     private String[] getPublicAuthEndpoints() {
         return new String[] {
-                "/auth/login",
-                "/auth/register",
-                "/auth/logout",
-                "/auth/refresh",
-                "/auth/reset-password/verify-email",
-                "/auth/reset-password/verify-code",
-                "/auth/refresh",
-                "/auth/nickname/check-duplication",
-                "/auth/email/check-duplication",
+                "/api/auth/login",
+                "/api/auth/register",
+                "/api/auth/logout",
+                "/api/auth/refresh",
+                "/api/auth/reset-password/verify-email",
+                "/api/auth/reset-password/verify-code",
+                "/api/auth/nickname/check-duplication",
+                "/api/auth/email/check-duplication",
         };
     }
 
