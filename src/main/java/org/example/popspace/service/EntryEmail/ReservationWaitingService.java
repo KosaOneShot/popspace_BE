@@ -7,6 +7,7 @@ import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.mapper.EntryEmailMapper;
 import org.example.popspace.service.email.EmailService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +25,7 @@ public class ReservationWaitingService {
     /**
      * 추가 웨이팅 선발 (노쇼 수 만큼 추가 1회 선발)
      */
+    @Transactional
     public void processAdditionalWaiting(Long popupId, LocalDate date, String reserveTime, PopupInfoDto popup) {
         log.info("Processing reservation with popupId: " + popupId);
         log.info("Reservation date: " + date);
@@ -39,10 +41,15 @@ public class ReservationWaitingService {
         // 2단계: pending 상태인 사람만 조회
         List<Reservation> pendingList = entryEmailMapper.selectPendingReservations(popupId, date);
 
-        pendingList.forEach(reservation -> {
+        for (Reservation reservation : pendingList) {
             entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-            mailService.sendEnterNotification(reservation, popup.getPopupName(), popup.getLocation(), calculateEndTime(reserveTime));
-        });
+            mailService.sendEnterNotification(
+                    reservation,
+                    popup.getPopupName(),
+                    popup.getLocation(),
+                    calculateEndTime(reserveTime)
+            );
+        }
     }
 
     private String calculateEndTime(String reserveTimeStr) {

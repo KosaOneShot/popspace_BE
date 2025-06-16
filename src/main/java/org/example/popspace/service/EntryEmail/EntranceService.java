@@ -7,6 +7,7 @@ import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.mapper.EntryEmailMapper;
 import org.example.popspace.service.email.EmailService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +25,7 @@ public class EntranceService {
     /**
      * 입장대상 선정 (사전예약 + 웨이팅 인원 선발)
      */
+    @Transactional
     public void processEntrance(Long popupId, LocalDate today, String reserveTime, PopupInfoDto popup) {
         // 사전예약자 리스트 조회
         List<Reservation> advanceList = entryEmailMapper.selectAdvanceReservations(popupId, today, reserveTime);
@@ -35,17 +37,27 @@ public class EntranceService {
         // pending 상태인 사람만 조회
         List<Reservation> pendingList = entryEmailMapper.selectPendingReservations(popupId, today);
 
-        // 사전예약자에게 입장 알림 발송
-        advanceList.forEach(reservation -> {
+        // 사전예약 입장대상 상태 업데이트 및 알림 발송
+        for (Reservation reservation : advanceList) {
             entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-            mailService.sendEnterNotification(reservation, popup.getPopupName(), popup.getLocation(), calculateEndTime(reserveTime));
-        });
+            mailService.sendEnterNotification(
+                    reservation,
+                    popup.getPopupName(),
+                    popup.getLocation(),
+                    calculateEndTime(reserveTime)
+            );
+        }
 
         // 웨이팅 입장대상 상태 업데이트 및 알림 발송
-        pendingList.forEach(reservation -> {
+        for (Reservation reservation : pendingList) {
             entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-            mailService.sendEnterNotification(reservation, popup.getPopupName(), popup.getLocation(), calculateEndTime(reserveTime));
-        });
+            mailService.sendEnterNotification(
+                    reservation,
+                    popup.getPopupName(),
+                    popup.getLocation(),
+                    calculateEndTime(reserveTime)
+            );
+        }
     }
 
     /**
