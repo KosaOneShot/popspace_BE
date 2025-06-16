@@ -55,11 +55,13 @@ public class ReservationQueryService {
             boolean allFull = true;
             for (String time : TIME_SLOTS) {
                 String key = redisKeyUtil.advanceCountKey(popupId, date, time);
-                String count = redisRepo.getCount(key);
-                if (Integer.parseInt(count) < max) {
+                String countStr = redisRepo.getCount(key);
+                int count = (countStr != null) ? Integer.parseInt(countStr) : 0;
+                if (count < max) {
                     allFull = false;
                     break;
                 }
+
             }
             if (allFull) {
                 fullyBookedDates.add(date);
@@ -95,8 +97,9 @@ public class ReservationQueryService {
 
             if (!isPast) {
                 String key = redisKeyUtil.advanceCountKey(popupId, date, time);
-                String count = redisRepo.getCount(key);
-                isFull = Integer.parseInt(count) >= max;
+                String countStr = redisRepo.getCount(key);
+                int count = (countStr != null) ? Integer.parseInt(countStr) : 0;
+                isFull = count >= max;
             }
 
             TimeSlotDTO slot = new TimeSlotDTO();

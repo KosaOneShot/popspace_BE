@@ -53,7 +53,7 @@ public class CustomSecurityConfig {
         AuthenticationManager authenticationManager = builder.build();
 
         // 사용자 로그인 시 사용되는 커스텀 필터
-        LoginFilter loginFilter = new LoginFilter("/auth/login");
+        LoginFilter loginFilter = new LoginFilter("/api/auth/login");
         loginFilter.setAuthenticationManager(authenticationManager);
         loginFilter.setAuthenticationSuccessHandler(loginSuccessHandler);
 
@@ -78,15 +78,14 @@ public class CustomSecurityConfig {
 
     private String[] getPublicAuthEndpoints() {
         return new String[] {
-                "/auth/login",
-                "/auth/register",
-                "/auth/logout",
-                "/auth/refresh",
-                "/auth/reset-password/verify-email",
-                "/auth/reset-password/verify-code",
-                "/auth/refresh",
-                "/auth/nickname/check-duplication",
-                "/auth/email/check-duplication",
+                "/api/auth/login",
+                "/api/auth/register",
+                "/api/auth/logout",
+                "/api/auth/refresh",
+                "/api/auth/reset-password/verify-email",
+                "/api/auth/reset-password/verify-code",
+                "/api/auth/nickname/check-duplication",
+                "/api/auth/email/check-duplication",
                 "/run/mock"
         };
     }
@@ -103,7 +102,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public RefreshTokenFilter refreshTokenFilter() {
-        return new RefreshTokenFilter("/auth/refresh", jwtUtil, userDetailService, authRedisRepository);
+        return new RefreshTokenFilter("/api/auth/refresh", jwtUtil, userDetailService, authRedisRepository);
     }
 
     @Bean
