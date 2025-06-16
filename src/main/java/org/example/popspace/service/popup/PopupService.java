@@ -2,6 +2,7 @@ package org.example.popspace.service.popup;
 
 import java.util.List;
 
+import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.dto.popup.LikeResponseDto;
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupDetailForAdminResponse;
@@ -73,10 +74,10 @@ public class PopupService {
 
 
 	/* 팝업 목록 */
-	public List<PopupCardDto> getPopupList(Long memberId, PopupSearchDto popupSearchDto) {
-		log.info("/popup/list : memberId : {}, dto : {}", memberId, popupSearchDto.toString());
+	public List<PopupCardDto> getPopupList(CustomUserDetail userDetail, PopupSearchDto popupSearchDto) {
+		log.info("/popup/list : memberId : {}, dto : {}", userDetail, popupSearchDto.toString());
 		return popupMapper.findPopupListBySearchKeywordAndDate(
-			memberId,
+			userDetail!= null ? userDetail.getId() : null,
 			popupSearchDto.getSearchKeyword(),
 			popupSearchDto.getSearchDate(),
 			popupSearchDto.getSortKey(),

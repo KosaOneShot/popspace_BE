@@ -86,7 +86,14 @@ public class CustomSecurityConfig {
                 "/api/auth/reset-password/verify-code",
                 "/api/auth/nickname/check-duplication",
                 "/api/auth/email/check-duplication",
-                "/api/auth/health"
+                "/api/auth/health",
+                "/api/home/most-liked",
+                "/api/popup/list",
+                "/api/popup/detail",
+                "/api/popup/detail/*",
+                "/api/popup/review",
+                "/api/popup/review/*",
+                "/run/mock"
         };
     }
 

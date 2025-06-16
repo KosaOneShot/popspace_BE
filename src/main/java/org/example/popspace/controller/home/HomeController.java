@@ -1,6 +1,7 @@
 package org.example.popspace.controller.home;
 
 import org.example.popspace.dto.auth.CustomUserDetail;
+import org.example.popspace.dto.home.MostLikedPopupDto;
 import org.example.popspace.dto.home.UpcomingReservationDto;
 import org.example.popspace.service.home.HomeService;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class HomeController {
 	}
 
 	@GetMapping("/most-liked")
-	public ResponseEntity<?> getMostLikedPopupLast10Days() {
-		var mostLikedPopup = homeService.findMostLikedPopupLast10Days();
+	public ResponseEntity<MostLikedPopupDto> getMostLikedPopupLast10Days() {
+		MostLikedPopupDto mostLikedPopup = homeService.findMostLikedPopupLast10Days();
 		log.info("가장 찜 수 많은 팝업: {}", mostLikedPopup);
 		return ResponseEntity.ok(mostLikedPopup);
 	}
