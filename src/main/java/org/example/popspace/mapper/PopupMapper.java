@@ -2,9 +2,8 @@ package org.example.popspace.mapper;
 
 import java.time.LocalDate;
 import java.util.List;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+
+import org.apache.ibatis.annotations.*;
 import org.example.popspace.dto.popup.*;
 import org.example.popspace.dto.statistics.PopupInfoWithLikeCount;
 import org.example.popspace.dto.statistics.ReservationTypeStateCount;
@@ -12,7 +11,7 @@ import org.example.popspace.dto.statistics.ReservationMemberData;
 
 import java.util.List;
 import java.util.Optional;
-import org.apache.ibatis.annotations.Update;
+
 import org.example.popspace.dto.popup.PopupCardDto;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.PopupReviewDto;
@@ -223,5 +222,21 @@ public interface PopupMapper {
             LocalDate today,
             String nowTime
     );
+
+    @Select("""
+        <script>
+        SELECT 
+            popup_id, 
+            popup_name, 
+            location, 
+            max_reservations
+        FROM POPUP
+        WHERE popup_id IN
+        <foreach item="id" collection="popupIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        </script>
+        """)
+    List<PopupInfoDto> findPopupInfoAndReviewsByPopupIds(@Param("popupIds") List<Long> popupIds);
 
 }

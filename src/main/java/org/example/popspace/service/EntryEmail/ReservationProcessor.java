@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,8 +40,10 @@ public class ReservationProcessor {
 //        List<Long> popupIds = List.of(40L); // 테스트용
 
         // 팝업 상세정보 한번에 조회
-        Map<Long, PopupInfoDto> popupMap = popupIds.stream()
-                .collect(Collectors.toMap(id -> id, popupMapper::findPopupInfoAndReviewsByPopupId));
+
+        List<PopupInfoDto> popupList = popupMapper.findPopupInfoAndReviewsByPopupIds(popupIds);
+        Map<Long, PopupInfoDto> popupMap = popupList.stream()
+                .collect(Collectors.toMap(PopupInfoDto::getPopupId, Function.identity()));
 
         log.info("popupMap: {}", popupMap);
         // 각 활성화된 팝업마다 순회 처리
