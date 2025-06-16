@@ -23,9 +23,8 @@ public class NotificationService {
 
     @Transactional
     public void createNotificationAndNotify(Long memberId, NotificationRequestDto dto, String imageUrl) {
-        Long popupId = notificationMapper.selectPopupIdByMemberId(memberId).orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
         NotificationResponseDto notification = NotificationResponseDto.builder()
-                .popupId(popupId)
+                .popupId(dto.getPopupId())
                 .title(dto.getTitle())
                 .content(dto.getContent())
                 .imageUrl(imageUrl)
@@ -33,7 +32,7 @@ public class NotificationService {
                 .build();
 
         notificationMapper.insertNotification(notification);
-        sendNotificationToReservedMembers(popupId, notification);
+        sendNotificationToReservedMembers(dto.getPopupId(), notification);
     }
 
     private void sendNotificationToReservedMembers(Long popupId, NotificationResponseDto notification) {
