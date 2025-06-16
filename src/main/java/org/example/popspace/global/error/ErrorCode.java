@@ -46,16 +46,26 @@ public enum ErrorCode {
     // Reservation
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND,"해당하는 예약 정보가 없습니다."),
     INVALID_RESERVATION_STATE(HttpStatus.BAD_REQUEST, "예약 상태가 유효하지 않습니다."),
-
+    ALREADY_RESERVED(HttpStatus.BAD_REQUEST, "이미 오늘 예약이 존재합니다."),
+    RESERVATION_FULL(HttpStatus.BAD_REQUEST, "해당 시간대의 예약이 마감되었습니다."),
+    RESERVATION_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "예약 중 오류가 발생했습니다."),
+    RESERVATION_CANNOT_BE_CANCELLED(HttpStatus.BAD_REQUEST, "취소 가능한 예약이 아닙니다."),
+    CANCEL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "예약 취소 중 오류가 발생했습니다."),
+    NOSHOW_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "노쇼 처리 중 오류가 발생했습니다."),
+    INVALID_RESERVATION_DATE(HttpStatus.BAD_REQUEST, "예약 가능 날짜가 아닙니다."),
+    INVALID_RESERVATION_TIME(HttpStatus.BAD_REQUEST, "예약 가능 시간이 아닙니다."),
+    NOT_CHECKIN_TIME(HttpStatus.BAD_REQUEST, "입장 가능 시간이 아닙니다."),
 
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 가입된 닉네임입니다."),
+
     // POPUP
     POPUP_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 ID의 팝업이 존재하지 않습니다."),
 
     // mybatis 업데이트 오류
     UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "UPDATE 쿼리에서 오류가 발생했습니다."),
     INSERT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INSERT 쿼리에서 오류가 발생했습니다."),
+
     // 403 권한 부족 에러
     NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
 
@@ -70,7 +80,7 @@ public enum ErrorCode {
     //notification
     SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
 
-    ;
+    NOT_ENOUGH_DATA(HttpStatus.BAD_REQUEST,  "충분한 통계 데이터가 존재하지 않습니다.");
 
     ;
 

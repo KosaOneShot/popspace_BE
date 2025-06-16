@@ -7,6 +7,9 @@ import org.example.popspace.mapper.PopupMapper;
 import org.example.popspace.mapper.ReservationMapper;
 import org.springframework.stereotype.Component;
 
+/**
+ * 팝업 사장 권한 확인
+ */
 @Component
 @RequiredArgsConstructor
 public class OwnerAuthorityValidator {
@@ -15,8 +18,8 @@ public class OwnerAuthorityValidator {
     private final PopupMapper popupMapper;
 
     // api 요청자가 해당 예약의 팝업 사장인지 판단
-    public void validatePopupOwnerByReservation(long userId, long reservationId) {
-        long popupOwnerId = reservationMapper.findPopupOwnerIdByReservationId(reservationId)
+    public void validatePopupOwnerByReservation(long userId, long reserveId) {
+        long popupOwnerId = reservationMapper.findPopupOwnerIdByReserveId(reserveId)
                 .orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
         if (userId != popupOwnerId) {

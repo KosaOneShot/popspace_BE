@@ -1,4 +1,4 @@
-package org.example.popspace.dto.qr;
+package org.example.popspace.dto.reservation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,14 +11,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-public class QrReservationDTO {
+public class ReservationDTO {
     private Long reserveId;
-    private String reservationState;
-    private String reservationType;
+    private Long memberId;
+
+    private Long popupId;
+
     private LocalDate reserveDate;
     private String reserveTime;
 
-    private String popupName;
-
-    private String memberName;
+    private String reservationState;
+    private String reservationType;
 }
