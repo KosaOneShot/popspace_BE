@@ -53,7 +53,7 @@ public class CustomSecurityConfig {
         AuthenticationManager authenticationManager = builder.build();
 
         // 사용자 로그인 시 사용되는 커스텀 필터
-        LoginFilter loginFilter = new LoginFilter("/auth/login");
+        LoginFilter loginFilter = new LoginFilter("/api/auth/login");
         loginFilter.setAuthenticationManager(authenticationManager);
         loginFilter.setAuthenticationSuccessHandler(loginSuccessHandler);
 
