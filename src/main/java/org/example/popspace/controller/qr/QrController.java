@@ -21,10 +21,10 @@ public class QrController {
     private final ReservationQrService reservationQrService;
 
     // QR 생성
-    @GetMapping(value = "/api/qr/{reservationId}", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getQr(@PathVariable Long reservationId) {
+    @GetMapping(value = "/api/qr/{reserveId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getQr(@PathVariable Long reserveId) {
 
-        byte[] image = reservationQrService.createQr(reservationId);
+        byte[] image = reservationQrService.createQr(reserveId);
         HttpHeaders headers = new HttpHeaders();
 
         // 캐시: public (브라우저 + CDN), max-age 1일 (86400초)
@@ -42,7 +42,7 @@ public class QrController {
                                                      @AuthenticationPrincipal CustomUserDetail userDetail) {
 
         QrReservationDTO dto = reservationQrService.processQrVerification(
-                userDetail.getId(), request.getReservationId(), request.getSig());
+                userDetail.getId(), request.getReserveId(), request.getSig());
         return ResponseEntity.ok(dto);
     }
 }

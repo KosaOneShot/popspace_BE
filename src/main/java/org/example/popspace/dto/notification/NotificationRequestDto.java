@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationRequestDto {
+    private Long popupId;
     private String title;
     private String content;
 }

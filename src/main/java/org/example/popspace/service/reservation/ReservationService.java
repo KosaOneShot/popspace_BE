@@ -1,0 +1,29 @@
+package org.example.popspace.service.reservation;
+
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.reservation.ReservationDetailResponseDto;
+import org.example.popspace.dto.reservation.ReservationListRequestDto;
+import org.example.popspace.dto.reservation.ReservationListResponseDto;
+import org.example.popspace.mapper.ReservationMapper_hyeesw;
+import org.springframework.stereotype.Service;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class ReservationService {
+    private final ReservationMapper_hyeesw reservationMapper;
+
+    /* 예약 목록 조회 */
+    public List<ReservationListResponseDto> findReservationListByMemberId(ReservationListRequestDto dto, Long memberId) {
+        return reservationMapper.findReservationListByMemberId(
+            dto.getSearchKeyword(), dto.getSearchDate(), dto.getReservationType(), memberId,
+            dto.getLastReserveDate(), dto.getLastReserveHour(), dto.getLastReserveMinute(), dto.getLastReserveId());
+    }
+
+    /* 예약 상세 조회 */
+    public ReservationDetailResponseDto findReservationDetailByReserveId(Long reserveId) {
+        return reservationMapper.findReservationDetailByReserveId(reserveId);
+    }
+}
