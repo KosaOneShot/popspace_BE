@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
@@ -23,6 +24,9 @@ public class ReservationRedisConfig {
     public StringRedisTemplate reservationRedisTemplate() {
         log.info("예약 Redis host: {}", redisHost);
         log.info("예약 Redis port: {}", redisPort);
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+                .useSsl()  // 반드시 설정
+                .build();
 
         LettuceConnectionFactory factory = new LettuceConnectionFactory(
                 new RedisStandaloneConfiguration(redisHost, redisPort));
