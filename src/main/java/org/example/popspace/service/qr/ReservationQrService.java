@@ -21,10 +21,10 @@ public class ReservationQrService {
     private final ReservationMapper reservationMapper;
     private final OwnerAuthorityValidator authorityValidator;
 
-    public QrReservationDTO processQrVerification(long userId, long reserveId, String sig){
+    public QrReservationDTO processQrVerification(long memberId, long reserveId, String sig){
 
         // 1. 팝업 사장 여부 검증
-        authorityValidator.validatePopupOwnerByReservation(userId, reserveId);
+        authorityValidator.validatePopupOwnerByReservation(memberId, reserveId);
 
         // 2. QR 서명 검증
         verifyQr(reserveId, sig);
