@@ -86,7 +86,7 @@ public class CustomSecurityConfig {
                 "/api/auth/reset-password/verify-code",
                 "/api/auth/nickname/check-duplication",
                 "/api/auth/email/check-duplication",
-                "/auth/health"
+                "/api/auth/health"
         };
     }
 
