@@ -63,6 +63,7 @@ public class CustomSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(getPublicAuthEndpoints())
                         .permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers("/api/auth/health").permitAll()  // 👈 꼭 추가!!
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest()
