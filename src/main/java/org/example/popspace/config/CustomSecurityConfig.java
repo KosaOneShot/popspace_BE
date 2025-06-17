@@ -9,6 +9,7 @@ import org.example.popspace.filter.RefreshTokenFilter;
 import org.example.popspace.handler.LoginSuccessHandler;
 import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.service.auth.UserDetailService;
+import org.example.popspace.util.auth.AuthUtil;
 import org.example.popspace.util.auth.JWTUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,9 +74,9 @@ public class CustomSecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))//세션을 생성하거나 유지하지 않음
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // 필터 순서: 로그인 → 토큰검사 → 리프레시토큰 처리
-                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(accessTokenCheckFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(refreshTokenFilter, AccessTokenCheckFilter.class)
+                .addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class)
         ;
         return http.build();
     }
@@ -107,8 +108,8 @@ public class CustomSecurityConfig {
     }
 
     @Bean
-    public AccessTokenCheckFilter tokenCheckFilter() {
-        return new AccessTokenCheckFilter(getPublicAuthEndpoints(),jwtUtil, authRedisRepository);
+    public AccessTokenCheckFilter tokenCheckFilter(AuthUtil authUtil) {
+        return new AccessTokenCheckFilter(getPublicAuthEndpoints(),authUtil);
     }
 
     @Bean

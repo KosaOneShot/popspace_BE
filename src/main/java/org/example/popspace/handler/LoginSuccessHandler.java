@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.util.auth.JWTUtil;
+import org.example.popspace.util.auth.ParseUtil;
 import org.example.popspace.util.auth.SendTokenUtil;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -33,7 +34,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("핸들러 {}", userDetail); //username
 
 //        Map<String, Object> claim = Map.of("email", authentication.getName());
-        Map<String, Object> claim = jwtUtil.createClaim(userDetail.getEmail(),
+        Map<String, Object> claim = ParseUtil.createClaim(userDetail.getEmail(),
                 userDetail.getId(),
                 userDetail.getNickname(),
                 userDetail.getRole());

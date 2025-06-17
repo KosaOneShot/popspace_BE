@@ -62,12 +62,4 @@ public class JWTUtil {
         }
     }
 
-    public Map<String, Object> createClaim(String email, long memberId, String nickname, String roleName) {
-        return Map.of(
-                "email", email,                          // username
-                "memberId", memberId,
-                "nickname", nickname,
-                "role", roleName
-        );
-    }
 }
