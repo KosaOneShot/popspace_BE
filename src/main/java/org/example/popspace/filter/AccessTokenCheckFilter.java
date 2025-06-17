@@ -39,6 +39,10 @@ public class AccessTokenCheckFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         //api 시작시 통과
 
+        if("/api/auth/health".equals(path)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (isPermittedPath(path)) {
             log.info("TokenCheckFilter 통과: {}", path);
             filterChain.doFilter(request, response);
