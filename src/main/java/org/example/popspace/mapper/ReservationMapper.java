@@ -69,7 +69,7 @@ public interface ReservationMapper {
         FROM RESERVATION
         WHERE POPUP_ID = #{popupId}
           AND RESERVE_DATE = #{reserveDate}
-          AND RESERVATION_TYPE = 'WALK_IN'
+          AND RESERVATION_TYPE = 'WALK-IN'
           AND RESERVATION_STATE = 'RESERVED'
     """)
     int countConfirmedWalkIn(@Param("popupId") Long popupId,
@@ -183,7 +183,7 @@ public interface ReservationMapper {
             select count(r.RESERVE_ID)+1
             from RESERVATION r
             where r.POPUP_ID= #{popupId}
-              and r.RESERVATION_TYPE = 'WALK_IN'
+              and r.RESERVATION_TYPE = 'WALK-IN'
               and r.RESERVATION_STATE = 'RESERVED'
               and r.RESERVE_DATE= #{now}
               and r.RESERVE_ID < #{reservationId}
@@ -194,7 +194,7 @@ public interface ReservationMapper {
             select count(r.RESERVE_ID)+1
             from RESERVATION r
             where r.POPUP_ID= #{popupId}
-              and r.RESERVATION_TYPE = 'WALK_IN'
+              and r.RESERVATION_TYPE = 'WALK-IN'
               and r.RESERVATION_STATE = 'RESERVED'
               AND r.RESERVE_DATE =#{now}
             """)
@@ -206,7 +206,7 @@ public interface ReservationMapper {
             FROM RESERVATION r
             JOIN ENTRANCE_LOG el ON el.RESERVE_ID = r.RESERVE_ID AND el.ENTRANCE_STATE = 'CHECKED_IN'
             WHERE r.POPUP_ID = #{popupId}
-              AND r.RESERVATION_TYPE = 'WALK_IN'
+              AND r.RESERVATION_TYPE = 'WALK-IN'
               AND r.RESERVATION_STATE IN ('CHECKED_IN', 'CHECKED_OUT')
               AND r.RESERVE_DATE =#{now}
             """)
