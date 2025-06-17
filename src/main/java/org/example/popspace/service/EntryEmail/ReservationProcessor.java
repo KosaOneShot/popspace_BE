@@ -39,8 +39,12 @@ public class ReservationProcessor {
 
 //        List<Long> popupIds = List.of(40L); // 테스트용
 
+        //활성화된 팝업이 없을 때
+        if (popupIds == null || popupIds.isEmpty()) {
+            return;
+        }
         // 팝업 상세정보 한번에 조회
-
+        
         List<PopupInfoDto> popupList = popupMapper.findPopupInfoAndReviewsByPopupIds(popupIds);
         Map<Long, PopupInfoDto> popupMap = popupList.stream()
                 .collect(Collectors.toMap(PopupInfoDto::getPopupId, Function.identity()));
