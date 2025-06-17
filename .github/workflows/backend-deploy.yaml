@@ -99,9 +99,17 @@ jobs:
             --comment "Deploy Docker container on ASG instances" \
             --instance-ids $INSTANCE_IDS \
             --parameters commands='[
-              "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 528757787186.dkr.ecr.ap-northeast-2.amazonaws.com",
-              "docker pull '"$ECR_REPO:$IMAGE_TAG"'",
-              "docker rm -f popspace-app || true",
-              "docker run -d --name popspace-app --env-file /backend.env -p 8080:8080 --restart unless-stopped '"$ECR_REPO:$IMAGE_TAG"'"
-            ]' \
+            "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 528757787186.dkr.ecr.ap-northeast-2.amazonaws.com",
+            "docker pull '"$ECR_REPO:$IMAGE_TAG"'",
+            "docker rm -f popspace-app || true",
+            "docker run -d \
+                --name popspace-app \
+                -p 8080:8080 \
+                --restart unless-stopped \
+                -v /etc/localtime:/etc/localtime:ro \
+                -e TZ=Asia/Seoul \
+                --env-file /backend.env \
+                '"$ECR_REPO:$IMAGE_TAG"'"
+          ]' \
             --region ap-northeast-2
+
