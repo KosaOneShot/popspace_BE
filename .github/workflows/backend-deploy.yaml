@@ -80,14 +80,21 @@ jobs:
           cache-to: type=gha,mode=max
 
       # 기존 build-push 단계 이후
+      - name: Tag latest
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}:${{ github.sha }} \
+                     ${{ secrets.DOCKER_USERNAME }}:latest
+
+      - name: Push latest tag to ECR
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}:latest
 
       - name: Deploy to all running EC2s in ASG via SSM
         env:
           ASG_NAME: popspace-as-2
-          ECR_REPO: ${{secrets.DOCKER_USERNAME}}
-          IMAGE_TAG: ${{ github.sha }}
+          ECR_REPO: ${{ secrets.DOCKER_USERNAME }}
+          IMAGE_TAG: latest
         run: |
-          # ASG에 속한 인스턴스 ID 목록 조회 (running 상태만)
           INSTANCE_IDS=$(aws ec2 describe-instances \
             --filters "Name=tag:aws:autoscaling:groupName,Values=$ASG_NAME" "Name=instance-state-name,Values=running" \
             --query "Reservations[].Instances[].InstanceId" --output text)
@@ -99,17 +106,17 @@ jobs:
             --comment "Deploy Docker container on ASG instances" \
             --instance-ids $INSTANCE_IDS \
             --parameters commands='[
-            "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 528757787186.dkr.ecr.ap-northeast-2.amazonaws.com",
-            "docker pull '"$ECR_REPO:$IMAGE_TAG"'",
-            "docker rm -f popspace-app || true",
-            "docker run -d \
-                --name popspace-app \
-                -p 8080:8080 \
-                --restart unless-stopped \
-                -v /etc/localtime:/etc/localtime:ro \
-                -e TZ=Asia/Seoul \
-                --env-file /backend.env \
-                '"$ECR_REPO:$IMAGE_TAG"'"
-          ]' \
+              "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 528757787186.dkr.ecr.ap-northeast-2.amazonaws.com",
+              "docker pull '"$ECR_REPO:latest"'",
+              "docker rm -f popspace-app || true",
+              "docker run -d \
+                  --name popspace-app \
+                  -p 8080:8080 \
+                  --restart unless-stopped \
+                  -v /etc/localtime:/etc/localtime:ro \
+                  -e TZ=Asia/Seoul \
+                  --env-file /backend.env \
+                  '"$ECR_REPO:latest"'"
+            ]' \
             --region ap-northeast-2
 
