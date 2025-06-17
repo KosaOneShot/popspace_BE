@@ -33,6 +33,7 @@ public class ReservationWaitingService {
         int confirmedCount = entryEmailMapper.countConfirmedReservations(popupId, date, reserveTime);
         log.info("Confirmed reservations: {}", confirmedCount);
         int vacancy = Math.max(popup.getMaxReservations() - confirmedCount, 0);
+        log.info("Vacancy: {}", vacancy);
         if (vacancy == 0) return;
 
         //선발된 인원 EMAIL_PENDING 처리
