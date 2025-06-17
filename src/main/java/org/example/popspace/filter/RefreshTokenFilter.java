@@ -12,10 +12,7 @@ import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.service.auth.UserDetailService;
-import org.example.popspace.util.auth.ErrorResponseUtil;
-import org.example.popspace.util.auth.ExtractCookie;
-import org.example.popspace.util.auth.JWTUtil;
-import org.example.popspace.util.auth.SendTokenUtil;
+import org.example.popspace.util.auth.*;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -62,7 +59,7 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
             MemberLoginInfo userDTO = userDetailService.findByMemberId((((Number) payload.get("memberId")).longValue()) );
 
             //이상태까지 오면 무조건 AccessToken은 새로 생성
-            Map<String, Object> claim = jwtUtil.createClaim
+            Map<String, Object> claim = ParseUtil.createClaim
                     (userDTO.getEmail(), userDTO.getMemberId(), userDTO.getNickname(), userDTO.getRole());
 
             String accessTokenValue = jwtUtil.generateToken(claim, 10);
