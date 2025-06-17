@@ -86,6 +86,7 @@ public class EmailService {
                 endTime,
                 PopupLocation
         );
+        log.info("예약자 메일: " + reservation.getEmail());
         mailSend(reservation.getEmail(), title, content);
     }
 
