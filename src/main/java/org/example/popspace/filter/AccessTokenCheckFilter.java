@@ -39,10 +39,12 @@ public class AccessTokenCheckFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         //api 시작시 통과
 
-        if("/api/auth/health".equals(path)) {
+        if(path.startsWith("/api/auth/health")){
+            log.info("TokenCheckFilter 헬스 체크 통과: {}", path);
             filterChain.doFilter(request, response);
             return;
         }
+
         if (isPermittedPath(path)) {
             log.info("TokenCheckFilter 통과: {}", path);
             filterChain.doFilter(request, response);
@@ -50,6 +52,7 @@ public class AccessTokenCheckFilter extends OncePerRequestFilter {
         }
 
         log.info("Token Check Filter..........................");
+        log.info("TokenCheckFilter 검사: {}", path);
 
         String token = ExtractCookie.extractTokenFromCookies(request, "accessToken");
 
