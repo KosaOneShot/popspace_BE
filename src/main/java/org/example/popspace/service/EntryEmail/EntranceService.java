@@ -21,11 +21,11 @@ public class EntranceService {
 
     private final EntryEmailMapper entryEmailMapper;
     private final EmailService mailService;
+    private final EntranceStateUpdateService entranceStateUpdateService;
 
     /**
      * 입장대상 선정 (사전예약 + 웨이팅 인원 선발)
      */
-    @Transactional
     public void processEntrance(Long popupId, LocalDate today, String reserveTime, PopupInfoDto popup) {
         // 사전예약자 리스트 조회
         List<Reservation> advanceList = entryEmailMapper.selectAdvanceReservations(popupId, today, reserveTime);
@@ -38,25 +38,39 @@ public class EntranceService {
         List<Reservation> pendingList = entryEmailMapper.selectPendingReservations(popupId, today);
 
         // 사전예약 입장대상 상태 업데이트 및 알림 발송
-        for (Reservation reservation : advanceList) {
-            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-            mailService.sendEnterNotification(
-                    reservation,
-                    popup.getPopupName(),
-                    popup.getLocation(),
-                    calculateEndTime(reserveTime)
-            );
-        }
+//        for (Reservation reservation : advanceList) {
+//            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
+//            mailService.sendEnterNotification(
+//                    reservation,
+//                    popup.getPopupName(),
+//                    popup.getLocation(),
+//                    calculateEndTime(reserveTime)
+//            );
+//        }
 
+        entranceStateUpdateService.updateReservations(advanceList);
+        sendEmails(advanceList, popup, reserveTime);
         // 웨이팅 입장대상 상태 업데이트 및 알림 발송
-        for (Reservation reservation : pendingList) {
-            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-            mailService.sendEnterNotification(
-                    reservation,
-                    popup.getPopupName(),
-                    popup.getLocation(),
-                    calculateEndTime(reserveTime)
-            );
+//        for (Reservation reservation : pendingList) {
+//            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
+//            mailService.sendEnterNotification(
+//                    reservation,
+//                    popup.getPopupName(),
+//                    popup.getLocation(),
+//                    calculateEndTime(reserveTime)
+//            );
+//        }
+        entranceStateUpdateService.updateReservations(pendingList);
+        sendEmails(pendingList, popup, reserveTime);
+    }
+
+    public void sendEmails(List<Reservation> reservations, PopupInfoDto popup, String reserveTime) {
+        for (Reservation reservation : reservations) {
+            try {
+                mailService.sendEnterNotification(reservation, popup.getPopupName(), popup.getLocation(), calculateEndTime(reserveTime));
+            } catch (Exception e) {
+                log.error("이메일 전송 실패: {}", reservation.getEmail(), e);
+            }
         }
     }
 
@@ -68,4 +82,6 @@ public class EntranceService {
         LocalTime reserveTime = LocalTime.parse(reserveTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
         return reserveTime.plusMinutes(10).format(DateTimeFormatter.ofPattern("HH:mm"));
     }
+
+
 }
