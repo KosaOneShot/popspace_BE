@@ -42,7 +42,7 @@ public class ReservationQrService {
         String message = "reserveId=" + reserveId;
         String sig = hmacUtil.generateSignature(message);
 
-        String url = "https://kosa-popspace.com/api/qr/verify?" + message + "&sig=" + sig;
+        String url = "https://kospopspace.online/api/qr/verify?" + message + "&sig=" + sig;
         return qrCodeGenerator.generateQrImage(url);
     }
 

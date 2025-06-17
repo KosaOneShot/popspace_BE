@@ -87,10 +87,18 @@ public class ReservationQueryService {
         LocalDate today = LocalDate.now();
         LocalTime now = LocalTime.now();
 
+        LocalTime open = LocalTime.parse(popup.getOpenTime());
+        LocalTime close = LocalTime.parse(popup.getCloseTime());
+
         List<TimeSlotDTO> times = new ArrayList<>();
 
         for (String time : TIME_SLOTS) {
-            LocalTime slotTime = LocalTime.parse(time);  // "14:00" → LocalTime
+            LocalTime slotTime = LocalTime.parse(time);
+
+            // 운영 시간 범위에 포함되지 않으면 건너뜀
+            if (slotTime.isBefore(open) || !slotTime.isBefore(close)) {
+                continue;
+            }
 
             boolean isPast = date.isBefore(today) || (date.isEqual(today) && slotTime.isBefore(now));
             boolean isFull = false;
