@@ -31,14 +31,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Cache Gradle build output
-        uses: actions/cache@v3
-        with:
-          path: build
-          key: ${{ runner.os }}-gradle-build-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-build-
-
       - name: Cache JDK 17
         uses: actions/cache@v3
         with:
