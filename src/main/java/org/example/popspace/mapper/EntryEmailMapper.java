@@ -69,7 +69,7 @@ public interface EntryEmailMapper {
             FROM RESERVATION
             WHERE popup_id = #{popupId}
               AND reserve_date = #{reserveDate}
-              AND reservation_type = 'WALK_IN'
+              AND reservation_type = 'WALK-IN'
               AND reservation_state = 'RESERVED'
             ORDER BY reserve_id
             FETCH FIRST #{limit} ROWS ONLY
@@ -91,7 +91,7 @@ public interface EntryEmailMapper {
         JOIN MEMBER M ON R.member_id = M.member_id
         WHERE popup_id = #{popupId}
         AND reserve_date = #{reserveDate}
-        AND reservation_type = 'WALK_IN'
+        AND reservation_type = 'WALK-IN'
         AND reservation_state = 'EMAIL_PENDING'
         ORDER BY reserve_id
     """)
@@ -118,7 +118,7 @@ public interface EntryEmailMapper {
           AND (
             (R.reservation_type = 'ADVANCE' AND R.reserve_time = #{reserveTime})
             OR
-            (R.reservation_type = 'WALK_IN')
+            (R.reservation_type = 'WALK-IN')
           )
           AND R.reservation_state = 'EMAIL_SEND'
           AND NOT EXISTS (
