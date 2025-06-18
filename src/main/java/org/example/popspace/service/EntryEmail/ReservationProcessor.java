@@ -23,6 +23,7 @@ public class ReservationProcessor {
     private final EntranceService entranceService;
     private final NoShowService noShowService;
     private final ReservationWaitingService waitingService;
+    private final EntranceStateUpdateService entranceStateUpdateService;
 
     /**
      * 공통 스케줄러 엔진 (분 단위 오프셋에 따라 동작 분기)
@@ -37,7 +38,7 @@ public class ReservationProcessor {
         List<Long> popupIds = popupMapper.selectActivePopups(today, nowTime);
         log.info("Active popups: {}", popupIds);
 
-//        List<Long> popupIds = List.of(40L); // 테스트용
+//        List<Long> popupIds = List.of(41L); // 테스트용
 
         //활성화된 팝업이 없을 때
         if (popupIds == null || popupIds.isEmpty()) {
@@ -55,7 +56,10 @@ public class ReservationProcessor {
             PopupInfoDto popup = popupMap.get(popupId);
             switch (minuteOffset) {
                 // 입장대상 선정
-                case 0 -> entranceService.processEntrance(popupId, today, nowTime, popup);
+                case 0 -> {
+                    entranceStateUpdateService.processPreviousHourReservations(now);
+                    entranceService.processEntrance(popupId, today, nowTime, popup);
+                }
                 // 1차 노쇼처리 + 추가 웨이팅 선발
                 case 10 -> {
                     noShowService.processNoShow(popupId, today, nowTime);
