@@ -71,10 +71,12 @@ public class UserDetailService implements UserDetailsService {
 
     public void logout(HttpServletRequest request, HttpServletResponse response) {
 
-        for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals("accessToken") || cookie.getName().equals("refreshToken")) {
-                authRedisRepository.setTokenBlacklist(cookie.getValue());
-
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName()) || "refreshToken".equals(cookie.getName())) {
+                    authRedisRepository.setTokenBlacklist(cookie.getValue());
+                }
             }
         }
 
