@@ -140,7 +140,7 @@ public interface PopupMapper {
                     ORDER BY P.END_DATE DESC, P.POPUP_ID DESC
                   </otherwise>
                 </choose>
-                FETCH FIRST 4 ROWS ONLY
+                FETCH FIRST 6 ROWS ONLY
             </script>
             """
     })
