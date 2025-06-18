@@ -52,7 +52,7 @@ public class EmailService {
         String content = """
         <body style="font-family: 'Apple SD Gothic Neo', Arial, sans-serif; background-color: #f7f7f7; padding: 20px;">
             <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                <h2 style="color: #1D9D8B;">🎉 입장 순서가 도착했어요!</h2>
+                <h2 style="color: #8250D;">🎉 입장 순서가 도착했어요!</h2>
                 <p style="font-size: 16px; color: #333;">지금 바로 입장하실 수 있습니다.</p>
                 <table style="width: 100%%; font-size: 16px; margin-top: 20px;">
                     <tr>
