@@ -38,30 +38,10 @@ public class EntranceService {
         // pending 상태인 사람만 조회
         List<Reservation> pendingList = entryEmailMapper.selectPendingReservations(popupId, today);
 
-        // 사전예약 입장대상 상태 업데이트 및 알림 발송
-//        for (Reservation reservation : advanceList) {
-//            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-//            mailService.sendEnterNotification(
-//                    reservation,
-//                    popup.getPopupName(),
-//                    popup.getLocation(),
-//                    calculateEndTime(reserveTime)
-//            );
-//        }
-
-        entranceStateUpdateService.updateReservations(advanceList);
+        entranceStateUpdateService.updateReservations(advanceList, reserveTime);
         sendEmails(advanceList, popup, reserveTime);
-        // 웨이팅 입장대상 상태 업데이트 및 알림 발송
-//        for (Reservation reservation : pendingList) {
-//            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-//            mailService.sendEnterNotification(
-//                    reservation,
-//                    popup.getPopupName(),
-//                    popup.getLocation(),
-//                    calculateEndTime(reserveTime)
-//            );
-//        }
-        entranceStateUpdateService.updateReservations(pendingList);
+
+        entranceStateUpdateService.updateReservations(pendingList, reserveTime);
         sendEmails(pendingList, popup, reserveTime);
     }
 
