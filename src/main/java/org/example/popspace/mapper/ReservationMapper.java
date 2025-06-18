@@ -7,7 +7,6 @@ import org.example.popspace.dto.reservation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Mapper
@@ -212,4 +211,26 @@ public interface ReservationMapper {
             """)
     Optional<Integer> averageWaitingTime(LocalDate now,Long popupId);
 
+    @Select("""
+            SELECT
+                COUNT(r.RESERVE_ID) AS CURRENT_COUNT,
+                p.MAX_RESERVATIONS
+            FROM POPUP p
+                     LEFT JOIN RESERVATION r ON r.POPUP_ID = p.POPUP_ID
+                AND
+                (
+                    (r.RESERVATION_STATE IN ('CHECKED_IN', 'EMAIL_SEND') AND r.RESERVATION_TYPE = 'ADVANCE'
+                         AND r.RESERVE_DATE = #{nowDate}
+                         AND SUBSTR(r.RESERVE_TIME, 1, 2) = #{hour}
+                    )
+                    OR
+                    (r.RESERVATION_STATE IN ('CHECKED_IN', 'EMAIL_SEND') AND r.RESERVATION_TYPE = 'WALK-IN'
+                         AND TRUNC(r.created_at) = #{nowDate}
+                         AND TO_CHAR(r.created_at, 'HH24') = #{hour}
+                    )
+                )
+            WHERE p.POPUP_ID = #{popupId}
+            GROUP BY p.POPUP_ID, p.MAX_RESERVATIONS
+            """)
+    CountEntranceDTO countEntrance(LocalDate nowDate, String hour, Long popupId);
 }

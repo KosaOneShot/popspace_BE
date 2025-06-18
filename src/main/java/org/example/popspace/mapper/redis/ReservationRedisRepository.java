@@ -38,6 +38,11 @@ public class ReservationRedisRepository {
         }
     }
 
+    // count 증가
+    public Long incrementCount(String key) {
+        return redisTemplate.opsForValue().increment(key);
+    }
+
     // 팝업 정보 가져오기
     public ReservationPopupCacheDTO getPopupInfo(String key) {
         String json = redisTemplate.opsForValue().get(key);
