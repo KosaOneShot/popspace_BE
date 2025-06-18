@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ReservationQueryService {
     private final ReservationMapper reservationMapper;
 
     private static final List<String> TIME_SLOTS = List.of(
-            "10:00", "11:00", "12:00", "13:00", "14:00",
+            "9:00", "10:00", "11:00", "12:00", "13:00", "14:00",
             "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
     );
     private final RedisKeyUtil redisKeyUtil;
@@ -93,7 +94,8 @@ public class ReservationQueryService {
         List<TimeSlotDTO> times = new ArrayList<>();
 
         for (String time : TIME_SLOTS) {
-            LocalTime slotTime = LocalTime.parse(time);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:mm");
+            LocalTime slotTime = LocalTime.parse(time, formatter);
 
             // 운영 시간 범위에 포함되지 않으면 건너뜀
             if (slotTime.isBefore(open) || !slotTime.isBefore(close)) {
