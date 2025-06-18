@@ -120,8 +120,8 @@ public interface EntryEmailMapper {
     WHERE EL.popup_id = #{popupId}
       AND R.reserve_date = #{reserveDate}
       AND EL.entrance_state = 'CHECKED_IN'
-      AND EL.created_at BETWEEN TO_TIMESTAMP(TO_CHAR(R.reserve_date, 'YYYY-MM-DD') || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI')
-                           AND TO_TIMESTAMP(TO_CHAR(R.reserve_date, 'YYYY-MM-DD') || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI') + INTERVAL '10' MINUTE
+      AND EL.created_at BETWEEN TO_DATE(TO_CHAR(R.reserve_date, 'YYYY-MM-DD') || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI')
+                           AND TO_DATE(TO_CHAR(R.reserve_date, 'YYYY-MM-DD') || ' ' || #{reserveTime}, 'YYYY-MM-DD HH24:MI') + INTERVAL '10' MINUTE
       AND NOT EXISTS (
           SELECT 1
           FROM ENTRANCE_LOG sub
