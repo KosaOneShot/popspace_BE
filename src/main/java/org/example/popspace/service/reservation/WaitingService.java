@@ -2,9 +2,8 @@ package org.example.popspace.service.reservation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.reservation.CountEntranceDTO;
 import org.example.popspace.dto.reservation.ReservationSequenceResponse;
-import org.example.popspace.global.error.CustomException;
-import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.ReservationMapper;
 import org.springframework.stereotype.Service;
 
@@ -23,23 +22,39 @@ public class WaitingService {
         LocalDateTime now = LocalDateTime.now();
 //        LocalDateTime now = LocalDateTime.of(2025, 6, 12, 16, 0);
 
-        int myTurn = reservationMapper.countReservedBeforeMe(now.toLocalDate(),reservationId, popupId);  // RESERVED만 포함
+        int myTurn = reservationMapper.countReservedBeforeMe(now.toLocalDate(), reservationId, popupId);  // RESERVED만 포함
         log.info("[대기자 수] 앞에 입장 안 한 예약자 수 (RESERVED 상태): {}", myTurn);
 
-        return calculateReservation(now,myTurn,popupId);
+        CountEntranceDTO countEntrance = calculateEntrance(myTurn, now, popupId);
+
+        return calculateReservation(now, myTurn, popupId, countEntrance);
     }
 
     public ReservationSequenceResponse getTotalWaitingInfo(Long popupId) {
 
         LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime now = LocalDateTime.of(2025, 6, 12, 16, 0);
+//        LocalDateTime now = LocalDateTime.of(2025, 6, 15, 15, 22);
 
         int myTurn = reservationMapper.countReservedAll(now.toLocalDate(), popupId);
 
-        return calculateReservation(now,myTurn,popupId);
+        CountEntranceDTO countEntrance = calculateEntrance(myTurn, now, popupId);
+
+        return calculateReservation(now, myTurn, popupId, countEntrance);
     }
 
-    private ReservationSequenceResponse calculateReservation(LocalDateTime now, int myTurn, Long popupId) {
+    private CountEntranceDTO calculateEntrance(int myTurn, LocalDateTime now, Long popupId) {
+
+        String hour = String.valueOf(now.getHour());
+
+        CountEntranceDTO countEntrance = reservationMapper.countEntrance(now.toLocalDate(), hour, popupId);
+
+        countEntrance.checkIsAllowed(myTurn);
+
+        log.info("countEntrance {}", countEntrance);
+        return countEntrance;
+    }
+
+    private ReservationSequenceResponse calculateReservation(LocalDateTime now, int myTurn, Long popupId, CountEntranceDTO countEntrance) {
 
         int averageWaitTime = reservationMapper.averageWaitingTime(now.toLocalDate(), popupId)
                 .orElse(-1);
@@ -47,7 +62,7 @@ public class WaitingService {
 
         LocalTime entranceTime = now.toLocalTime().plusMinutes(myTurn * averageWaitTime);
 
-        return ReservationSequenceResponse.of(myTurn, averageWaitTime, entranceTime);
+        return ReservationSequenceResponse.of(myTurn, averageWaitTime, entranceTime, countEntrance);
     }
 
     //todo
