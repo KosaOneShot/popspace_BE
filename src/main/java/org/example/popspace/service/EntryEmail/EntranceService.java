@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -67,9 +68,21 @@ public class EntranceService {
     public void sendEmails(List<Reservation> reservations, PopupInfoDto popup, String reserveTime) {
         for (Reservation reservation : reservations) {
             try {
-                mailService.sendEnterNotification(reservation, popup.getPopupName(), popup.getLocation(), calculateEndTime(reserveTime));
+                long start = System.currentTimeMillis();
+                log.info("📧 Sending email for reservationId={}, email={}", reservation.getReserveId(), reservation.getEmail());
+
+                mailService.sendEnterNotification(
+                        reservation,
+                        popup.getPopupName(),
+                        popup.getLocation(),
+                        calculateEndTime(reserveTime)
+                );
+
+                long end = System.currentTimeMillis();
+                log.info("✅ Email sent to {} (took {} ms)", reservation.getEmail(), (end - start));
+
             } catch (Exception e) {
-                log.error("이메일 전송 실패: {}", reservation.getEmail(), e);
+                log.error("❌ 이메일 전송 실패: {}", reservation.getEmail(), e);
             }
         }
     }
