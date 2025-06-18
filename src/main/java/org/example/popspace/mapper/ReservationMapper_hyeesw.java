@@ -11,7 +11,7 @@ import org.example.popspace.dto.reservation.ReservationListResponseDto;
 public interface ReservationMapper_hyeesw {
 
     /* 예약 목록
-    * RESERVE_TIME 의 날짜 일치 별, POPUP_NAME 에 키워드 포함 별, RESERVATION_TYPE 별 검색
+    * [RESERVE_TIME 날짜 일치] 별, [POPUP_NAME 키워드 포함] 별, [RESERVATION_TYPE 별] 검색
      */
     @Select("""
         <script>
@@ -29,13 +29,10 @@ public interface ReservationMapper_hyeesw {
               <where>
                R.MEMBER_ID = #{memberId}
                <if test="lastReserveDate != null">
-                   <!-- 페이지네이션 (날짜, 시간, 분, 아이디 순으로 중복 필터) -->
+                   <!-- 페이지네이션 (날짜, 예약아이디 순으로 필터) -->
                    <![CDATA[
-                    and (TRUNC(R.RESERVE_DATE) < #{lastReserveDate}
-                        or (TRUNC(R.RESERVE_DATE) = #{lastReserveDate}
-                            and (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) < #{lastReserveHour}
-                                or (TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) = #{lastReserveHour}
-                                    and R.RESERVE_ID < #{lastReserveId}))))
+                    AND (TRUNC(R.RESERVE_DATE) < #{lastReserveDate}
+                        OR (TRUNC(R.RESERVE_DATE) = #{lastReserveDate} AND R.RESERVE_ID < #{lastReserveId}))
                    ]]>
                 </if>
                 <if test="searchKeyword != null and searchKeyword.trim() != ''">
@@ -48,9 +45,7 @@ public interface ReservationMapper_hyeesw {
                   and R.RESERVATION_TYPE = #{reservationType}
                 </if>
               </where>
-                ORDER BY TRUNC(R.RESERVE_DATE) DESC, -- 날짜
-                     TO_NUMBER(SUBSTR(R.RESERVE_TIME, 1, 2)) desc, -- 시
-                     R.RESERVE_ID desc
+                ORDER BY TRUNC(R.RESERVE_DATE) DESC, R.RESERVE_ID desc
                 FETCH FIRST 7 ROWS ONLY
         </script>
     """)
