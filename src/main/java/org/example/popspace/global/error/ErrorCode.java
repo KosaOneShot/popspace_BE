@@ -52,9 +52,10 @@ public enum ErrorCode {
     RESERVATION_CANNOT_BE_CANCELLED(HttpStatus.BAD_REQUEST, "취소 가능한 예약이 아닙니다."),
     CANCEL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "예약 취소 중 오류가 발생했습니다."),
     NOSHOW_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "노쇼 처리 중 오류가 발생했습니다."),
-    INVALID_RESERVATION_DATE(HttpStatus.BAD_REQUEST, "예약 가능 날짜가 아닙니다."),
+    INVALID_RESERVATION_DATE(HttpStatus.BAD_REQUEST, "예약 가능 날짜 혹은 시간이 아닙니다."),
     INVALID_RESERVATION_TIME(HttpStatus.BAD_REQUEST, "예약 가능 시간이 아닙니다."),
     NOT_CHECKIN_TIME(HttpStatus.BAD_REQUEST, "입장 가능 시간이 아닙니다."),
+    CANNOT_ENTER_IMMEDIATELY(HttpStatus.BAD_REQUEST, "인원 초과로 즉시 입장이 불가능합니다. 관리자에게 문의하세요."),
 
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "이미 가입된 이메일입니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "이미 가입된 닉네임입니다."),
@@ -81,8 +82,6 @@ public enum ErrorCode {
     SSE_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SSE 전송 중 오류가 발생했습니다."),
 
     NOT_ENOUGH_DATA(HttpStatus.BAD_REQUEST,  "충분한 통계 데이터가 존재하지 않습니다.");
-
-    ;
 
     private final HttpStatus status;
     private final String message;

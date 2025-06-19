@@ -11,8 +11,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Repository;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -51,7 +53,7 @@ public class ReservationRedisRepository {
         try {
             return objectMapper.readValue(json, ReservationPopupCacheDTO.class);
         } catch (JsonProcessingException e) {
-            log.error("[redis]: 팝업 정보 역직렬화 실패. key: {}, value: {}", key, json, e);
+            log.error("[redis-popup]: 팝업 정보 역직렬화 실패. key: {}, value: {}", key, json, e);
             return null;
         }
     }
@@ -62,13 +64,14 @@ public class ReservationRedisRepository {
             String json = objectMapper.writeValueAsString(dto);
             redisTemplate.opsForValue().set(key, json);
         } catch (JsonProcessingException e) {
-            log.error("[redis]: 팝업 정보 직렬화 실패. key: {}, object: {}", key, dto, e);
+            log.error("[redis-pupup]: 팝업 정보 직렬화 실패. key: {}, object: {}", key, dto, e);
         }
     }
 
 
     // 예약 명단에 멤버 존재 여부 확인 / 없으면 추가
     public boolean tryAddMemberToSet(String key, long memberId) {
+        log.info("[redis-member set]: try add member to set {}", key);
         String script = """
         if redis.call("SISMEMBER", KEYS[1], ARGV[1]) == 1 then
             return 1
@@ -89,11 +92,17 @@ public class ReservationRedisRepository {
 
     // 예약 명단에서 멤버 제거
     public void removeMemberFromSet(String key, long memberId) {
+        log.info("[redis-member remove]: try remove member from set key={}, memberId={}", key, memberId);
         redisTemplate.opsForSet().remove(key, String.valueOf(memberId));
     }
 
-    // 해당 시간대 예약수 < max: 증가
-    public boolean tryIncrementCount(String key, int max) {
+    // 예약 명단 전체 조회
+    public Set<String> getAllMembers(String key) {
+        return redisTemplate.opsForSet().members(key);
+    }
+
+    // count < max: 증가
+    public boolean atomicIncrementIfBelowMax(String key, int max) {
         String script = """
         local current = redis.call("INCR", KEYS[1])
         if tonumber(current) > tonumber(ARGV[1]) then
@@ -119,6 +128,7 @@ public class ReservationRedisRepository {
 
     // count key 없을 때만 값 저장 (오직 한 번만 set)
     public void setCountIfAbsent(String key, int count) {
+        log.info("[init] : set initial count {}", key);
         String script = """
         if redis.call("EXISTS", KEYS[1]) == 0 then
             redis.call("SET", KEYS[1], ARGV[1])
@@ -134,6 +144,7 @@ public class ReservationRedisRepository {
 
     // 사전예약/웨이팅: count 감소 (예약 실패/취소 등)
     public Long decrementCount(String key) {
+        log.info("[redis]: decrement count: {}", key);
         return redisTemplate.opsForValue().decrement(key);
     }
 
@@ -141,6 +152,21 @@ public class ReservationRedisRepository {
     public String getCount(String key) {
         String value = redisTemplate.opsForValue().get(key);
         return redisTemplate.opsForValue().get(key);
+    }
+
+    // 락 여부 확인
+    public boolean isLocked(String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    // 락 설정 (EXPIRE 포함)
+    public void setLock(String key, Duration ttl) {
+        redisTemplate.opsForValue().set(key, "true", ttl);
+    }
+
+    // 락 해제
+    public void releaseLock(String key) {
+        redisTemplate.delete(key);
     }
 
     /**
