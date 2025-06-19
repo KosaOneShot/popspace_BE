@@ -1,5 +1,6 @@
 package org.example.popspace.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 @Aspect
 @Component
+@Slf4j
 public class DistributedSchedulerAspect {
 
     private final StringRedisTemplate authRedisTemplate;
@@ -34,15 +36,16 @@ public class DistributedSchedulerAspect {
     public Object lockAndRun(ProceedingJoinPoint joinPoint, DistributedScheduled dist) throws Throwable {
         String lockKey = dist.lockKey();
         String lockId = UUID.randomUUID().toString(); // 🔑 고유 락 ID 생성
-
+        log.info("lockKey: {}, lockId: {}", lockKey, lockId);
         Boolean lock = authRedisTemplate.opsForValue()
                 .setIfAbsent(lockKey, lockId, Duration.ofSeconds(dist.expireSeconds()));
 
         if (Boolean.TRUE.equals(lock)) {
+            log.info("[LOCK ACQUIRED] {}", lockKey);
             try {
                 return joinPoint.proceed();
             } finally {
-                // Lua 스크립트로 본인 락만 삭제
+                // 락 해제는 여기에서 Lua 스크립트로 수행해야 함
                 authRedisTemplate.execute(
                         new DefaultRedisScript<>(RELEASE_LOCK_SCRIPT, Long.class),
                         Collections.singletonList(lockKey),
@@ -50,7 +53,8 @@ public class DistributedSchedulerAspect {
                 );
             }
         } else {
-            return null; // 다른 인스턴스가 락을 잡고 있음
+            log.info("[LOCK SKIPPED] Already running: {}", lockKey);
+            return null;
         }
     }
 }
