@@ -50,8 +50,6 @@ public class DistributedSchedulerAspect {
 
         long expireMillis = Duration.ofSeconds(dist.expireSeconds()).toMillis();
         log.info("lockKey: {}, lockId: {}", lockKey, lockId);
-        Boolean lock = authRedisTemplate.opsForValue()
-                .setIfAbsent(lockKey, lockId, Duration.ofSeconds(dist.expireSeconds()));
 
         Long acquired = authRedisTemplate.execute(
                 new DefaultRedisScript<>(ACQUIRE_LOCK_SCRIPT, Long.class),
