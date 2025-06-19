@@ -22,7 +22,7 @@ public class ReservationScheduler {
      * - 잔여 vacancy 만큼 현장 웨이팅 선발 후 입장 알림 발송
      */
     @Scheduled(cron = "0 0 9-22 * * *")
-    @DistributedScheduled(lockKey =" Hourly scheduler executed on the hour")
+    @DistributedScheduled(lockKey ="scheduler:hourly")
     @Transactional
     public void entranceSelection() {
         try {
@@ -39,7 +39,7 @@ public class ReservationScheduler {
      * - 노쇼 발생 수 만큼 추가 웨이팅 선발 및 입장 알림 발송
      */
     @Scheduled(cron = "0 10 9-22 * * *")
-    @DistributedScheduled(lockKey ="10-minute scheduler executed")
+    @DistributedScheduled(lockKey ="scheduler:minute:10")
     @Transactional
     public void processAfterFiveMinutes() {
         try {
@@ -55,7 +55,7 @@ public class ReservationScheduler {
      * - 추가 선발된 웨이팅 인원 중 입장하지 않은 인원 노쇼처리
      */
     @Scheduled(cron = "0 20 9-22 * * *")
-    @DistributedScheduled(lockKey ="20-minute scheduler executed")
+    @DistributedScheduled(lockKey ="scheduler:minute:20")
     @Transactional
     public void processAfterTenMinutes() {
         try {
