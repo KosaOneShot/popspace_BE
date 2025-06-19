@@ -10,6 +10,8 @@ import org.example.popspace.dto.popup.PopupDetailResponse;
 import org.example.popspace.dto.popup.PopupInfoDto;
 import org.example.popspace.dto.popup.PopupReviewDto;
 import org.example.popspace.dto.popup.PopupSearchDto;
+import org.example.popspace.dto.popup.ReviewDto;
+import org.example.popspace.dto.popup.ReviewPaginationRequestDto;
 import org.example.popspace.mapper.PopupMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,5 +93,18 @@ public class PopupService {
 		return popupMapper.findAllPopupListForAdmin();
 	}
 
+	// 리뷰 페이지네이션
+	public List<ReviewDto> getPopupReviewsByPagination(ReviewPaginationRequestDto dto) {
+		if (dto.getPageNum() < 0 || dto.getPageSize() <= 0) {
+			throw new IllegalArgumentException("Invalid pagination parameters");
+		}
+		int pageOffset = (dto.getPageNum() - 1) * dto.getPageSize();
+		log.info("getPopupReviews() popupId: {}, pageNum: {}, pageSize: {}, pageOffset: {}", dto.getPopupId(), dto.getPageNum(), dto.getPageSize(), pageOffset);
+		return popupMapper.findReviewsByPopupIdWithPagination(dto.getPopupId(), pageOffset, dto.getPageSize());
+	}
+	public int getTotalReviewCountByPopupId(Long popupId) {
+		log.info("getTotalReviewCountByPopupId() popupId: {}", popupId);
+		return popupMapper.countReviewsByPopupId(popupId);
+	}
 }
 

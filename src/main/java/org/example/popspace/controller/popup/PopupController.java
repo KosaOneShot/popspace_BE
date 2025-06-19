@@ -32,17 +32,30 @@ public class PopupController {
     }
 
     /* 팝업 리뷰 */
-    @GetMapping("/review/{popupId}")
-    public ResponseEntity<List<PopupReviewDto>> getReviews(@PathVariable Long popupId) {
-        List<PopupReviewDto> dto = popupService.findReviewsByPopupId(popupId);
-        return ResponseEntity.ok(dto);
+    // @GetMapping("/review/{popupId}")
+    // public ResponseEntity<List<PopupReviewDto>> getReviews(@PathVariable Long popupId) {
+    //     List<PopupReviewDto> dto = popupService.findReviewsByPopupId(popupId);
+    //     return ResponseEntity.ok(dto);
+    // }
+
+    @GetMapping("/review")
+    public ResponseEntity<ReviewPaginationResponseDto> getReviews(@ModelAttribute ReviewPaginationRequestDto dto) {
+        List<ReviewDto> reviewList = popupService.getPopupReviewsByPagination(dto);
+        int totalCount = popupService.getTotalReviewCountByPopupId(dto.getPopupId());
+        ReviewPaginationResponseDto response = ReviewPaginationResponseDto.builder()
+                .reviewList(reviewList)
+                .totalCount(totalCount)
+                .build();
+
+        log.info(response.toString());
+        return ResponseEntity.ok(response);
     }
 
 
     /* 찜 여부 */
     @GetMapping("/like/{popupId}")
     public ResponseEntity<LikeResponseDto> reserveAndLike(@PathVariable Long popupId,
-                                                          @AuthenticationPrincipal CustomUserDetail userDetail) {
+                                               @AuthenticationPrincipal CustomUserDetail userDetail) {
         LikeResponseDto dto = popupService.findPopupLikeByPopupIdMemberId(popupId, userDetail.getId());
         return ResponseEntity.ok(dto);
     }

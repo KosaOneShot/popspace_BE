@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.*;
+import org.example.popspace.dto.mypage.ReviewResponseDto;
 import org.example.popspace.dto.popup.*;
 import org.example.popspace.dto.statistics.PopupInfoWithLikeCount;
 import org.example.popspace.dto.statistics.ReservationTypeStateCount;
@@ -239,4 +240,31 @@ public interface PopupMapper {
         """)
     List<PopupInfoDto> findPopupInfoAndReviewsByPopupIds(@Param("popupIds") List<Long> popupIds);
 
+
+    // 리뷰 페이지네이션
+    @Select(
+        """
+         SELECT
+            RES.POPUP_ID,
+            RES.MEMBER_ID,
+            R.REVIEW_ID,
+            R.RATING,
+            R.CONTENT,
+            R.CREATED_AT
+         FROM REVIEW R
+         JOIN RESERVATION RES ON R.RESERVE_ID = RES.RESERVE_ID
+         WHERE RES.POPUP_ID = #{popupId}
+         ORDER BY R.REVIEW_ID DESC
+         OFFSET #{pageOffset} ROW FETCH NEXT #{pageSize} ROWS ONLY
+        """
+    )
+    List<ReviewDto> findReviewsByPopupIdWithPagination(Long popupId, int pageOffset, int pageSize);
+
+    @Select("""
+        SELECT COUNT(*)
+        FROM REVIEW R
+        JOIN RESERVATION RES ON R.RESERVE_ID = RES.RESERVE_ID
+        WHERE RES.POPUP_ID = #{popupId}
+    """)
+    int countReviewsByPopupId(Long popupId);
 }
