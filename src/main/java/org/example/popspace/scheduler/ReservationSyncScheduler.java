@@ -39,5 +39,10 @@ public class ReservationSyncScheduler {
             reservationSyncService.syncReservedMembers(info.getPopupId(), info.getReserveDate());
         }
 
+        List<Long> popuTargets = reservationSyncService.getPopupSyncTargets();
+        for (Long popuTarget : popuTargets) {
+            reservationSyncService.syncPopupCache(popuTarget);
+        }
+
     }
 }
