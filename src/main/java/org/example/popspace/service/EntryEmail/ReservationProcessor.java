@@ -57,7 +57,7 @@ public class ReservationProcessor {
             switch (minuteOffset) {
                 // 입장대상 선정
                 case 0 -> {
-                    entranceStateUpdateService.processPreviousHourReservations(now);
+                    entranceStateUpdateService.processPreviousHourReservations(popupId, now);
                     entranceService.processEntrance(popupId, today, nowTime, popup);
                 }
                 // 1차 노쇼처리 + 추가 웨이팅 선발

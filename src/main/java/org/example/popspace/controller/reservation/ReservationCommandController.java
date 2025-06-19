@@ -36,7 +36,7 @@ public class ReservationCommandController {
         return ResponseEntity.ok(response);
     }
 
-    // 웨이팅 생성
+    // 웨이팅 (즉시 입장x) 생성
     @PostMapping("/api/reservation/walk-in")
     public ResponseEntity<ReservationResponseDTO> makeWalkInReservation(@Valid @RequestBody WalkInRequestDTO walkInRequest,
                                                                          @AuthenticationPrincipal CustomUserDetail userDetail) {
@@ -45,6 +45,19 @@ public class ReservationCommandController {
 
         ReservationResponseDTO response = new ReservationResponseDTO();
         response.setMessage("웨이팅 등록되었습니다");
+        response.setReserveId(reserveId);
+        return ResponseEntity.ok(response);
+    }
+
+    // 즉시 입장 웨이팅 생성
+    @PostMapping("/api/reservation/immediate-walk-in")
+    public ResponseEntity<ReservationResponseDTO> makeImmediateWalkIn(@Valid @RequestBody WalkInRequestDTO walkInRequest,
+                                                                        @AuthenticationPrincipal CustomUserDetail userDetail) {
+
+        Long reserveId = reservationCommandService.makeImmediateWalkIn(userDetail.getId(), walkInRequest);
+
+        ReservationResponseDTO response = new ReservationResponseDTO();
+        response.setMessage("즉시 입장 가능합니다.");
         response.setReserveId(reserveId);
         return ResponseEntity.ok(response);
     }
@@ -60,13 +73,13 @@ public class ReservationCommandController {
     }
 
     // 노쇼 처리 - 예약, 웨이팅 - (확인용)
-//    @PostMapping("/api/reservations/{reserveId}/noshow")
-//    public ResponseEntity<String> noshowReservation(
-//            @PathVariable Long reserveId,
-//            @AuthenticationPrincipal CustomUserDetail userDetail
-//    ) {
-//        reservationCommandService.noshowReservation(reserveId);
-//        return ResponseEntity.ok("노쇼 처리되었습니다");
-//    }
+    @PostMapping("/api/reservations/{reserveId}/noshow")
+    public ResponseEntity<String> noshowReservation(
+            @PathVariable Long reserveId,
+            @AuthenticationPrincipal CustomUserDetail userDetail
+    ) {
+        reservationCommandService.noshowReservation(reserveId);
+        return ResponseEntity.ok("노쇼 처리되었습니다");
+    }
 
 }
