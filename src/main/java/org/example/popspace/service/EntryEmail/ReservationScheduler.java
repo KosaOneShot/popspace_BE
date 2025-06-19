@@ -3,6 +3,7 @@ package org.example.popspace.service.EntryEmail;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.annotation.DistributedScheduled;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class ReservationScheduler {
      * - 잔여 vacancy 만큼 현장 웨이팅 선발 후 입장 알림 발송
      */
     @Scheduled(cron = "0 0 9-22 * * *")
+    @DistributedScheduled(lockKey =" Hourly scheduler executed on the hour")
     @Transactional
     public void entranceSelection() {
         try {
@@ -37,6 +39,7 @@ public class ReservationScheduler {
      * - 노쇼 발생 수 만큼 추가 웨이팅 선발 및 입장 알림 발송
      */
     @Scheduled(cron = "0 10 9-22 * * *")
+    @DistributedScheduled(lockKey ="10-minute scheduler executed")
     @Transactional
     public void processAfterFiveMinutes() {
         try {
@@ -52,6 +55,7 @@ public class ReservationScheduler {
      * - 추가 선발된 웨이팅 인원 중 입장하지 않은 인원 노쇼처리
      */
     @Scheduled(cron = "0 20 9-22 * * *")
+    @DistributedScheduled(lockKey ="20-minute scheduler executed")
     @Transactional
     public void processAfterTenMinutes() {
         try {
