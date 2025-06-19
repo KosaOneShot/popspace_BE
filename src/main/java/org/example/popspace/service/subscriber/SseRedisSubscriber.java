@@ -23,6 +23,7 @@ public class SseRedisSubscriber implements MessageListener {
         try {
             String msg = new String(message.getBody(), StandardCharsets.UTF_8);
             JsonNode node = new ObjectMapper().readTree(msg);
+            int sentCount = 0;
 
             JsonNode memberIdsNode = node.get("memberIds");
             if (memberIdsNode != null && memberIdsNode.isArray()) {
@@ -33,6 +34,8 @@ public class SseRedisSubscriber implements MessageListener {
                     }
                 }
             }
+
+            log.info("✅ Redis 메시지 수신 완료. 전송 대상 수: {}", sentCount);
         } catch (Exception e) {
             log.error("Redis 메시지 처리 실패", e);
         }
