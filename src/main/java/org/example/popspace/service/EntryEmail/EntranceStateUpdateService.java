@@ -32,7 +32,7 @@ public class EntranceStateUpdateService {
     }
 
     @Transactional
-    public void processPreviousHourReservations(LocalDateTime now) {
+    public void processPreviousHourReservations(Long popupId, LocalDateTime now) {
         // 현재 시간 기준 1시간 전 시간 계산
         LocalDate prevDate = now.minusHours(1).toLocalDate();
         String prevTime = now.minusHours(1).toLocalTime().withMinute(0).format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -40,10 +40,10 @@ public class EntranceStateUpdateService {
         log.info("전 시간대 처리 시작: {} {}", prevDate, prevTime);
 
         // 1) SEND_EMAIL → NO_SHOW
-        int noShowUpdated = entryEmailMapper.updateReservationStateBatch(prevDate,"EMAIL_SEND", "NOSHOW");
+        int noShowUpdated = entryEmailMapper.updateReservationStateBatch(popupId, prevDate,"EMAIL_SEND", "NOSHOW");
 
         // 2) CHECKED_IN → CHECKED_OUT
-        int checkoutUpdated = entryEmailMapper.updateReservationStateBatch(prevDate,"CHECKED_IN", "CHECKED_OUT");
+        int checkoutUpdated = entryEmailMapper.updateReservationStateBatch(popupId, prevDate,"CHECKED_IN", "CHECKED_OUT");
 
         log.info("NO_SHOW 처리 완료: {}건, CHECKED_OUT 처리 완료: {}건", noShowUpdated, checkoutUpdated);
     }

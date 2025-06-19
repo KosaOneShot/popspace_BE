@@ -139,9 +139,11 @@ public interface EntryEmailMapper {
     UPDATE RESERVATION
     SET reservation_state = #{toState}
     WHERE reserve_date = #{date}
+    AND popup_id = #{popupId}
     AND reservation_state = #{fromState}
     """)
-    int updateReservationStateBatch(@Param("date") LocalDate date,
+    int updateReservationStateBatch(@Param("popupId") Long popupId,
+                                    @Param("date") LocalDate date,
                                     @Param("fromState") String fromState,
                                     @Param("toState") String toState);
 
