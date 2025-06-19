@@ -4,12 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.popspace.dto.reservation.ReservationDateKeyInfo;
 import org.example.popspace.dto.reservation.ReservationKeyInfo;
+import org.example.popspace.dto.reservation.ReservationPopupCacheDTO;
+import org.example.popspace.dto.reservation.ReservationPopupInfoDTO;
+import org.example.popspace.global.error.CustomException;
+import org.example.popspace.global.error.ErrorCode;
+import org.example.popspace.mapper.PopupMapper;
 import org.example.popspace.mapper.ReservationMapper;
 import org.example.popspace.mapper.redis.ReservationRedisRepository;
 import org.example.popspace.util.reservation.RedisKeyUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -21,6 +28,7 @@ public class ReservationSyncService {
     private final RedisKeyUtil redisKeyUtil;
     private final ReservationRedisRepository redisRepo;
     private final ReservationRedisRepository reservationRedisRepository;
+    private final PopupMapper popupMapper;
 
 
     // 시간대별 사전 예약 수 - advance count
@@ -48,6 +56,21 @@ public class ReservationSyncService {
         redisRepo.setCount(key, count);
     }
 
+    // 팝업 기본 정보 캐시 동기화
+    public void syncPopupCache(Long popupId) {
+        log.debug("[popup-cache-sync] popupId: {}", popupId);
+
+        ReservationPopupInfoDTO fromDb = reservationMapper.findPopupTimeById(popupId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POPUP_NOT_FOUND));
+
+        ReservationPopupCacheDTO cacheDTO = ReservationPopupCacheDTO.from(fromDb);
+        String key = redisKeyUtil.popupInfoKey(popupId);
+
+        redisRepo.setPopupInfo(key, cacheDTO);
+    }
+
+
+
 
     public List<ReservationKeyInfo> getAdvanceSyncTargets() {
         return reservationMapper.findAdvanceCountSyncTargets();
@@ -60,5 +83,16 @@ public class ReservationSyncService {
     public List<ReservationDateKeyInfo> getReservedMemberSyncTargets() {
         return reservationMapper.findReservedMemberSyncTargets();
     }
+
+    public List<Long> getPopupSyncTargets() {
+        LocalDate today = LocalDate.now();
+        String nowTime = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")); // 예: "14:35"
+
+        return popupMapper.selectActivePopups(today, nowTime);
+    }
+
+
+
+
 
 }
