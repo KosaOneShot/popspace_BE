@@ -29,7 +29,7 @@ public class SseEmitterManager {
                 emitter.send(SseEmitter.event().name("new-notification").data(data));
             } catch (Exception e) {
                 emitters.remove(memberId);
-                throw new CustomException(ErrorCode.SSE_SEND_FAILED);
+//                throw new CustomException(ErrorCode.SSE_SEND_FAILED);
             }
         }
     }
