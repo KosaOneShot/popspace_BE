@@ -18,7 +18,8 @@ public class ReservationSyncScheduler {
 
     private final ReservationSyncService reservationSyncService;
 
-    @Scheduled(fixedDelay = 5 * 60 * 1000) // 5분마다
+//    @Scheduled(fixedDelay = 5 * 60 * 1000) // 5분마다
+    @Scheduled(cron = "0 */5 9-21 * * *")
     @DistributedScheduled(lockKey ="sync:redis:with:db")
     public void syncRedisWithDb() {
         log.info("[all]: sync redis with DB");
