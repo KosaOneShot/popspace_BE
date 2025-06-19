@@ -19,12 +19,18 @@ public class ReservationSyncScheduler {
 
     @Scheduled(fixedDelay = 5 * 60 * 1000) // 5분마다
     public void syncRedisWithDb() {
-        log.info("sync redis with DB");
+        log.info("[all]: sync redis with DB");
 
         // 시간대별 사전 예약 수
         List<ReservationKeyInfo> advanceTargets = reservationSyncService.getAdvanceSyncTargets();
         for (ReservationKeyInfo info : advanceTargets) {
-            reservationSyncService.syncCount(info.getPopupId(), info.getReserveDate(), info.getReserveTime());
+            reservationSyncService.syncAdvanceCount(info.getPopupId(), info.getReserveDate(), info.getReserveTime());
+        }
+
+        // 현재 입장 예정 고객 수
+        List<ReservationKeyInfo> entranceTargets = reservationSyncService.getEntranceSyncTargets();
+        for (ReservationKeyInfo info : entranceTargets) {
+            reservationSyncService.syncEntranceCount(info.getPopupId(), info.getReserveDate(), info.getReserveTime());
         }
 
         // 해당 날짜 예약한 멤버들

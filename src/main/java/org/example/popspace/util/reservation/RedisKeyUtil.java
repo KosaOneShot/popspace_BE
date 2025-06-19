@@ -25,5 +25,16 @@ public class RedisKeyUtil {
         return String.format("popup:%d:date:%s:members", popupId, date);
     }
 
+    // 입장(예정) 고객 수
+    // value: int
+    public String entranceCountKey(Long popupId, LocalDate date, String time) {
+        return String.format("entrance:popup:%d:date:%s:time:%s", popupId, date, time);
+    }
+
+    // 락
+    public String entranceLockKey(Long popupId) {
+        return String.format("popup:%d:entrance-lock", popupId);
+    }
+
 }
 

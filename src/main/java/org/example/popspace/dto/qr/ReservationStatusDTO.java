@@ -10,6 +10,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class ReservationStatusDTO {
+    private Long popupId;
+    private Long memberId;
     private Long reserveId;
     private String reservationState;
     private LocalDate reserveDate;

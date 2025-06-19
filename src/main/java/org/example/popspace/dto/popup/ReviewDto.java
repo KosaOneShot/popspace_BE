@@ -15,6 +15,7 @@ import lombok.ToString;
 public class ReviewDto {
     private Long popupId;
     private Long memberId;
+    private String nickname;
     private Long reviewId;
     private int rating;
     private String content;
