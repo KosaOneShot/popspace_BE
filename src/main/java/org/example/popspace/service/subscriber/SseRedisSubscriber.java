@@ -31,6 +31,7 @@ public class SseRedisSubscriber implements MessageListener {
                     Long memberId = idNode.asLong();
                     if (sseEmitterManager.hasEmitter(memberId)) {
                         sseEmitterManager.send(memberId, node);  // 전체 메시지 그대로 전송
+                        sentCount++;
                     }
                 }
             }
