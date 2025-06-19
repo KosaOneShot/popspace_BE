@@ -21,6 +21,7 @@ public class ReservationWaitingService {
 
     private final EntryEmailMapper entryEmailMapper;
     private final EmailService mailService;
+    private final EntranceStateUpdateService entranceStateUpdateService;
 
     /**
      * 추가 웨이팅 선발 (노쇼 수 만큼 추가 1회 선발)
@@ -42,20 +43,35 @@ public class ReservationWaitingService {
         // 2단계: pending 상태인 사람만 조회
         List<Reservation> pendingList = entryEmailMapper.selectPendingReservations(popupId, date);
 
-        for (Reservation reservation : pendingList) {
-            entryEmailMapper.updateReservationState(reservation.getReserveId(), "EMAIL_SEND");
-            mailService.sendEnterNotification(
-                    reservation,
-                    popup.getPopupName(),
-                    popup.getLocation(),
-                    calculateEndTime(reserveTime)
-            );
-        }
+        entranceStateUpdateService.updateReservations(pendingList, reserveTime);
+        sendEmails(pendingList, popup, reserveTime);
     }
 
     private String calculateEndTime(String reserveTimeStr) {
         LocalTime reserveTime = LocalTime.parse(reserveTimeStr, DateTimeFormatter.ofPattern("HH:mm"));
         return reserveTime.plusMinutes(20).format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public void sendEmails(List<Reservation> reservations, PopupInfoDto popup, String reserveTime) {
+        for (Reservation reservation : reservations) {
+            try {
+                long start = System.currentTimeMillis();
+                log.info("📧 Sending email for reservationId={}, email={}", reservation.getReserveId(), reservation.getEmail());
+
+                mailService.sendEnterNotification(
+                        reservation,
+                        popup.getPopupName(),
+                        popup.getLocation(),
+                        calculateEndTime(reserveTime)
+                );
+
+                long end = System.currentTimeMillis();
+                log.info("✅ Email sent to {} (took {} ms)", reservation.getEmail(), (end - start));
+
+            } catch (Exception e) {
+                log.error("❌ 이메일 전송 실패: {}", reservation.getEmail(), e);
+            }
+        }
     }
 }
 
