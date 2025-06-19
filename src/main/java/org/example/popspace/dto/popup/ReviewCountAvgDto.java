@@ -1,7 +1,5 @@
 package org.example.popspace.dto.popup;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ReviewPaginationResponseDto {
-	private List<ReviewDto> reviewList;
-	private ReviewCountAvgDto reviewCountAvg;
+public class ReviewCountAvgDto {
+	private int totalCount;
+	private double averageRating;
 }

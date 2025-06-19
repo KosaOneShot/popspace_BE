@@ -247,12 +247,14 @@ public interface PopupMapper {
          SELECT
             RES.POPUP_ID,
             RES.MEMBER_ID,
+            M.NICKNAME,
             R.REVIEW_ID,
             R.RATING,
             R.CONTENT,
             R.CREATED_AT
          FROM REVIEW R
          JOIN RESERVATION RES ON R.RESERVE_ID = RES.RESERVE_ID
+         JOIN MEMBER M on RES.MEMBER_ID = M.MEMBER_ID
          WHERE RES.POPUP_ID = #{popupId}
          ORDER BY R.REVIEW_ID DESC
          OFFSET #{pageOffset} ROW FETCH NEXT #{pageSize} ROWS ONLY
@@ -261,10 +263,10 @@ public interface PopupMapper {
     List<ReviewDto> findReviewsByPopupIdWithPagination(Long popupId, int pageOffset, int pageSize);
 
     @Select("""
-        SELECT COUNT(*)
+        SELECT COUNT(*) totalCount, nvl( ROUND(AVG(R.RATING), 1), 0) as averageRating
         FROM REVIEW R
         JOIN RESERVATION RES ON R.RESERVE_ID = RES.RESERVE_ID
         WHERE RES.POPUP_ID = #{popupId}
     """)
-    int countReviewsByPopupId(Long popupId);
+     ReviewCountAvgDto countReviewsByPopupId(Long popupId);
 }

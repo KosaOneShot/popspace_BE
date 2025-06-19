@@ -40,13 +40,10 @@ public class PopupController {
 
     @GetMapping("/review")
     public ResponseEntity<ReviewPaginationResponseDto> getReviews(@ModelAttribute ReviewPaginationRequestDto dto) {
-        List<ReviewDto> reviewList = popupService.getPopupReviewsByPagination(dto);
-        int totalCount = popupService.getTotalReviewCountByPopupId(dto.getPopupId());
         ReviewPaginationResponseDto response = ReviewPaginationResponseDto.builder()
-                .reviewList(reviewList)
-                .totalCount(totalCount)
-                .build();
-
+            .reviewList(popupService.getPopupReviewsByPagination(dto))
+            .reviewCountAvg(popupService.getTotalReviewCountByPopupId(dto.getPopupId()))
+            .build();
         log.info(response.toString());
         return ResponseEntity.ok(response);
     }
