@@ -38,13 +38,14 @@ public class ReservationCommandService {
         long popupId = request.getPopupId();
         LocalDate reserveDate = request.getReserveDateAsLocalDate();
         String reserveTime = request.getReserveTime();
+        LocalTime now = LocalTime.now();
 
         // 1. 팝업 예약 가능 날짜, 최대 예약 수 확인
         ReservationPopupCacheDTO cacheDTO = loadOrCachePopupInfo(popupId);
         int max = cacheDTO.getMaxReservations();
 
         // 2. 예약 가능 여부 확인
-        checkAdvanceAndImmediateReservable(memberId, popupId, reserveDate, reserveTime, cacheDTO);
+        checkAdvanceAndImmediateReservable(memberId, popupId, reserveDate, reserveTime, now, cacheDTO);
 
         // 3. 에약 자리 남아있는지
         boolean success = tryAdvanceCountIcr(popupId, reserveDate, reserveTime, max);
@@ -285,12 +286,18 @@ public class ReservationCommandService {
      * - 유효한 날짜 / 시간인지
      * - 선택 날짜에 선택 팝업 RESERVED, CHECKED_IN, CHECKED_OUT, EMAIL_SEND 상태인 예약 있는지
      */
-    private void checkAdvanceAndImmediateReservable(Long memberId, Long popupId, LocalDate reserveDate, String reserveTime, ReservationPopupCacheDTO cacheDTO) {
+    private void checkAdvanceAndImmediateReservable(Long memberId, Long popupId, LocalDate reserveDate, String reserveTime, LocalTime now, ReservationPopupCacheDTO cacheDTO) {
         if (reserveDate.isAfter(cacheDTO.getEndDate()) || reserveDate.isBefore(cacheDTO.getStartDate())) {
             throw new CustomException(ErrorCode.INVALID_RESERVATION_DATE);
         }
 
         if (reserveTime.compareTo(cacheDTO.getOpenTime()) < 0 || reserveTime.compareTo(cacheDTO.getCloseTime()) > 0) {
+            throw new CustomException(ErrorCode.INVALID_RESERVATION_TIME);
+        }
+
+        LocalTime reserveSlotTime = LocalTime.parse(reserveTime);
+        LocalDate today = LocalDate.now();
+        if (reserveDate.isBefore(today) || (reserveDate.isEqual(today) && reserveSlotTime.isBefore(now))) {
             throw new CustomException(ErrorCode.INVALID_RESERVATION_TIME);
         }
 
