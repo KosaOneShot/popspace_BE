@@ -2,6 +2,7 @@ package org.example.popspace.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.annotation.DistributedScheduled;
 import org.example.popspace.dto.reservation.ReservationDateKeyInfo;
 import org.example.popspace.dto.reservation.ReservationKeyInfo;
 import org.example.popspace.service.reservation.ReservationSyncService;
@@ -18,6 +19,7 @@ public class ReservationSyncScheduler {
     private final ReservationSyncService reservationSyncService;
 
     @Scheduled(fixedDelay = 5 * 60 * 1000) // 5분마다
+    @DistributedScheduled(lockKey =" sync redis with DB")
     public void syncRedisWithDb() {
         log.info("[all]: sync redis with DB");
 
