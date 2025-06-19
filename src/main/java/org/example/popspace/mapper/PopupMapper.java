@@ -216,7 +216,7 @@ public interface PopupMapper {
     WHERE start_date <= #{today}
       AND end_date >= #{today}
       AND open_time <= #{nowTime}
-      AND close_time >= #{nowTime}
+      AND close_time > #{nowTime}
 """)
     List<Long> selectActivePopups(
             LocalDate today,
