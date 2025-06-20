@@ -32,7 +32,7 @@ public interface NotificationMapper {
                N.NOTIFICATION_STATE
         FROM NOTIFICATION N
                  JOIN RESERVATION R ON N.popup_id = R.popup_id AND R.MEMBER_ID = #{memberId}
-                  AND R.reservation_state = 'RESERVED'
+                  AND R.reservation_state IN ('RESERVED', 'CHECKED_IN', 'EMAIL_SEND')
         WHERE N.notification_state = 'ACTIVE'
     """)
     List<NotificationResponseDto> selectNotificationsByMemberId(long memberId);
@@ -41,14 +41,7 @@ public interface NotificationMapper {
         SELECT DISTINCT MEMBER_ID
         FROM RESERVATION R
         WHERE POPUP_ID = #{popupId}
-            AND RESERVATION_STATE = 'RESERVED'
+            AND RESERVATION_STATE IN ('RESERVED', 'CHECKED_IN', 'EMAIL_SEND')
     """)
     List<Long> selectReservedMemberIds(long popupId);
-
-    @Select("""
-        SELECT POPUP_ID
-        FROM POPUP P
-        WHERE MEMBER_ID = #{memberId}
-    """)
-    Optional<Long> selectPopupIdByMemberId(long memberId);
 }
