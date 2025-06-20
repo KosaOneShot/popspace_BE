@@ -191,15 +191,11 @@ public class ReservationCommandService {
         }
     }
 
-    public void checkIn(long reserveId) {
+    public void checkIn(Long reserveId) {
         log.info("[check in]: try check in reserve_id {}", reserveId);
         ReservationStatusDTO reservation = reservationMapper.findReservationStatus(reserveId);
         if (reservation == null) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
-        }
-
-        if (!"EMAIL_SEND".equals(reservation.getReservationState())) {
-            throw new CustomException(ErrorCode.INVALID_RESERVATION_STATE);
         }
 
         // 프로시저
