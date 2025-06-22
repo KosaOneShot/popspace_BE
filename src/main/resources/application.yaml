@@ -13,6 +13,9 @@ spring:
       redis:
         host: ${RESERVATION_REDIS_HOST}
         port: ${RESERVATION_REDIS_PORT}
+    hikari:
+      maximum-pool-size: 20
+
   mail:
     host: smtp.gmail.com
     port: 587
