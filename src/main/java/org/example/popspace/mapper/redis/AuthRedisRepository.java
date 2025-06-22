@@ -33,4 +33,9 @@ public class AuthRedisRepository {
     public boolean checkBlackList(String token) {
         return authRedisTemplate.hasKey(token);
     }
+
+    public void clearAll() {
+        log.info("Redis 전체 데이터 초기화 수행");
+        authRedisTemplate.getConnectionFactory().getConnection().flushAll();
+    }
 }

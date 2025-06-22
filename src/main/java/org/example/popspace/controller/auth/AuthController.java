@@ -10,6 +10,7 @@ import org.example.popspace.dto.auth.CustomUserDetail;
 import org.example.popspace.dto.auth.MemberRegisterRequest;
 import org.example.popspace.dto.auth.ResetPasswordRequest;
 import org.example.popspace.dto.auth.UserStateResponse;
+import org.example.popspace.mapper.redis.AuthRedisRepository;
 import org.example.popspace.service.auth.UserDetailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserDetailService userDetailsService;
+    private final AuthRedisRepository authRedisRepository;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody MemberRegisterRequest memberRegisterRequest) {
@@ -88,6 +90,12 @@ public class AuthController {
     }
     @GetMapping("/health")
     public ResponseEntity<String> health() {
+        return ResponseEntity.ok("success");
+    }
+
+    @GetMapping("/clearAll")
+    public ResponseEntity<String> clearAll() {
+        authRedisRepository.clearAll();
         return ResponseEntity.ok("success");
     }
 }
