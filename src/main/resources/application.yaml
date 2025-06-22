@@ -13,15 +13,6 @@ spring:
       redis:
         host: ${RESERVATION_REDIS_HOST}
         port: ${RESERVATION_REDIS_PORT}
-    hikari:
-      maximum-pool-size: 50
-      minimum-idle: 10
-      idle-timeout: 300000       # 5분 후 유휴 커넥션 정리
-      max-lifetime: 1800000      # 30분 후 커넥션 재생성
-      connection-timeout: 30000  # 커넥션 대기 최대 30초
-      initialization-fail-timeout: 1  # 애플리케이션 시작 시 바로 풀 초기화 (0: 무한대기, -1: 비동기)
-      validation-timeout: 5000   # 커넥션 유효성 검사 timeout
-
   mail:
     host: smtp.gmail.com
     port: 587
