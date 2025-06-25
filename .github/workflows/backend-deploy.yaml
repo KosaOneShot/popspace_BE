@@ -1,0 +1,122 @@
+name: backend-deploy To EC2
+
+on:
+  push:
+    branches: [ "deploy" ]
+
+  pull_request:
+    types: [ closed ]
+    branches: [ "deploy" ]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+jobs:
+  backend-deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Github Repository 파일 불러오기
+        uses: actions/checkout@v4
+
+
+      - name: Cache Gradle dependencies and wrapper
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache JDK 17
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/sdkman/candidates
+          key: ${{ runner.os }}-jdk-17-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-jdk-17-
+
+      - name: jdk 17버전 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build with Gradle (skip tests)
+        run: ./gradlew bootJar -x test
+
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: private
+          region: ap-northeast-2
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          buildkitd-flags: --debug
+
+      - name: Build and push Docker image with cache
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile
+          push: true
+          load: true
+          tags: ${{secrets.DOCKER_USERNAME}}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 기존 build-push 단계 이후
+      - name: Tag latest
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}:${{ github.sha }} \
+                     ${{ secrets.DOCKER_USERNAME }}:latest
+
+      - name: Push latest tag to ECR
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}:latest
+
+      - name: Deploy to all running EC2s in ASG via SSM
+        env:
+          ASG_NAME: popspace-as-2
+          ECR_REPO: ${{ secrets.DOCKER_USERNAME }}
+          IMAGE_TAG: latest
+        run: |
+          INSTANCE_IDS=$(aws ec2 describe-instances \
+            --filters "Name=tag:aws:autoscaling:groupName,Values=$ASG_NAME" "Name=instance-state-name,Values=running" \
+            --query "Reservations[].Instances[].InstanceId" --output text)
+          
+          echo "Deploying to instances: $INSTANCE_IDS"
+          
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Docker container on ASG instances" \
+            --instance-ids $INSTANCE_IDS \
+            --parameters commands='[
+              "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 528757787186.dkr.ecr.ap-northeast-2.amazonaws.com",
+              "docker pull '"$ECR_REPO:latest"'",
+              "docker rm -f popspace-app || true",
+              "docker run -d \
+                  --name popspace-app \
+                  -p 8080:8080 \
+                  --restart unless-stopped \
+                  -v /etc/localtime:/etc/localtime:ro \
+                  -e TZ=Asia/Seoul \
+                  --env-file /backend.env \
+                  '"$ECR_REPO:latest"'"
+            ]' \
+            --region ap-northeast-2
+          

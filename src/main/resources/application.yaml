@@ -1,19 +1,46 @@
 spring:
   application:
     name: popspace
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     data:
       redis:
-        host: localhost
-        port: 6379
+        host: ${RESERVATION_REDIS_HOST}
+        port: ${RESERVATION_REDIS_PORT}
+    hikari:
+      maximum-pool-size: 20
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          timeout: 5000
+        transport:
+          protocol: smtp
+        debug: false
+custom-redis:
+    host: ${AUTH_REDIS_HOST}
+    port: ${AUTH_REDIS_PORT}
+
+
 
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
-  type-handlers-package: org.example.shoppingmall_be.util
+#  mapper-locations: classpath:mapper/**/*.xml
+#  type-handlers-package: org.example.shoppingmall_be.util
   configuration:
     map-underscore-to-camel-case: true
 
@@ -21,6 +48,8 @@ org:
   zerock:
     jwt:
       secret: ${JWT_SECRET}
+    hmac:
+      secret: ${HMAC_SECRET:default-secret-key}
 
 
 cloud:
@@ -29,6 +58,10 @@ cloud:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
     region:
-      static: us-east-2
+      static: ${AWS_REGION}
     s3:
       bucket: ${BUCKET_NAME}
+
+server:
+  address: 0.0.0.0
+  port: 8080
