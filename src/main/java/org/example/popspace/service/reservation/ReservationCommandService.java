@@ -2,11 +2,13 @@ package org.example.popspace.service.reservation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.popspace.dto.qr.ReservationStatusDTO;
 import org.example.popspace.dto.reservation.*;
 import org.example.popspace.global.error.CustomException;
 import org.example.popspace.global.error.ErrorCode;
 import org.example.popspace.mapper.ReservationMapper;
 import org.example.popspace.mapper.redis.ReservationRedisRepository;
+import org.example.popspace.repository.ReservationRepository;
 import org.example.popspace.util.reservation.RedisKeyUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ public class ReservationCommandService {
     private final ReservationMapper reservationMapper;
     private final ReservationRedisRepository redisRepo;
     private final RedisKeyUtil redisKeyUtil;
+    private final ReservationRepository reservationRepository;
 
 
     /**
@@ -177,13 +180,26 @@ public class ReservationCommandService {
             reservationMapper.insertReservation(reservation);
 
             // 생성된 ID 반환
-            return reservation.getReserveId();
+            Long reserveId =  reservation.getReserveId();
+            checkIn(reserveId);
+            return reserveId;
         } catch (Exception e) {
             log.error("[immediate walk-in]: DB insert error", e);
             // 실패 시 redis 롤백
             rollbackImmediateWalkIn(popupId, reserveDate, reserveTime, memberId);
             throw new CustomException(ErrorCode.RESERVATION_FAIL);
         }
+    }
+
+    public void checkIn(Long reserveId) {
+        log.info("[check in]: try check in reserve_id {}", reserveId);
+        ReservationStatusDTO reservation = reservationMapper.findReservationStatus(reserveId);
+        if (reservation == null) {
+            throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
+        }
+
+        // 프로시저
+        reservationRepository.logEntranceAction(reserveId, "CHECKED_IN");
     }
 
 
