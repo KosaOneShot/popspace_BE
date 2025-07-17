@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: parkjunhyeon/popspace_back:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AWS_ACCESS_KEY
+              value: ""
+            - name: AWS_REGION
+              value: "ap-northeast-2"
+            - name: AWS_SECRET_KEY
+              value: ""
+            - name: BUCKET_NAME
+              value: "kosa-popspace-s3"
+            - name: DB_PASSWORD
+              value: "1234"
+            - name: DB_URL
+              value: "jdbc:oracle:thin:@35.202.77.223:1521:XE"
+            - name: DB_USERNAME
+              value: "popspace"
+            - name: JWT_SECRET
+              value: "hello1234567890hello1234567890hello1234567890"
+            - name: HMAC_SECRET
+              value: "w9T$3nXvLp8#RzQeJf2MkYs7BuVaH1Wd"
+            - name: EMAIL_PASSWORD
+              value: "lfyywzrymhinrbug"
+            - name: EMAIL_USERNAME
+              value: "j525252p"
+            - name: AUTH_REDIS_HOST
+              value: "redis-auth"
+            - name: AUTH_REDIS_PORT
+              value: "6379"
+            - name: RESERVATION_REDIS_HOST
+              value: "redis-resv"
+            - name: RESERVATION_REDIS_PORT
+              value: "6379"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30085
+  type: NodePort
